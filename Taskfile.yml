@@ -21,36 +21,26 @@ includes:
   sops: .taskfiles/SopsTasks.yml
 
 tasks:
-
   init:
-    desc: Initialize workstation dependencies with Brew
+    desc: Check if nix and direnv are present
+    silent: true
     cmds:
-      - brew install {{.DEPS}} {{.CLI_ARGS}}
-    preconditions:
-      - sh: command -v brew
-        msg: |
-          Homebrew is not installed. Using MacOS, Linux or WSL?
-          Head over to https://brew.sh to get up and running.
+      - echo "{{.SUCCESS_MSG}}"
     vars:
-      DEPS: >-
-        age
-        ansible
-        direnv
-        fluxcd/tap/flux
-        go-task/tap/go-task
-        helm
-        ipcalc
-        jq
-        kubernetes-cli
-        kustomize
-        pre-commit
-        prettier
-        sops
-        stern
-        terraform
-        tflint
-        yamllint
-        yq
+      SUCCESS_MSG: |
+        All preconditions passed!
+        Activate the flake and direnv using
+            \`direnv allow\`
+    preconditions:
+      - sh: command -v nix
+        msg: |
+          Nix is not installed.
+          Head over to https://nixos.org to get up and running.
+          Make sure to also enable nix flakes.
+      - sh: command -v direnv
+        msg: |
+          Direnv is not installed.
+          Head over to https://direnv.net to get up and running.
 
   verify:
     desc: Verify env settings
