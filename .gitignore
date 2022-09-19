@@ -17,3 +17,7 @@ xanmanning.k3s*
 .terraform.tfstate*
 terraform.tfstate*
 megalinter-reports
+# Nix
+/.direnv/
+/result
+/result-*
