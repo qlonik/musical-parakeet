@@ -28,6 +28,7 @@
             ipcalc
             # terraform
             terraform
+            cf-terraforming
             jq
             yq-go
             # dev tools

@@ -2,7 +2,6 @@
 version: "3"
 
 tasks:
-
   init:
     desc: Initialize terraform dependencies
     dir: provision/terraform/cloudflare
@@ -20,3 +19,9 @@ tasks:
     dir: provision/terraform/cloudflare
     cmds:
       - terraform apply {{.CLI_ARGS}}
+
+  backup:
+    desc: Backup all of the cloudflare zone and account settings
+    dir: provision/terraform/cloudflare
+    cmds:
+      - bash ./backup-settings.sh {{.CLI_ARGS}}
