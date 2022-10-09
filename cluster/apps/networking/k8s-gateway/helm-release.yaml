@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: k8s-gateway
-      version: 1.1.14
+      version: 2.0.0
       sourceRef:
         kind: HelmRepository
         name: k8s-gateway
@@ -56,31 +56,31 @@ spec:
       - # Serves a /metrics endpoint on :9153, required for serviceMonitor
         name: prometheus
         parameters: 0.0.0.0:9153
-    # zoneFile:
-    #   filename: ${SECRET_DOMAIN}.db
-    #   domains: ${SECRET_DOMAIN}
-    #   contents: |
-    #     $TTL    60
-    #     $ORIGIN ${SECRET_DOMAIN}.
+    # zoneFiles:
+    #   - filename: ${SECRET_DOMAIN}.db
+    #     domains: ${SECRET_DOMAIN}
+    #     contents: |
+    #       $TTL    60
+    #       $ORIGIN ${SECRET_DOMAIN}.
     #
-    #     .           IN SOA (
-    #         ; k8s-gateway.networking
-    #         ; hostmaster.k8s-gateway.networking
-    #         irma.ns.cloudflare.com.
-    #         dns.cloudflare.com.
-    #         1 2h 1h 24h 1h )
+    #       .           IN SOA (
+    #           ; k8s-gateway.networking
+    #           ; hostmaster.k8s-gateway.networking
+    #           irma.ns.cloudflare.com.
+    #           dns.cloudflare.com.
+    #           1 2h 1h 24h 1h )
     #
-    #     @           IN SOA (
-    #         ; k8s-gateway.networking            ; nameserver
-    #         ; hostmaster.k8s-gateway.networking ; admin email
-    #         irma.ns.cloudflare.com.
-    #         dns.cloudflare.com.
-    #         2022100601                        ; serial
-    #         2h                                ; refresh
-    #         30m                               ; retry
-    #         24h                               ; expire
-    #         1m                                ; neg-response
-    #       )
+    #       @           IN SOA (
+    #           ; k8s-gateway.networking            ; nameserver
+    #           ; hostmaster.k8s-gateway.networking ; admin email
+    #           irma.ns.cloudflare.com.
+    #           dns.cloudflare.com.
+    #           2022100601                        ; serial
+    #           2h                                ; refresh
+    #           30m                               ; retry
+    #           24h                               ; expire
+    #           1m                                ; neg-response
+    #         )
     #
-    #     @           IN NS     irma.ns.cloudflare.com.
-    #     @           IN NS     jerome.ns.cloudflare.com.
+    #       @           IN NS     irma.ns.cloudflare.com.
+    #       @           IN NS     jerome.ns.cloudflare.com.
