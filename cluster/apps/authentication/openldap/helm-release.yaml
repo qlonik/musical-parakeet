@@ -1,0 +1,75 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: openldap
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: openldap-stack-ha
+      version: 3.0.2
+      sourceRef:
+        kind: HelmRepository
+        name: openldap
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  values:
+    global:
+      ldapDomain: home.arpa
+    existingSecret: openldap-credentials
+    env:
+      LDAP_ORGANISATION: Home
+    persistence:
+      enabled: false
+
+    replicaCount: 3
+    resources:
+      requests:
+        cpu: "10m"
+        memory: "64Mi"
+        ephemeral-storage: "500Mi"
+      limits:
+        cpu: "100m"
+        memory: "128Mi"
+        ephemeral-storage: "2Gi"
+
+    phpldapadmin:
+      enabled: false
+    ltb-passwd:
+      enabled: false
+
+  valuesFrom:
+    - kind: Secret
+      name: bootstrap-ldif
+      valuesKey: bootstrap-ldif.sops.yaml
+
+  # Fix openldap so ldif files inside `..data` dirs created by k8s are ignored
+  # See: https://github.com/osixia/docker-openldap/issues/638
+  postRenderers:
+    - kustomize:
+        patchesStrategicMerge:
+          - apiVersion: apps/v1
+            kind: StatefulSet
+            metadata:
+              name: openldap
+            spec:
+              template:
+                spec:
+                  containers:
+                    - name: openldap-stack-ha
+                      command:
+                        - sh
+                        - -c
+                        - >-
+                          sed -i
+                          "s/shutil.copytree(IMPORT_SERVICE_DIR, RUN_SERVICE_DIR)/shutil.copytree(IMPORT_SERVICE_DIR, RUN_SERVICE_DIR, ignore=shutil.ignore_patterns('.*'))/g"
+                          /container/tool/run &&
+                          /container/tool/run -l info --copy-service

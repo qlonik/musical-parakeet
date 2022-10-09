@@ -14,4 +14,5 @@ resources:
   - k8s-gateway-charts.yaml
   - metallb-charts.yaml
   - metrics-server-charts.yaml
+  - ./openldap-charts.yaml
   - stakater-charts.yaml
