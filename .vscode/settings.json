@@ -2,6 +2,8 @@
   "ansible.ansibleLint.arguments": "-c .github/linters/.ansible-lint",
   "files.associations": {
     "*.json5": "jsonc",
+    "**/cluster/**/*.sops.toml": "plaintext",
+    "**/cluster/**/.decrypted~*.sops.toml": "toml",
     "**/provision/ansible/**/*.yml": "ansible",
     "**/provision/ansible/**/*.sops.yml": "yaml",
     "**/provision/ansible/**/inventory/**/*.yml": "yaml",
