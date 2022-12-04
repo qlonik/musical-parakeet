@@ -4,8 +4,6 @@ kind: Kustomization
 resources:
   - ./databases
   - ./authentication
-  - default
-  - flux-system
-  - kube-system
-  - networking
-  # - system-upgrade
+  - ./default
+  - ./kube-system
+  # - ./system-upgrade
