@@ -1,0 +1,98 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app vikunja-api
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.1.3
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  dependsOn:
+    - name: authelia
+      namespace: default
+    - name: redis
+      namespace: default
+    - name: postgres
+      namespace: default
+  values:
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
+    image:
+      repository: docker.io/vikunja/api
+      tag: 0.18.1
+    envFrom:
+      - secretRef:
+          name: vikunja-credentials
+    service:
+      main:
+        ports:
+          http:
+            port: 80
+            targetPort: 3456
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-production"
+          external-dns.alpha.kubernetes.io/target: "ipv4.${SECRET_DOMAIN}"
+          external-dns/is-public: "true"
+        hosts:
+          - host: &host "vikunja.${SECRET_DOMAIN}"
+            paths:
+              - path: /api/
+                pathType: Prefix
+              - path: /dav/
+                pathType: Prefix
+              - path: /.well-known/
+                pathType: Prefix
+        tls:
+          - secretName: "vikunja-tls"
+            hosts:
+              - *host
+    securityContext:
+      allowPrivilegeEscalation: true
+    persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: vikunja-config
+        subPath: config.yml
+        mountPath: /etc/vikunja/config.yml
+        readOnly: true
+      files:
+        enabled: true
+        type: pvc
+        mountPath: /app/vikunja/files
+        storageClass: local-path
+        accessMode: ReadWriteOnce
+        size: 5Gi
+        retain: true
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: *app
+    resources:
+      requests:
+        cpu: 5m
+        memory: 10Mi
+      limits:
+        memory: 100Mi

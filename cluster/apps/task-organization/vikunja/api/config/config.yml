@@ -1,0 +1,11 @@
+auth:
+  openid:
+    enabled: true
+    providers:
+      - name: authelia
+        authurl: https://authelia.${SECRET_DOMAIN}
+        clientid: vikunja
+        clientsecret: ${SECRET_VIKUNJA_OAUTH_CLIENT_SECRET}
+
+files:
+  maxsize: 50M
