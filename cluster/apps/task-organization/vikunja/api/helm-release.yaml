@@ -34,7 +34,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: docker.io/vikunja/api
-      tag: 0.19.2
+      tag: 0.20.1
     envFrom:
       - secretRef:
           name: vikunja-credentials
