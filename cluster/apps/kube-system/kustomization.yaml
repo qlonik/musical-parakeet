@@ -12,3 +12,6 @@ resources:
   - ./metallb
   - ./metrics-server
   - ./reloader
+
+  # Flux Kustomization
+  - ./csi-driver-nfs/ks.yaml
