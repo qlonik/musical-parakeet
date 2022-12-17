@@ -2,6 +2,15 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  # Pre kustomizations
   - ./namespace.yaml
+
+  # Kustomizations
+  - ./authelia
   - ./echo-server
+  - ./glauth
   - ./hajimari
+  - ./openldap
+  - ./postgres
+  - ./redis
+  - ./vikunja
