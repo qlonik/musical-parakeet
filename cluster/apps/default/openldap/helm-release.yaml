@@ -46,6 +46,10 @@ spec:
     ltb-passwd:
       enabled: false
 
+    startupProbe:
+      enabled: true
+      initialDelaySeconds: 60
+
   valuesFrom:
     - kind: Secret
       name: bootstrap-ldif
