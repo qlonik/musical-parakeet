@@ -14,3 +14,6 @@ resources:
   - ./postgres
   - ./redis
   - ./vikunja
+
+  # Flux Kustomizations
+  - ./nextcloud/ks.yaml
