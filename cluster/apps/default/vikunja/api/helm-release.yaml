@@ -78,11 +78,8 @@ spec:
       files:
         enabled: true
         type: pvc
+        existingClaim: vikunja-api-files
         mountPath: /app/vikunja/files
-        storageClass: local-path
-        accessMode: ReadWriteOnce
-        size: 5Gi
-        retain: true
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
