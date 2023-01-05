@@ -35,17 +35,26 @@ spec:
       extraEnv:
         - name: APACHE_DISABLE_REWRITE_IP
           value: "1"
-      configs:
-        reverse-proxy.config.php: |-
-          <?php
-          $CONFIG = array (
-            'trusted_proxies' => array(
-              0 => '127.0.0.1',
-              1 => '${POD_CIDR}',
-              2 => '${SVC_CIDR}',
-            ),
-            'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
-          );
+        - name: PASSWORD_SALT
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-credentials
+              key: PASSWORD_SALT
+        - name: SECRET
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-credentials
+              key: SECRET
+        - name: INSTANCE_ID
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-credentials
+              key: INSTANCE_ID
+        - name: UPDATER_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-credentials
+              key: UPDATER_SECRET
     persistence:
       enabled: true
       existingClaim: nextcloud-main

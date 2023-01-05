@@ -9,3 +9,4 @@ resources:
 
 patchesStrategicMerge:
   - ./patches/postgres-init.yaml
+  - ./patches/extra-configs.yaml
