@@ -1,0 +1,17 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+  namespace: default
+spec:
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:14.6
+  primaryUpdateStrategy: unsupervised
+  storage:
+    size: 5Gi
+    storageClass: local-path
+  superuserSecret:
+    name: postgres-superuser
+  monitoring:
+    enablePodMonitor: true

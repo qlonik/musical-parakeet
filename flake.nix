@@ -22,6 +22,8 @@
             kubernetes-helm
             kustomize
             stern
+            # add following when available
+            # weaveworks/tap/gitops
             # ansible
             ansible
             ansible-lint
