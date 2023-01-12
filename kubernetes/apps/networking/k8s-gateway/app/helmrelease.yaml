@@ -1,0 +1,85 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: k8s-gateway
+  namespace: networking
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: k8s-gateway
+      version: 2.0.0
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-gateway
+        namespace: flux-system
+      interval: 15m
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    remediation:
+      retries: 5
+  dependsOn:
+    - name: metallb
+  values:
+    fullnameOverride: k8s-gateway
+    domain: "${SECRET_DOMAIN}"
+    ttl: 1
+    service:
+      type: LoadBalancer
+      port: 53
+      annotations:
+        metallb.universe.tf/loadBalancerIPs: "${METALLB_K8S_GATEWAY_ADDR}"
+      externalTrafficPolicy: Local
+    fallthrough:
+      enabled: true
+      zones:
+        - ${SECRET_DOMAIN}
+    extraZonePlugins:
+      - name: log
+      - name: loop
+      - name: reload
+      - name: loadbalance
+      - name: errors
+      - name: forward
+        parameters: . 1.1.1.1 1.0.0.1
+      - # Serves a /health endpoint on :8080, required for livenessProbe
+        name: health
+        configBlock: |-
+          lameduck 5s
+      - # Serves a /ready endpoint on :8181, required for readinessProbe
+        name: ready
+      - # Serves a /metrics endpoint on :9153, required for serviceMonitor
+        name: prometheus
+        parameters: 0.0.0.0:9153
+    # zoneFiles:
+    #   - filename: ${SECRET_DOMAIN}.db
+    #     domains: ${SECRET_DOMAIN}
+    #     contents: |
+    #       $TTL    60
+    #       $ORIGIN ${SECRET_DOMAIN}.
+    #
+    #       .           IN SOA (
+    #           ; k8s-gateway.kube-system
+    #           ; hostmaster.k8s-gateway.kube-system
+    #           irma.ns.cloudflare.com.
+    #           dns.cloudflare.com.
+    #           1 2h 1h 24h 1h )
+    #
+    #       @           IN SOA (
+    #           ; k8s-gateway.kube-system            ; nameserver
+    #           ; hostmaster.k8s-gateway.kube-system ; admin email
+    #           irma.ns.cloudflare.com.
+    #           dns.cloudflare.com.
+    #           2022100601                        ; serial
+    #           2h                                ; refresh
+    #           30m                               ; retry
+    #           24h                               ; expire
+    #           1m                                ; neg-response
+    #         )
+    #
+    #       @           IN NS     irma.ns.cloudflare.com.
+    #       @           IN NS     jerome.ns.cloudflare.com.
