@@ -1,0 +1,14 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./secret.sops.yaml
+  - ./helmrelease.yaml
+
+secretGenerator:
+  - name: bootstrap-ldif
+    namespace: default
+    files:
+      - ./bootstrap-ldif.sops.yaml
+    options:
+      disableNameSuffixHash: true
