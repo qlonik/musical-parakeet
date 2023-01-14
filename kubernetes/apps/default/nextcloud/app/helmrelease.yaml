@@ -14,13 +14,17 @@ spec:
         kind: HelmRepository
         name: nextcloud
         namespace: flux-system
+  maxHistory: 3
   install:
     createNamespace: true
     remediation:
-      retries: 5
+      retries: 3
   upgrade:
+    cleanupOnFail: true
     remediation:
-      retries: 5
+      retries: 3
+  uninstall:
+    keepHistory: false
   values:
     image:
       repository: docker.io/library/nextcloud
@@ -93,7 +97,6 @@ spec:
       enabled: true
       className: nginx
       annotations:
-        cert-manager.io/cluster-issuer: "letsencrypt-production"
         external-dns.alpha.kubernetes.io/target: "ipv4.${SECRET_DOMAIN}"
         external-dns.home.arpa/enabled: "true"
         nginx.ingress.kubernetes.io/proxy-body-size: 4G
@@ -148,4 +151,3 @@ spec:
       tls:
         - hosts:
             - *host
-          secretName: "nextcloud-tls"
