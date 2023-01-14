@@ -35,6 +35,15 @@ spec:
       extraEnv:
         - name: APACHE_DISABLE_REWRITE_IP
           value: "1"
+        - name: REDIS_HOST
+          value: redis-lb.default.svc.cluster.local
+        - name: REDIS_HOST_PORT
+          value: "6379"
+        - name: REDIS_HOST_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-credentials
+              key: redis-password
         - name: PASSWORD_SALT
           valueFrom:
             secretKeyRef:
@@ -74,7 +83,7 @@ spec:
         usernameKey: POSTGRES_USERNAME
         passwordKey: POSTGRES_PASSWORD
     redis:
-      enabled: true
+      enabled: false
     cronjob:
       enabled: false
     startupProbe:
