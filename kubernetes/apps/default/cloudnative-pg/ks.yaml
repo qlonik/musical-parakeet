@@ -31,9 +31,7 @@ metadata:
 spec:
   dependsOn:
     - name: cluster-apps-cloudnative-pg
-    # - name: cluster-apps-kyverno
-    # - name: cluster-apps-minio
-    # - name: cluster-apps-external-secrets-stores
+    - name: cluster-apps-local-path-provisioner
   path: ./kubernetes/apps/default/cloudnative-pg/cluster
   prune: true
   sourceRef:

@@ -7,6 +7,10 @@ metadata:
   labels:
     substitution.flux.home.arpa/enabled: "true"
 spec:
+  dependsOn:
+    - name: cluster-apps-cloudnative-pg-cluster
+    - name: cluster-apps-openldap
+    - name: cluster-apps-redis
   path: ./kubernetes/apps/default/authelia/app
   prune: true
   sourceRef:

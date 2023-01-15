@@ -25,13 +25,6 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
-  dependsOn:
-    - name: openldap
-      namespace: default
-    - name: redis
-      namespace: default
-    - name: postgres
-      namespace: default
   values:
     controller:
       replicas: 3
