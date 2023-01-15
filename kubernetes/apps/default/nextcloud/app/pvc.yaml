@@ -37,7 +37,7 @@ metadata:
   namespace: default
 spec:
   storageClassName: nfs-slow
-  accessModes: ["ReadWriteOnce"]
+  accessModes: ["ReadWriteMany"]
   resources:
     requests:
       storage: 100Gi
