@@ -5,18 +5,14 @@ metadata:
   name: vikunja-api-files
 spec:
   storageClassName: nfs-slow
-  accessModes:
-    - ReadWriteMany
+  accessModes: ["ReadWriteMany"]
+  persistentVolumeReclaimPolicy: Retain
+  capacity:
+    storage: 1T
   nfs:
     server: "nova.${SECRET_PRIVATE_DOMAIN}"
     path: "/appdata/vikunja/files"
-  mountOptions:
-    - nfsvers=4.2
-    - nconnect=8
-    - hard
-    - noatime
-  capacity:
-    storage: 1T
+  mountOptions: ["nfsvers=4.2", "nconnect=8", "hard", "noatime"]
   claimRef:
     name: vikunja-api-files
     namespace: default
@@ -28,8 +24,7 @@ metadata:
   namespace: default
 spec:
   storageClassName: nfs-slow
-  accessModes:
-    - ReadWriteMany
+  accessModes: ["ReadWriteMany"]
   resources:
     requests:
       storage: 100Gi

@@ -18,18 +18,14 @@ metadata:
   name: nextcloud-data
 spec:
   storageClassName: nfs-slow
-  accessModes:
-    - ReadWriteMany
+  accessModes: ["ReadWriteMany"]
+  persistentVolumeReclaimPolicy: Retain
+  capacity:
+    storage: 1T
   nfs:
     server: "nova.${SECRET_PRIVATE_DOMAIN}"
     path: "/appdata/nextcloud"
-  mountOptions:
-    - nfsvers=4.2
-    - nconnect=8
-    - hard
-    - noatime
-  capacity:
-    storage: 1T
+  mountOptions: ["nfsvers=4.2", "nconnect=8", "hard", "noatime"]
   claimRef:
     name: nextcloud-data
     namespace: default
@@ -41,8 +37,7 @@ metadata:
   namespace: default
 spec:
   storageClassName: nfs-slow
-  accessModes:
-    - ReadWriteOnce
+  accessModes: ["ReadWriteOnce"]
   resources:
     requests:
       storage: 100Gi
