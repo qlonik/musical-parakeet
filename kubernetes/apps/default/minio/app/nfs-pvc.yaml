@@ -1,0 +1,31 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: minio-nfs
+spec:
+  storageClassName: minio-nfs
+  accessModes: ["ReadWriteMany"]
+  persistentVolumeReclaimPolicy: Retain
+  capacity:
+    storage: 1Mi
+  nfs:
+    server: "nova.${SECRET_PRIVATE_DOMAIN}"
+    path: /appdata/minio
+  mountOptions: ["nfsvers=4.2", "nconnect=8", "hard", "noatime"]
+  claimRef:
+    name: minio-nfs
+    namespace: default
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-nfs
+  namespace: default
+spec:
+  storageClassName: minio-nfs
+  accessModes: ["ReadWriteMany"]
+  resources:
+    requests:
+      storage: 1Mi
+  volumeName: minio-nfs
