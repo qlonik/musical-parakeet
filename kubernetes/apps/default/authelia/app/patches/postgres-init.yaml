@@ -15,12 +15,12 @@ spec:
           - name: POSTGRES_SUPER_USER
             valueFrom:
               secretKeyRef:
-                name: postgres-superuser
+                name: postgres-secret
                 key: username
           - name: POSTGRES_SUPER_PASS
             valueFrom:
               secretKeyRef:
-                name: postgres-superuser
+                name: postgres-secret
                 key: password
           - name: POSTGRES_USER
             valueFrom:

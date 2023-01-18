@@ -12,6 +12,34 @@ spec:
     size: 5Gi
     storageClass: local-path
   superuserSecret:
-    name: postgres-superuser
+    name: postgres-secret
   monitoring:
     enablePodMonitor: true
+
+  externalClusters:
+    - name: &active-cluster postgres-v1
+      barmanObjectStore: &barman-object-store
+        wal:
+          compression: bzip2
+          maxParallel: 8
+        destinationPath: s3://postgres-backup/
+        endpointURL: http://minio.default.svc.cluster.local:9000
+        s3Credentials:
+          accessKeyId:
+            name: postgres-secret
+            key: s3-access-key-id
+          secretAccessKey:
+            name: postgres-secret
+            key: s3-secret-access-key
+  bootstrap:
+    initdb:
+      owner: app
+      database: app
+    # recovery:
+    #   source: *active-cluster
+
+  backup:
+    retentionPolicy: 30d
+    barmanObjectStore:
+      <<: *barman-object-store
+      serverName: postgres-v2
