@@ -38,6 +38,7 @@
             sops
             envsubst
             go-task
+            minio-client
             pre-commit
             nodePackages.prettier
             tflint
