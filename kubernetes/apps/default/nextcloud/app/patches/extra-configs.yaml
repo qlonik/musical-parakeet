@@ -36,7 +36,7 @@ spec:
           $CONFIG = array (
             'allow_user_to_change_display_name' => false,
             'lost_password_link' => 'disabled',
-            'oidc_login_provider_url' => 'https://authelia.${SECRET_DOMAIN}',
+            'oidc_login_provider_url' => 'https://auth.${SECRET_DOMAIN}',
             'oidc_login_client_id' => 'nextcloud',
             'oidc_login_client_secret' => '${SECRET_NEXTCLOUD_OAUTH_CLIENT_SECRET}',
             'oidc_login_button_text' => 'Log in with Authelia',

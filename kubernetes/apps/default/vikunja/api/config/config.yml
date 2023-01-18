@@ -3,7 +3,7 @@ auth:
     enabled: true
     providers:
       - name: authelia
-        authurl: https://authelia.${SECRET_DOMAIN}
+        authurl: https://auth.${SECRET_DOMAIN}
         clientid: vikunja
         clientsecret: ${SECRET_VIKUNJA_OAUTH_CLIENT_SECRET}
 

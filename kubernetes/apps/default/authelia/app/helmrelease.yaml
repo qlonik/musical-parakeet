@@ -62,6 +62,7 @@ spec:
     ingress:
       main:
         enabled: true
+        primary: true
         ingressClassName: "nginx"
         annotations:
           cert-manager.io/cluster-issuer: "letsencrypt-production"
@@ -73,7 +74,7 @@ spec:
             add_header X-Frame-Options "SAMEORIGIN";
             add_header X-XSS-Protection "1; mode=block";
         hosts:
-          - host: &host "authelia.${SECRET_DOMAIN}"
+          - host: &host "auth.${SECRET_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
@@ -81,6 +82,27 @@ spec:
           - hosts:
               - *host
             secretName: "authelia-tls"
+      outdated:
+        # Deprecated. Delete once other resources are migrated to main ingress
+        enabled: true
+        primary: false
+        ingressClassName: "nginx"
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "ipv4.${SECRET_DOMAIN}"
+          external-dns.home.arpa/enabled: "true"
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            add_header Cache-Control "no-store";
+            add_header Pragma "no-cache";
+            add_header X-Frame-Options "SAMEORIGIN";
+            add_header X-XSS-Protection "1; mode=block";
+        hosts:
+          - host: &old-host "authelia.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *old-host
     podSecurityContext:
       runAsUser: 568
       runAsGroup: 568
