@@ -8,6 +8,7 @@ resources:
   - ./echo-server/ks.yaml
   - ./glauth/ks.yaml
   - ./hajimari/ks.yaml
+  - ./maddy/ks.yaml
   - ./minio/ks.yaml
   - ./nextcloud/ks.yaml
   - ./openldap/ks.yaml
