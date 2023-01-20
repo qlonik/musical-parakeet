@@ -26,7 +26,7 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    replicas: 3
+    replicas: 1
     rbac:
       pspEnabled: false
     testFramework:
@@ -145,7 +145,7 @@ spec:
             - *host
     imageRenderer:
       enabled: true
-      replicas: 3
+      replicas: 1
     persistence:
       enabled: false
     affinity:

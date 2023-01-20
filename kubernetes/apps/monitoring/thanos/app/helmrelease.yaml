@@ -35,7 +35,7 @@ spec:
       enabled: false
     query:
       enabled: true
-      replicaCount: 3
+      replicaCount: 1
       podAntiAffinityPreset: hard
       # must match with kube-prometheus-stack value `.prometheus.prometheusSpec.replicaExternalLabelName`
       replicaLabel: ["__replica__"]
@@ -54,7 +54,7 @@ spec:
               - *host
     bucketweb:
       enabled: true
-      replicaCount: 3
+      replicaCount: 1
       podAntiAffinityPreset: hard
       ingress:
         enabled: true
@@ -88,7 +88,7 @@ spec:
         size: 8Gi
     storegateway:
       enabled: true
-      replicaCount: 3
+      replicaCount: 1
       podAntiAffinityPreset: hard
       ingress:
         enabled: true
@@ -106,7 +106,7 @@ spec:
         size: 8Gi
     ruler:
       enabled: true
-      replicaCount: 3
+      replicaCount: 1
       podAntiAffinityPreset: hard
       dnsDiscovery:
         enabled: true
