@@ -7,3 +7,4 @@ resources:
   - ./kubernetes-dashboard/ks.yaml
   - ./loki/ks.yaml
   - ./postgres-secret/ks.yaml
+  - ./thanos/ks.yaml
