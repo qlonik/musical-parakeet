@@ -9,6 +9,7 @@ metadata:
 spec:
   dependsOn:
     - name: cluster-apps-cloudnative-pg-cluster
+    - name: cluster-apps-postgres-secret-monitoring-copy
   path: ./kubernetes/apps/monitoring/grafana/app
   prune: true
   sourceRef:

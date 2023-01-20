@@ -5,3 +5,4 @@ resources:
   - ./namespace.yaml
   - ./grafana/ks.yaml
   - ./kubernetes-dashboard/ks.yaml
+  - ./postgres-secret/ks.yaml
