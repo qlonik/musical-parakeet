@@ -37,14 +37,12 @@ spec:
       enabled: true
       className: nginx
       annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-staging
         hajimari.io/icon: mdi:kubernetes
       hosts:
         - &host "kubernetes.${SECRET_DOMAIN}"
       tls:
         - hosts:
             - *host
-          secretName: kubernetes-dashboard-tls
     metricsScraper:
       enabled: true
     serviceMonitor:
