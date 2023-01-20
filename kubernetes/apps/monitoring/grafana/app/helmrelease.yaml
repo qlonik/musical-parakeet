@@ -59,7 +59,7 @@ spec:
         org_id: 1
       auth.basic:
         enabled: false
-        # disable_login_form: false
+        disable_login_form: true
       auth.anonymous:
         enabled: true
         org_name: HomeOps
