@@ -1,0 +1,99 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: nzbget
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.2.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      type: statefulset
+    image:
+      repository: ghcr.io/linuxserver/nzbget
+      tag: v21.1-ls138@sha256:ed58a6471591126adee01e704d35264979640bede1fca7ffa13a21d6643c5a18
+    env:
+      TZ: ${TIMEZONE}
+      PUID: 568
+      PGID: 568
+    service:
+      main:
+        ports:
+          http:
+            port: 6789
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: nginx
+        annotations:
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            proxy_set_header Accept-Encoding "";
+            # sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_DOMAIN}/css/base/nzbget/nord.css"></head>';
+            # sub_filter_once on;
+          hajimari.io/icon: mdi:download
+        hosts:
+          - host: &host "nova-staging.${SECRET_DOMAIN}"
+            paths:
+              - path: "/{{ .Release.Name }}"
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    # disable for linuxserver.io image
+    # podSecurityContext:
+    #   runAsUser: 568
+    #   runAsGroup: 568
+    #   fsGroup: 568
+    #   fsGroupChangePolicy: "OnRootMismatch"
+    #   supplementalGroups: [10000]
+    volumeClaimTemplates:
+      - name: config
+        mountPath: /config
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        storageClass: local-path
+    persistence:
+      downloads:
+        enabled: true
+        type: nfs
+        server: "nova.${SECRET_PRIVATE_DOMAIN}"
+        path: /downloads/nzbget
+        mountPath: /downloads/nzbget
+      incomplete:
+        enabled: true
+        type: emptyDir
+        mountPath: /config/intermediate
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: node-role.kubernetes.io/control-plane
+                  operator: NotIn
+                  values:
+                    - "true"
+    resources:
+      requests:
+        cpu: 10m
+        memory: 250Mi
+      limits:
+        memory: 2Gi

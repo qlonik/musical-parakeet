@@ -11,6 +11,7 @@ resources:
   - ./maddy/ks.yaml
   - ./minio/ks.yaml
   - ./nextcloud/ks.yaml
+  - ./nzbget/ks.yaml
   - ./openldap/ks.yaml
   - ./qbittorrent/ks.yaml
   - ./redis/ks.yaml
