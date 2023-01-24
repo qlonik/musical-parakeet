@@ -4,5 +4,6 @@ kind: Kustomization
 namespace: default
 resources:
   - ./secret.sops.yaml
+  - ./restic-secret.sops.yaml
   - ./helmrelease.yaml
-  # - ./volsync.yaml
+  - ./volsync.yaml

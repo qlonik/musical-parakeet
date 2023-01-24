@@ -80,8 +80,6 @@ spec:
         accessMode: ReadWriteOnce
         size: 1Gi
         storageClass: local-path
-        # labels:
-        #   snapshot.home.arpa/enabled: "true"
     persistence:
       downloads:
         enabled: true
