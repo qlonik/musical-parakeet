@@ -56,6 +56,7 @@ spec:
         enabled: true
         ingressClassName: nginx
         annotations:
+          nginx.ingress.kubernetes.io/rewrite-target: /$2
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_hide_header "x-webkit-csp";
             proxy_hide_header "content-security-policy";
@@ -65,9 +66,9 @@ spec:
             # sub_filter_once on;
           hajimari.io/icon: mdi:download
         hosts:
-          - host: &host "qb.${SECRET_DOMAIN}"
+          - host: &host "nova-staging.${SECRET_DOMAIN}"
             paths:
-              - path: /
+              - path: "/{{ .Release.Name }}(/|$)(.*)"
                 pathType: Prefix
         tls:
           - hosts:
