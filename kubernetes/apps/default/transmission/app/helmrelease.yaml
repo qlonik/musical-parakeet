@@ -44,6 +44,7 @@ spec:
         172.24.*.*,172.25.*.*,172.26.*.*,172.27.*.*,172.28.*.*,172.29.*.*,172.30.*.*,172.31.*.*\
         "
       HOST_WHITELIST: "\
+        nova.${SECRET_DOMAIN},\
         nova-staging.${SECRET_DOMAIN},\
         {{ .Release.Name }},\
         {{ .Release.Name }}.{{ .Release.Namespace }},\
@@ -89,13 +90,18 @@ spec:
             # sub_filter_once on;
           hajimari.io/icon: mdi:download
         hosts:
-          - host: &host "nova-staging.${SECRET_DOMAIN}"
+          - host: &host1 "nova-staging.${SECRET_DOMAIN}"
+            paths:
+              - path: "/{{ .Release.Name }}"
+                pathType: Prefix
+          - host: &host2 "nova.${SECRET_DOMAIN}"
             paths:
               - path: "/{{ .Release.Name }}"
                 pathType: Prefix
         tls:
           - hosts:
-              - *host
+              - *host1
+              - *host2
     # disable for linuxserver.io image
     # podSecurityContext:
     #   runAsUser: 568

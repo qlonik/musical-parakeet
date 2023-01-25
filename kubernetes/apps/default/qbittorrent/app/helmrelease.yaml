@@ -67,13 +67,18 @@ spec:
           hajimari.io/icon: mdi:download
           hajimari.io/url: "https://nova-staging.${SECRET_DOMAIN}/qbittorrent"
         hosts:
-          - host: &host "nova-staging.${SECRET_DOMAIN}"
+          - host: &host1 "nova-staging.${SECRET_DOMAIN}"
+            paths:
+              - path: "/{{ .Release.Name }}(/|$)(.*)"
+                pathType: Prefix
+          - host: &host2 "nova.${SECRET_DOMAIN}"
             paths:
               - path: "/{{ .Release.Name }}(/|$)(.*)"
                 pathType: Prefix
         tls:
           - hosts:
-              - *host
+              - *host1
+              - *host2
     podSecurityContext:
       runAsUser: 568
       runAsGroup: 568
