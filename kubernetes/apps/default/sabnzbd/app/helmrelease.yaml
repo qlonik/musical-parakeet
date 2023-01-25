@@ -40,8 +40,7 @@ spec:
         sabnzbd.default.svc,
         sabnzbd.default.svc.cluster,
         sabnzbd.default.svc.cluster.local,
-        sabnzbd.${SECRET_DOMAIN},
-        nova.${SECRET_DOMAIN}
+        nova-staging.${SECRET_DOMAIN}
     envFrom:
       - secretRef:
           name: sabnzbd-secret
@@ -61,9 +60,9 @@ spec:
             # sub_filter_once on;
           hajimari.io/icon: mdi:download
         hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - host: &host "nova-staging.${SECRET_DOMAIN}"
             paths:
-              - path: /
+              - path: "/{{ .Release.Name }}"
                 pathType: Prefix
         tls:
           - hosts:
