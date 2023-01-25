@@ -89,8 +89,8 @@ spec:
         enabled: true
         type: nfs
         server: nova.${SECRET_PRIVATE_DOMAIN}
-        path: /downloads
-        mountPath: /downloads
+        path: /downloads/qbittorrent
+        mountPath: /downloads/qbittorrent
       incomplete:
         enabled: true
         type: emptyDir

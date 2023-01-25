@@ -85,8 +85,8 @@ spec:
         enabled: true
         type: nfs
         server: "nova.${SECRET_PRIVATE_DOMAIN}"
-        path: /downloads
-        mountPath: /downloads
+        path: /downloads/sabnzbd
+        mountPath: /downloads/sabnzbd
       incomplete:
         enabled: true
         type: emptyDir
