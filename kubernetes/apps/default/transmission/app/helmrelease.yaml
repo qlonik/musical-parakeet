@@ -1,0 +1,136 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: transmission
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.2.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      type: statefulset
+    image:
+      repository: ghcr.io/linuxserver/transmission
+      tag: 3.00-r8-ls149@sha256:1c11d71fe4954ab5079b491d1b9b0d2d967b11e0f95db111e54f26d8806c0f6b
+    env:
+      TZ: ${TIMEZONE}
+      PUID: 568
+      PGID: 568
+      PEERPORT: &port-bt 51413
+      TRANSMISSION_WEB_HOME: /flood-for-transmission/
+      WHITELIST: "\
+        10.*.*.*,\
+        192.168.*.*,\
+        172.16.*.*,172.17.*.*,172.18.*.*,172.19.*.*,172.20.*.*,172.21.*.*,172.22.*.*,172.23.*.*,\
+        172.24.*.*,172.25.*.*,172.26.*.*,172.27.*.*,172.28.*.*,172.29.*.*,172.30.*.*,172.31.*.*\
+        "
+      HOST_WHITELIST: "\
+        nova-staging.${SECRET_DOMAIN},\
+        {{ .Release.Name }},\
+        {{ .Release.Name }}.{{ .Release.Namespace }},\
+        {{ .Release.Name }}.{{ .Release.Namespace }}.svc,\
+        {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster,\
+        {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local\
+        "
+    envFrom:
+      - secretRef:
+          name: transmission-secret
+    service:
+      main:
+        ports:
+          http:
+            port: 9091
+      bittorrent:
+        enabled: true
+        type: LoadBalancer
+        externalIPs: ["${METALLB_TRANSMISSION_ADDR}"]
+        externalTrafficPolicy: Local
+        ports:
+          bittorrent-tcp:
+            enabled: true
+            port: *port-bt
+            protocol: TCP
+            targetPort: *port-bt
+          bittorrent-udp:
+            enabled: true
+            port: *port-bt
+            protocol: UDP
+            targetPort: *port-bt
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: nginx
+        annotations:
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            proxy_hide_header "x-webkit-csp";
+            proxy_hide_header "content-security-policy";
+            proxy_hide_header "X-Frame-Options";
+            proxy_set_header Accept-Encoding "";
+            # sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_DOMAIN}/css/base/transmission/nord.css"></head>';
+            # sub_filter_once on;
+          hajimari.io/icon: mdi:download
+        hosts:
+          - host: &host "nova-staging.${SECRET_DOMAIN}"
+            paths:
+              - path: "/{{ .Release.Name }}"
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    # disable for linuxserver.io image
+    # podSecurityContext:
+    #   runAsUser: 568
+    #   runAsGroup: 568
+    #   fsGroup: 568
+    #   fsGroupChangePolicy: "OnRootMismatch"
+    #   supplementalGroups: [10000]
+    volumeClaimTemplates:
+      - name: config
+        mountPath: /config
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        storageClass: local-path
+    persistence:
+      downloads:
+        enabled: true
+        type: nfs
+        server: nova.${SECRET_PRIVATE_DOMAIN}
+        path: /downloads/transmission
+        mountPath: /downloads/transmission
+      incomplete:
+        enabled: true
+        type: emptyDir
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: node-role.kubernetes.io/control-plane
+                  operator: NotIn
+                  values:
+                    - "true"
+    resources:
+      requests:
+        cpu: 10m
+        memory: 250Mi
+      limits:
+        memory: 2Gi

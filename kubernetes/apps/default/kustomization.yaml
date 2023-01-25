@@ -16,4 +16,5 @@ resources:
   - ./qbittorrent/ks.yaml
   - ./redis/ks.yaml
   - ./sabnzbd/ks.yaml
+  - ./transmission/ks.yaml
   - ./vikunja/ks.yaml
