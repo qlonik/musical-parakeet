@@ -10,6 +10,7 @@ resources:
   - ./glauth/ks.yaml
   - ./hajimari/ks.yaml
   - ./jellyseerr/ks.yaml
+  - ./lidarr/ks.yaml
   - ./maddy/ks.yaml
   - ./minio/ks.yaml
   - ./nextcloud/ks.yaml
