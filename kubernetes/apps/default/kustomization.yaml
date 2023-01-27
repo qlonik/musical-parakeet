@@ -5,6 +5,7 @@ resources:
   - ./namespace.yaml
   - ./authelia/ks.yaml
   - ./bazarr/ks.yaml
+  - ./calibre/ks.yaml
   - ./cloudnative-pg/ks.yaml
   - ./echo-server/ks.yaml
   - ./glauth/ks.yaml

@@ -1,0 +1,139 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: calibre
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.2.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      type: statefulset
+    image:
+      repository: ghcr.io/linuxserver/calibre
+      tag: v6.11.0-ls200@sha256:a57e4b02b7c33ad27f5af7d2356b5f95c4edcee28d3345760111321d4f05e171
+    env:
+      TZ: ${TIMEZONE}
+      PUID: 568
+      PGID: 568
+    service:
+      main:
+        ports:
+          http:
+            port: 8080
+      content-server:
+        enabled: true
+        primary: false
+        type: LoadBalancer
+        externalIPs: ["${METALLB_CALIBRE_SERVER_ADDR}"]
+        externalTrafficPolicy: Local
+        ports:
+          content-server:
+            port: 8081
+            primary: false
+    ingress:
+      main:
+        enabled: true
+        primary: true
+        ingressClassName: nginx
+        annotations:
+          auth.home.arpa/enabled: "true"
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            rewrite ^/calibre$ /calibre/ permanent;
+            rewrite ^/calibre(/|$)(.*) /$2 break;
+            proxy_set_header Accept-Encoding "";
+            # sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_DOMAIN}/css/base/calibre/nord.css"></head>';
+            # sub_filter_once on;
+          hajimari.io/icon: mdi:download
+        hosts:
+          - host: &host1 "nova-staging.${SECRET_DOMAIN}"
+            paths:
+              - path: "/{{ .Release.Name }}"
+                pathType: Prefix
+          - host: &host2 "nova.${SECRET_DOMAIN}"
+            paths:
+              - path: "/{{ .Release.Name }}"
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host1
+              - *host2
+      content-server:
+        enabled: true
+        primary: false
+        ingressClassName: nginx
+        annotations:
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            rewrite ^/calibre/opds$ /calibre/opds/ permanent;
+            proxy_set_header Accept-Encoding "";
+          hajimari.io/icon: mdi:download
+        hosts:
+          - host: *host1
+            paths:
+              - path: "/{{ .Release.Name }}/opds"
+                pathType: Prefix
+                service:
+                  name: calibre-content-server
+                  port: 8081
+          - host: *host2
+            paths:
+              - path: "/{{ .Release.Name }}/opds"
+                pathType: Prefix
+                service:
+                  name: calibre-content-server
+                  port: 8081
+        tls:
+          - hosts:
+              - *host1
+              - *host2
+    # disable for linuxserver.io image
+    podSecurityContext:
+      # runAsUser: 568
+      # runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: "OnRootMismatch"
+      supplementalGroups: [10000]
+    volumeClaimTemplates:
+      - name: config
+        mountPath: /config
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        storageClass: local-path
+    persistence:
+      books:
+        enabled: true
+        type: nfs
+        server: nova.${SECRET_PRIVATE_DOMAIN}
+        path: /books
+        mountPath: /media/books
+      books-to-import:
+        enabled: true
+        type: nfs
+        server: nova.${SECRET_PRIVATE_DOMAIN}
+        path: /downloads/books-to-import
+        mountPath: /media/downloads/books-to-import
+    resources:
+      requests:
+        cpu: 10m
+        memory: 250Mi
+      limits:
+        memory: 2Gi
