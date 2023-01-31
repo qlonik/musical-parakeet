@@ -15,6 +15,7 @@ spec:
         name: openldap
         namespace: flux-system
   maxHistory: 3
+  timeout: 15m
   install:
     createNamespace: true
     remediation:
