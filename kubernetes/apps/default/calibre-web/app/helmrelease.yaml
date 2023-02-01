@@ -1,0 +1,128 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: calibre-web
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.2.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      type: statefulset
+    image:
+      repository: ghcr.io/linuxserver/calibre-web
+      tag: 0.6.19-ls194@sha256:36e018ed54677d297ac87091d784bab893261077d9a85bcf5970fee18550577e
+    env:
+      TZ: ${TIMEZONE}
+      PUID: 568
+      PGID: 568
+      # DOCKER_MODS: linuxserver/calibre-web:calibre-v6.0.0-ls1
+      DOCKER_MODS: linuxserver/calibre-web:calibre
+    service:
+      main:
+        ports:
+          http:
+            port: 8083
+    ingress:
+      main:
+        enabled: true
+        primary: true
+        ingressClassName: nginx
+        annotations:
+          auth.home.arpa/enabled: "true"
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            rewrite ^/books$ /books/ permanent;
+            rewrite ^/books(/|$)(.*) /$2 break;
+            proxy_set_header X-Script-Name "/books";
+            proxy_set_header Accept-Encoding "";
+            # sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_DOMAIN}/css/base/calibre-web/nord.css"></head>';
+            # sub_filter_once on;
+          hajimari.io/icon: mdi:download
+        hosts:
+          - host: &host1 "nova-staging.${SECRET_DOMAIN}"
+            paths:
+              - path: "/books"
+                pathType: Prefix
+          - host: &host2 "nova.${SECRET_DOMAIN}"
+            paths:
+              - path: "/books"
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host1
+              - *host2
+      opds:
+        enabled: true
+        primary: false
+        ingressClassName: nginx
+        annotations:
+          auth.home.arpa/enabled: "true"
+          auth.home.arpa/type: "basic"
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            rewrite ^/books(/|$)(.*) /$2 break;
+            proxy_set_header X-Script-Name "/books";
+            proxy_set_header Accept-Encoding "";
+          hajimari.io/icon: mdi:download
+        hosts:
+          - host: *host1
+            paths:
+              - path: "/books/opds"
+                pathType: Prefix
+          - host: *host2
+            paths:
+              - path: "/books/opds"
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host1
+              - *host2
+    # disable for linuxserver.io image
+    podSecurityContext:
+      # runAsUser: 568
+      # runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: "OnRootMismatch"
+      supplementalGroups: [10000]
+    volumeClaimTemplates:
+      - name: config
+        mountPath: /config
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        storageClass: local-path
+    persistence:
+      books:
+        enabled: true
+        type: nfs
+        server: nova.${SECRET_PRIVATE_DOMAIN}
+        path: /books/ebooks
+        readOnly: true
+        mountPath: /books/ebooks
+    probes:
+      startup:
+        spec:
+          initialDelaySeconds: 180
+    resources:
+      requests:
+        cpu: 10m
+        memory: 250Mi
+      limits:
+        memory: 2Gi
