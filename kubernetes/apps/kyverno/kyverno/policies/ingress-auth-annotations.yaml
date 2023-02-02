@@ -21,10 +21,16 @@ spec:
               kinds: ["Ingress"]
               annotations:
                 auth.home.arpa/enabled: "true"
+      exclude:
+        any:
+          - resources:
+              kinds: ["Ingress"]
+              annotations:
+                auth.home.arpa/type: "basic"
       mutate:
         patchStrategicMerge:
           metadata:
-            annotations:
+            annotations: &auth-keys
               +(nginx.ingress.kubernetes.io/auth-method): GET
               +(nginx.ingress.kubernetes.io/auth-url): |-
                 http://authelia.default.svc.cluster.local/api/verify
@@ -34,3 +40,20 @@ spec:
                 Remote-User,Remote-Name,Remote-Groups,Remote-Email
               +(nginx.ingress.kubernetes.io/auth-snippet): |
                 proxy_set_header X-Forwarded-Method $request_method;
+
+    - name: basic-auth
+      match:
+        any:
+          - resources:
+              kinds: ["Ingress"]
+              annotations:
+                auth.home.arpa/enabled: "true"
+                auth.home.arpa/type: "basic"
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            annotations:
+              <<: *auth-keys
+              +(nginx.ingress.kubernetes.io/auth-url): |-
+                http://authelia.default.svc.cluster.local/api/verify?auth=basic
+              +(nginx.ingress.kubernetes.io/auth-signin): ""
