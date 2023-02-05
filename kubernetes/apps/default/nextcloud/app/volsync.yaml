@@ -1,0 +1,19 @@
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: nextcloud
+  namespace: default
+spec:
+  sourcePVC: nextcloud-main
+  trigger:
+    schedule: "0 0 * * *"
+  restic:
+    copyMethod: Direct
+    pruneIntervalDays: 10
+    repository: nextcloud-restic-secret
+    cacheCapacity: 2Gi
+    storageClassName: nfs-slow
+    retain:
+      daily: 10
+      within: 3d

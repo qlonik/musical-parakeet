@@ -5,9 +5,9 @@ metadata:
   name: nextcloud-main
   namespace: default
 spec:
-  storageClassName: local-path
+  storageClassName: nfs-fast
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 8Gi
