@@ -28,7 +28,7 @@ spec:
   values:
     image:
       repository: docker.io/library/nextcloud
-      tag: 24.0.8-apache@sha256:c50a0505935f36ce2ef96b668b4ea95045713b40823e6b640f2116feb2de8656
+      tag: 24.0.9-apache@sha256:008438442db451bf46ca7ace57b10be5b9b2bfa1d15037fd97e9eaf8350f9144
     nextcloud:
       host: &host "cloud.${SECRET_DOMAIN}"
       existingSecret:
