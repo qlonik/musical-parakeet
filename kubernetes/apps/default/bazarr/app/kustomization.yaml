@@ -6,5 +6,3 @@ resources:
   - ./restic-secret.sops.yaml
   - ./helmrelease.yaml
   - ./volsync.yaml
-patchesStrategicMerge:
-  - ./patches/subcleaner.yaml
