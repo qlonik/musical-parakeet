@@ -70,9 +70,9 @@ spec:
     volumeClaimTemplates:
       - name: config
         mountPath: /config
-        accessMode: ReadWriteOnce
+        accessMode: ReadWriteMany
         size: 1Gi
-        storageClass: local-path
+        storageClass: nfs-fast
     persistence:
       media-movies:
         enabled: true

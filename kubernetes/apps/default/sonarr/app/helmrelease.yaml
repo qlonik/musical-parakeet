@@ -76,9 +76,9 @@ spec:
     volumeClaimTemplates:
       - name: config
         mountPath: /config
-        accessMode: ReadWriteOnce
+        accessMode: ReadWriteMany
         size: 5Gi
-        storageClass: local-path
+        storageClass: nfs-fast
     persistence:
       series:
         enabled: true

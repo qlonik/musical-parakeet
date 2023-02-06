@@ -76,7 +76,7 @@ spec:
         mountPath: /config
         accessMode: ReadWriteMany
         size: 1Gi
-        storageClass: nfs-slow
+        storageClass: nfs-fast
     persistence:
       books:
         enabled: true

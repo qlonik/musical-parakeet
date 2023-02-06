@@ -13,7 +13,7 @@ spec:
     pruneIntervalDays: 10
     repository: nextcloud-restic-secret
     cacheCapacity: 2Gi
-    storageClassName: nfs-slow
+    storageClassName: nfs-fast
     retain:
       daily: 10
       within: 3d
