@@ -389,7 +389,7 @@ task cluster:resources
 
 ### 🌐 DNS
 
-📍 The [external-dns](https://github.com/kubernetes-sigs/external-dns) application created in the `kube-system` namespace will handle creating public DNS records. By default, `echo-server` is the only public domain exposed on your Cloudflare domain. In order to make additional applications public you must set an ingress annotation like in the `HelmRelease` for `echo-server`. You do not need to use Terraform to create additional DNS records unless you need a record outside the purposes of your Kubernetes cluster (e.g. setting up MX records).
+📍 The [external-dns](https://github.com/kubernetes-sigs/external-dns) application created in the `networking` namespace will handle creating public DNS records. By default, `echo-server` and the `flux-webhook` are the only public domain exposed on your Cloudflare domain. In order to make additional applications public you must set an ingress annotation (`external-dns.alpha.kubernetes.io/target`) like done in the `HelmRelease` for `echo-server`. You do not need to use Terraform to create additional DNS records unless you need a record outside the purposes of your Kubernetes cluster (e.g. setting up MX records).
 
 [k8s_gateway](https://github.com/ori-edge/k8s_gateway) is deployed on the IP choosen for `${BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR}`. Inorder to test DNS you can point your clients DNS to the `${BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR}` IP address and load `https://hajimari.${BOOTSTRAP_CLOUDFLARE_DOMAIN}` in your browser.
 
@@ -430,7 +430,7 @@ Flux is pull-based by design meaning it will periodically check your git reposit
 2. Webhook secret - Your webhook secret can be found by decrypting the `secret.sops.yaml` using the following command:
 
     ```sh
-    sops -d ./kubernetes/flux/config/webhooks/github/secret.sops.yaml | yq .stringData.token
+    sops -d ./kubernetes/apps/flux-system/addons/webhooks/github/secret.sops.yaml | yq .stringData.token
     ```
 
     **Note:** Don't forget to update the `BOOTSTRAP_FLUX_GITHUB_WEBHOOK_SECRET` variable in your `.config.env` file so it matches the generated secret if applicable
@@ -533,10 +533,27 @@ kubectl -n monitoring get secret kubernetes-dashboard -o jsonpath='{.data.token}
 
 You should be able to access the dashboard at `https://kubernetes.${SECRET_DOMAIN}`
 
+## 🐛 Debugging
+
+Below is a general guide on trying to debug an issue with an resource or application. For example, if a workload/resource is not showing up or a pod has started but in a `CrashLoopBackOff` or `Pending` state.
+
+1. Start by checking all Flux Kustomizations and verify they are healthy.
+  - `flux get ks -A`
+2. Then check all the Flux Helm Releases and verify they are healthy.
+  - `flux get hr -A`
+3. Then check the if the pod is present.
+  - `kubectl -n <namespace> get pods`
+4. Then check the logs of the pod if its there.
+  - `kubectl -n <namespace> logs <pod-name> -f`
+
+Note: If a resource exists, running `kubectl -n <namespace> describe <resource> <name>` might give you insight into what the problem(s) could be.
+
+Resolving problems that you have could take some tweaking of your YAML manifests in order to get things working, other times it could be a external factor like permissions on NFS. If you are unable to figure out your problem see the help section below.
+
 ## 👉 Help
 
-- [Discussions](https://github.com/onedr0p/flux-cluster-template/discussions)
-- [Discord](https://discord.gg/k8s-at-home)
+- Make a post in this repository's GitHub [Discussions](https://github.com/onedr0p/flux-cluster-template/discussions).
+- Start a thread in the `support` or `flux-cluster-template` channel in the [k8s@home](https://discord.gg/k8s-at-home) Discord server.
 
 ## ❔ What's next
 

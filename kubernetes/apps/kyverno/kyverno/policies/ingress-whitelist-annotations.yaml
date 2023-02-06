@@ -8,9 +8,9 @@ metadata:
     policies.kyverno.io/subject: Ingress
     policies.kyverno.io/description: >-
       This policy creates annotations on ingresses. When
-      the `external-dns.home.arpa/enabled` annotation is not
-      set it applies the nginx annotations for use with only
-      internal application access.
+      the `external-dns.alpha.kubernetes.io/target` annotation
+      is not set it applies the nginx annotations for use with
+      only internal application access.
 spec:
   mutateExistingOnPolicyUpdate: true
   generateExistingOnPolicyUpdate: true
@@ -24,7 +24,7 @@ spec:
         any:
           - resources:
               annotations:
-                external-dns.home.arpa/enabled: "true"
+                external-dns.alpha.kubernetes.io/target: "ipv4.${SECRET_DOMAIN}"
       mutate:
         patchStrategicMerge:
           metadata:
