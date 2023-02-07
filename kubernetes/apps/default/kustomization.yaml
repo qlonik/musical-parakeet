@@ -27,3 +27,4 @@ resources:
   - ./sonarr/ks.yaml
   - ./transmission/ks.yaml
   - ./vikunja/ks.yaml
+  - ./youtubedl-material/ks.yaml
