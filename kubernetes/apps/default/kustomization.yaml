@@ -13,6 +13,7 @@ resources:
   - ./glauth/ks.yaml
   - ./hajimari/ks.yaml
   - ./heimdall/ks.yaml
+  - ./jellyfin/ks.yaml
   - ./jellyseerr/ks.yaml
   - ./lidarr/ks.yaml
   - ./maddy/ks.yaml
