@@ -35,7 +35,7 @@ spec:
     persistence:
       enabled: false
 
-    replicaCount: 3
+    replicaCount: 1
     resources:
       requests:
         cpu: "10m"
