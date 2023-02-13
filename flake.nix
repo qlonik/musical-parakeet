@@ -44,6 +44,10 @@
             tflint
             yamllint
           ];
+
+          shellHook = ''
+            export LOCALE_ARCHIVE="${pkgs.glibcLocales}/lib/locale/locale-archive"
+          '';
         };
       });
 }
