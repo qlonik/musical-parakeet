@@ -87,15 +87,6 @@ spec:
         enabled: true
         type: emptyDir
         mountPath: /config/intermediate
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: node-role.kubernetes.io/control-plane
-                  operator: NotIn
-                  values:
-                    - "true"
     resources:
       requests:
         cpu: 10m
