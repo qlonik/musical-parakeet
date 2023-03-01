@@ -43,6 +43,9 @@
             nodePackages.prettier
             tflint
             yamllint
+
+            # for using neovim with python3 provided by nix environment
+            python310Packages.pynvim
           ];
 
           shellHook = ''
