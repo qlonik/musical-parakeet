@@ -9,6 +9,7 @@ resources:
   - ./calibre-web/ks.yaml
   - ./cloudnative-pg/ks.yaml
   - ./echo-server/ks.yaml
+  - ./firefly-iii/ks.yaml
   - ./glauth/ks.yaml
   - ./hajimari/ks.yaml
   - ./heimdall/ks.yaml
