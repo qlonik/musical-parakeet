@@ -99,7 +99,7 @@ spec:
     sidecars:
       subcleaner:
         name: subcleaner
-        image: registry.k8s.io/git-sync/git-sync:v3.6.4
+        image: registry.k8s.io/git-sync/git-sync:v3.6.4@sha256:a794346111b84f7e3b9d65c63f1935b09c474b6cb6ca7486fe2cf97225c48620
         args:
           - --repo=https://github.com/KBlixt/subcleaner.git
           - --branch=master
