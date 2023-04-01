@@ -42,8 +42,6 @@ spec:
       tls:
         - hosts:
             - *host
-    networkPolicy:
-      create: false
     metrics:
       enabled: true
     rbac:
