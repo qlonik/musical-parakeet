@@ -6,7 +6,3 @@ resources:
   - ./restic-secret.sops.yaml
   - ./helmrelease.yaml
   - ./volsync.yaml
-  - ./patch-opds/configmap.yaml
-
-patchesStrategicMerge:
-  - ./patch-opds/mount-patch-files.yaml

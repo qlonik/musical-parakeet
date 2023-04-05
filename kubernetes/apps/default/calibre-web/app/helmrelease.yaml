@@ -30,7 +30,7 @@ spec:
       type: statefulset
     image:
       repository: ghcr.io/linuxserver/calibre-web
-      tag: 0.6.19-ls194@sha256:36e018ed54677d297ac87091d784bab893261077d9a85bcf5970fee18550577e
+      tag: 0.6.20-ls203@sha256:bff1ffa0514735a97c6a7952bed83dce2a67996e46b032d53051fc85508eafaf
     env:
       TZ: ${TIMEZONE}
       PUID: 568
@@ -79,6 +79,8 @@ spec:
           nginx.ingress.kubernetes.io/configuration-snippet: |
             rewrite ^/books(/|$)(.*) /$2 break;
             proxy_set_header X-Script-Name "/books";
+            # need to hide header to trigger proxy-based authentication
+            proxy_set_header Authorization "";
             proxy_set_header Accept-Encoding "";
           hajimari.io/icon: mdi:download
         hosts:
