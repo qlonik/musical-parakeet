@@ -1,0 +1,101 @@
+# https://github.com/AnalogJ/scrutiny/blob/master/docker/example.hubspoke.docker-compose.yml
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: scrutiny
+  namespace: monitoring
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.3.2
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+      interval: 15m
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 5
+  uninstall:
+    keepHistory: false
+  dependsOn:
+    - name: ingress-nginx
+      namespace: networking
+    - name: scrutiny-influxdb
+      namespace: monitoring
+  values:
+    image:
+      repository: ghcr.io/analogj/scrutiny
+      tag: v0.7.1-web@sha256:0b86590625892f7df26082103b179bcfb378471f7affbf4f7be74ebfb326e2db
+    env:
+      TZ: "${TIMEZONE}"
+      SCRUTINY_WEB_INFLUXDB_HOST: scrutiny-influxdb.monitoring.svc.cluster.local
+    service:
+      main:
+        ports:
+          http:
+            port: &port 8080
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: nginx
+        annotations:
+          auth.home.arpa/enabled: "true"
+          hajimari.io/enable: "true"
+          hajimari.io/icon: harddisk
+        hosts:
+          - host: &host "scrutiny.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    probes:
+      liveness: &health
+        enabled: true
+        custom: true
+        spec:
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+          httpGet:
+            path: /api/health
+            port: *port
+      readiness: *health
+      startup:
+        enabled: true
+        custom: true
+        spec:
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          failureThreshold: 30
+          httpGet:
+            path: /api/health
+            port: *port
+    persistence:
+      config:
+        enabled: true
+        type: pvc
+        mountPath: /opt/scrutiny/config
+        accessMode: ReadWriteMany
+        size: 1Gi
+        storageClass: nfs-fast
+        retain: true
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        memory: 128Mi

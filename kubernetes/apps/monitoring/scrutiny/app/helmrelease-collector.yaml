@@ -1,0 +1,105 @@
+# https://github.com/AnalogJ/scrutiny/blob/master/docs/TROUBLESHOOTING_DEVICE_COLLECTOR.md
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: scrutiny-collector
+  namespace: monitoring
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.3.2
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 5
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 5
+  uninstall:
+    keepHistory: false
+  dependsOn:
+    - name: scrutiny
+      namespace: monitoring
+  values:
+    controller:
+      type: daemonset
+    image:
+      repository: ghcr.io/analogj/scrutiny
+      tag: v0.7.1-collector@sha256:d7605ba5268808f19dc5860580187bfe547e2a08399cb4202e8e2e2451c15d49
+    env:
+      COLLECTOR_API_ENDPOINT: http://scrutiny.monitoring.svc.cluster.local:8080
+    service:
+      main:
+        enabled: false
+    securityContext:
+      privileged: true
+      capabilities:
+        add: ["SYS_RAWIO", "SYS_ADMIN"]
+    persistence:
+      config:
+        enabled: true
+        type: emptyDir
+        mountPath: /opt/scrutiny/config
+      udev:
+        enabled: true
+        mountPath: /run/udev
+        type: hostPath
+        hostPath: /run/udev
+        readOnly: true
+      dev:
+        enabled: true
+        mountPath: /dev
+        type: hostPath
+        hostPath: /dev
+        readOnly: true
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        memory: 128Mi
+
+    lifecycle:
+      postStart:
+        exec:
+          command:
+            - /bin/bash
+            - -c
+            - /opt/scrutiny/bin/scrutiny-collector-metrics run --config /opt/scrutiny/config/collector.yaml
+
+    initContainers:
+      init-config:
+        image: ghcr.io/onedr0p/alpine:3.17.3@sha256:e6a2407a15b7e557fb6617a592f672b004b6764887438502c047a567ec616e40
+        env:
+          - name: COLLECTOR_API_ENDPOINT
+            value: http://scrutiny.monitoring.svc.cluster.local:8080
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+        command: # double "$$" escape flux substitutions
+          - /bin/bash
+          - -c
+          - |
+            mkdir -p /opt/scrutiny/config &&
+            cat << EOF > /opt/scrutiny/config/collector.yaml
+            ---
+            # config piped from lifecycle.postStart script
+            version: 1
+            host:
+              id: "$${NODE_NAME}"
+            api:
+              endpoint: "$${COLLECTOR_API_ENDPOINT}"
+            EOF
+        volumeMounts:
+          - name: config
+            mountPath: /opt/scrutiny/config

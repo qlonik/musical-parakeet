@@ -18,7 +18,7 @@ access_control:
   rules:
     - domain:
         - "traefik.nova.${SECRET_DOMAIN}"
-        - "scrutiny.nova.${SECRET_DOMAIN}"
+        - "scrutiny.${SECRET_DOMAIN}"
       policy: two_factor
       subject: ["group:admin"]
 
