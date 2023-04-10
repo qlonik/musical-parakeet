@@ -1,0 +1,31 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: paperless-ngx
+  namespace: default
+spec:
+  values:
+    sidecars:
+      gotenberg:
+        image: docker.io/gotenberg/gotenberg:7.8.2@sha256:1d8deb32e4fe098a4432bc75d612b2c6f3e42b7f9231be90b9b58db6a7fdcfbd
+        # The gotenberg chromium route is used to convert .eml files. We do not
+        # want to allow external content like tracking pixels or even javascript.
+        command:
+          - "gotenberg"
+          - "--chromium-disable-javascript=true"
+          - "--chromium-allow-list=file:///tmp/.*"
+        securityContext:
+          privileged: false
+          runAsUser: 1001
+          runAsGroup: 1001
+        resources:
+          requests:
+            cpu: 200m
+            memory: 250Mi
+          limits:
+            cpu: 1
+            memory: 1Gi
+
+      tika:
+        image: ghcr.io/paperless-ngx/tika:2.7.0-minimal@sha256:8088cf2c400b24024ada6f2df753fd741a21834d4259e961624fa65b0431c851

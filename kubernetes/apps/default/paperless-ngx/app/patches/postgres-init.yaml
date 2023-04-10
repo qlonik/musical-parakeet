@@ -1,0 +1,39 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: paperless-ngx
+  namespace: default
+spec:
+  values:
+    initContainers:
+      init-db:
+        image: ghcr.io/onedr0p/postgres-initdb:14.7
+        env:
+          - name: POSTGRES_HOST
+            value: postgres-rw.default.svc.cluster.local
+          - name: POSTGRES_SUPER_USER
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: username
+          - name: POSTGRES_SUPER_PASS
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: password
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: paperless-ngx-credentials
+                key: PAPERLESS_DBUSER
+          - name: POSTGRES_PASS
+            valueFrom:
+              secretKeyRef:
+                name: paperless-ngx-credentials
+                key: PAPERLESS_DBPASS
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: paperless-ngx-credentials
+                key: PAPERLESS_DBNAME
