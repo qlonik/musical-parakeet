@@ -29,21 +29,36 @@ spec:
     controller:
       type: statefulset
     image:
-      repository: ghcr.io/linuxserver/transmission
-      tag: 3.00-r8-ls149@sha256:1c11d71fe4954ab5079b491d1b9b0d2d967b11e0f95db111e54f26d8806c0f6b
+      repository: ghcr.io/onedr0p/transmission
+      tag: 4.0.2@sha256:a48e2b93d4e05a601928452ce2d456842041ae2e9722ebf249eaeb4511908c52
     env:
       TZ: ${TIMEZONE}
-      PUID: 568
-      PGID: 568
-      PEERPORT: &port-bt 51413
-      TRANSMISSION_WEB_HOME: /flood-for-transmission/
-      WHITELIST: "\
+      TRANSMISSION__DOWNLOAD_DIR: /downloads/transmission/complete
+      TRANSMISSION__INCOMPLETE_DIR: /downloads/transmission/incomplete
+      TRANSMISSION__RPC_PORT: &port-ui 9091
+      TRANSMISSION__PEER_PORT: &port-bt 51413
+      TRANSMISSION__ENCRYPTION: 2
+      TRANSMISSION__SEED_QUEUE_ENABLED: true
+      TRANSMISSION__SEED_QUEUE_SIZE: 0
+      TRANSMISSION__SPEED_LIMIT_DOWN: 3000
+      TRANSMISSION__SPEED_LIMIT_DOWN_ENABLED: true
+      TRANSMISSION__SPEED_LIMIT_UP: 1
+      TRANSMISSION__SPEED_LIMIT_UP_ENABLED: true
+      TRANSMISSION__ALT_SPEED_TIME_ENABLED: true
+      TRANSMISSION__ALT_SPEED_TIME_DAY: 127
+      TRANSMISSION__ALT_SPEED_TIME_BEGIN: 0
+      TRANSMISSION__ALT_SPEED_TIME_END: 420
+      TRANSMISSION__ALT_SPEED_UP: 0
+      TRANSMISSION__ALT_SPEED_DOWN: 100000
+      TRANSMISSION__RPC_WHITELIST_ENABLED: true
+      TRANSMISSION__RPC_WHITELIST: "\
         10.*.*.*,\
         192.168.*.*,\
         172.16.*.*,172.17.*.*,172.18.*.*,172.19.*.*,172.20.*.*,172.21.*.*,172.22.*.*,172.23.*.*,\
         172.24.*.*,172.25.*.*,172.26.*.*,172.27.*.*,172.28.*.*,172.29.*.*,172.30.*.*,172.31.*.*\
         "
-      HOST_WHITELIST: "\
+      TRANSMISSION__RPC_HOST_WHITELIST_ENABLED: true
+      TRANSMISSION__RPC_HOST_WHITELIST: "\
         nova.${SECRET_DOMAIN},\
         nova-staging.${SECRET_DOMAIN},\
         {{ .Release.Name }},\
@@ -60,7 +75,7 @@ spec:
         externalTrafficPolicy: Local
         ports:
           http:
-            port: 9091
+            port: *port-ui
           bittorrent-tcp:
             enabled: true
             port: *port-bt
@@ -94,13 +109,11 @@ spec:
           - hosts:
               - *host1
               - *host2
-    # disable for linuxserver.io image
-    # podSecurityContext:
-    #   runAsUser: 568
-    #   runAsGroup: 568
-    #   fsGroup: 568
-    #   fsGroupChangePolicy: "OnRootMismatch"
-    #   supplementalGroups: [10000]
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: "OnRootMismatch"
     volumeClaimTemplates:
       - name: config
         mountPath: /config
