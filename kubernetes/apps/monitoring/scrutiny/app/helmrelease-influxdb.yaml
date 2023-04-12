@@ -26,6 +26,8 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    controller:
+      type: statefulset
     image:
       repository: docker.io/library/influxdb
       tag: 2.7.0-alpine@sha256:80c6ef024babe804c026931a32a9da53a0f197e3f9cddb38385321a854ad8dbf
@@ -58,15 +60,12 @@ spec:
           httpGet:
             path: /health
             port: *port
-    persistence:
-      data:
-        enabled: true
-        type: pvc
+    volumeClaimTemplates:
+      - name: data
         mountPath: /var/lib/influxdb2
         accessMode: ReadWriteMany
         size: 8Gi
         storageClass: nfs-fast
-        retain: true
     resources:
       requests:
         cpu: 100m

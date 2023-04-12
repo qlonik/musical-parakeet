@@ -33,6 +33,8 @@ spec:
     - name: scrutiny-influxdb
       namespace: monitoring
   values:
+    controller:
+      type: statefulset
     image:
       repository: ghcr.io/analogj/scrutiny
       tag: v0.7.1-web@sha256:0b86590625892f7df26082103b179bcfb378471f7affbf4f7be74ebfb326e2db
@@ -84,15 +86,12 @@ spec:
           httpGet:
             path: /api/health
             port: *port
-    persistence:
-      config:
-        enabled: true
-        type: pvc
+    volumeClaimTemplates:
+      - name: config
         mountPath: /opt/scrutiny/config
         accessMode: ReadWriteMany
         size: 1Gi
         storageClass: nfs-fast
-        retain: true
     resources:
       requests:
         cpu: 100m
