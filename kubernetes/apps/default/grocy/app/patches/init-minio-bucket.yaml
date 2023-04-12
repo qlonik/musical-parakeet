@@ -1,0 +1,33 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: grocy
+  namespace: default
+spec:
+  values:
+    initContainers:
+      init-minio-bucket:
+        image: ghcr.io/qlonik/minio-init-bucket:RELEASE.2023-04-06T16-51-10Z@sha256:710c8ee878be749c53ca46895aaa5c93bf4b30f4613a3c1306d73c05bd72b00a
+        env:
+          MINIO_HOST: http://minio.default.svc.cluster.local:9000
+          MINIO_SUPER_ACCESS_KEY:
+            valueFrom:
+              secretKeyRef:
+                name: minio-secret
+                key: MINIO_ROOT_USER
+          MINIO_SUPER_SECRET_KEY:
+            valueFrom:
+              secretKeyRef:
+                name: minio-secret
+                key: MINIO_ROOT_PASSWORD
+          MINIO_BUCKET_NAME:
+            valueFrom:
+              secretKeyRef:
+                name: grocy-restic-secret
+                key: AWS_ACCESS_KEY_ID
+          MINIO_BUCKET_PASSWORD:
+            valueFrom:
+              secretKeyRef:
+                name: grocy-restic-secret
+                key: AWS_SECRET_ACCESS_KEY
