@@ -30,7 +30,7 @@ spec:
       type: statefulset
     image:
       repository: docker.io/fallenbagel/jellyseerr
-      tag: 1.4.1@sha256:a1384363937990b52f667598a099d2d550f35a2d3143167d8f3bbcff8db866f9
+      tag: 1.5.0@sha256:3ff0d7af326f4e6db4dbe8679284a4230c9fd4205f59ecc9637ecfbdedb473c3
     env:
       TZ: ${TIMEZONE}
       LOG_LEVEL: debug
