@@ -90,7 +90,7 @@ spec:
       enabled: false
     startupProbe:
       enabled: true
-      initialDelaySeconds: 300
+      failureThreshold: 90
     ingress:
       enabled: true
       className: nginx
