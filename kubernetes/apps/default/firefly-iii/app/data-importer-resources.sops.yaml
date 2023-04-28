@@ -1,0 +1,29 @@
+# yamllint disable
+apiVersion: v1
+kind: Secret
+metadata:
+    name: firefly-iii-data-importer-resources
+    namespace: default
+stringData:
+    user-01-pat: ENC[AES256_GCM,data:diBg7iMtsiIfRRHMPJ2ohT9YipJy9IWYW5EIK3lRaNor8PH8nPYrnX0y1beJq+U9y5xWx9w2rIRgeXdPGKaY19fTkFSkXLvKrXjLRDWoiA51c+r2Vj1u2MEi7iNmHDXmjNEDfglib1n5CCFKPsFeKAXKUUuACSRPZNlvXwEvl41WnCEmjLiFI9qAslZNmstZ/nzUeMqBjE6bIRnhkKrCkLjKb+5PyoMLcA8KQNHoeNI7CrxYyDJ9oSVKwTzTpXBS9yZ0+aRlqCOHZM1EfD9Z8eNIoMkrDIsTBtszcCfhe9/y+CkkkH7ti78YStqUIQEBmJhg4LojOVQB5xyCyWhaI011dPJq6+Xm6e9JVFaGAmB7HQrhhS5TjV6/OZ058FclTEJRK8+A1oX8/mrbGsNgGZZDzxIFd20wGyz8xgLy9loCUCferyA9JjLhDiShh8CDEkkb43WHEgzfnRhiQ3vRGQV1/Tio3pVClWlh870wOliGjxFZB8OAvATaSJXzEamUbQAcoDiDuXPHk8H7yIYJo1zpt9eTdvksHHLoZA0zfnXpzqXJuttCKUOcYfRNUfXDakhLv8HzxaqTCbcCrbhno12LU/n8pHI/Q33786VRde7hF8x2WmAAiz+yJkID8oE6z/exrQj4S8ksdTBlbWY06n1cqa/QuBrCT2yGn2/fapthcVRhaQlWPpxRkQuBe7uCaYWNx+Hjh29xb+wTRkuyhNsfwtQ1inYVAytnpf90YLqiXvjkb4uI51GuBZ8N1XGl7qB5i3XfAo7teAe3f0USDpDKf4Va8uP721LwAPlE1cKFzxUkwgPSgPBgA41yqmgARqELcKiMwPdJVEpoVOvC5g2bMUY0KQWXRoEOF85Z/dM9mFi/Ov0jOOWM/MF2O27JlgNOi04eRQujYqG+T2vJhGa96kzNZZhqjzys0alHt4y7D0FpqQ4HdvEv8DwoefQYLIZ+BKk1s5ZXWEsjh/cFUYxlbfZGUxfJsQ9X3U8xmUoXMaqKeJIKYmOMGzPh4mESdgggrqInOw82CMbf5K7sa0fRZ2XPnNi9tt6zkmyt63288rsGvPNFKZsdUzcWmA3aElv/3RtX3lpPjPUbBDnEZkFPskHm3nluWUjQgUOFIhyuzV4gV3BCBIw1KVlgp/QZVdz20i6Xfc5TEm+NsPCy4SZaqtwhcsNkEe6Jw4uG7WCnAv+TogHMdM+aPS25A8NBiqU1AMlTiocElpOrOjE9WUTMONdlNWEHEHW0y2xiPhkXfJE50wI2cWptETv5amcdQkViCMWkPCNLx9uOwUpmAgYXDb+u,iv:bDeBS/rOeYUJIknmIbJQ4UKmi+l0Jbi8VZh44u3Xtdg=,tag:Z6RrD5tuGMa2Hi6mA7Cweg==,type:str]
+    user-02-pat: ENC[AES256_GCM,data:wxxZrYYC6o4uS4Dg8dVMmG2elenHpXI/6Vr1tSVVfFm9yGSWkKHhz1uy7WM8qzah6psEolqjlVpfAyRTla8QkqcapiDCj7UPhH8gqF60dSwKA5lt/8KGEw39L8VKrzYkxd50zHytfrErxZGIgAZAwwgly+Tqm/Mjky9jVv6sKi7c9aNdSSDB/VY6S/fMDRFH0twQeq+8zCudcfd0sbf7IHlBK1fJMJrIRa8/WJWysTz4QhWf+uiIY8JvUCxzaHqSxkqzb+hHo3Ctjf4JuK0Q0ofBKqksKUjqWA5cRaY46/sanSTaLPHZike4RLfzXX+RMhbjTo1fGcY74KkOaIQQQqP1Sx1DMTBkH5cf1u80cilWUmgQTCqqjPhen7TxLjJiSQX0h8XVHxlnssUNCTGd3TmL4LJqfE7u74zIycM9R45CqvtHn0mjFVbUOxkoXXv24SwzabSoNDyxrsI56uYNmO0Flzry92w7NpICRmL6qf6L9Q1sE7sh0uPHuClugQRktGdVCvYcn7l/VvkjvbOS+WFFDUqVV2eqIn5PepVb/YscNA3lODF7QYAKXdA6Tsc7bc5XyZRNTTqwjaRSF5xLuW48arxHPjh6oSk3gXqxZQjWiPWJWQ8rPZ9bkTQ1hOfNjXaAD45d0be9cgp76WjPN96urAGQTtQmvS1PDnEyDY6KIytxegh+g63FQvxBjpVuCUhXNkbdD9n7cOo4S1AArwXYkO/khYHA/QRqG4Z9IK/IpPVfC8WFPUVqHks3DbpGCge2rJ7CkeKbbVl2341u6jolbyQ0H3rDhaii//arNW/yJnQC3Wg1BbnuWWIVlE0dyhfqYEj1JKy2Kt+LpQzlsVAOhW1QYdW/kWIfGX41shyQRI7LZkeDR1RfHvmJpIXdrxWtJiahE3Ga8ag2/quJt756cj5RDlkSRAHknVTnbwsex8lO292mB4/W0c5RzWMx43HC/TljJIrlaTSQGq1Rp0F3a76YYyHTKjg8Hc7cPU7hPNUN4S7disKawZR4cFn8tJmvGSRi6be6YMiGPs86Q87MqlCFAVsvA4dGSMmeAJx3YP6uU/IcXItqcKVEJ+K3FXdU82QItGrJhe1vhMzcIUqUqCi9oU04KkV9k5yMtm272Pkb3Fa3vSgKtUPc0HdEZXjClRa7XW9ycpZdUo6kOUSbecfAABHq7MpmAbLXNSsIdL4PKfWRHNMnSlyTpmXi8Tx6FnxMXz6qGgast8sW+KJVOFV8IeCvTvKnsyncz9pnYvIy2jOxrORIhGToXOtZlP1ZTkAdbfEqgmeHs1885CxXCYo=,iv:bA616EeL//hOymZKYa+oWv8BWlaIAzVJGxZ06oseVZ4=,tag:0RP0vPXszGJGLow0JkqzXQ==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1w68rvrv30t2xfm42ctr02vurav5222065pl03ys6ps5aklraq42s4jeyjl
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB0Q0xkN1diV00vd3RaZDRB
+            dWNLUDhtcTdOakx2MUpScWdUa29jVjlIR0c0CitRd2RLUG9Scjh0MUEwTGNDaE1w
+            ZFFRUG1BSFFuUWhyNFAwVzRLMXBGNUUKLS0tIDVyOFB4RS9mR2hOcFc4Yzdab1Ey
+            cFdNZHY0OFJOOThIQ1FVTGp2WkJMc2cK4UjiH9y6ahNhTtnM1UM0hyMk2YtAleq9
+            QTjCQvlMs6ZS9ctRilMeRlbjjlL0EVu3zBBa0He3c6CIbqPqKJY+zg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2023-04-29T03:06:07Z"
+    mac: ENC[AES256_GCM,data:VELOxigX5fOrbyHt+g5E0kbFyIt2T5O9VT67NVRJsh9ey1+EjYAqMXSQwUkpFaI8pM6sMTRhAE0D8Ed6rGqE2vJ3jNJG5YWAwBhq2HMZ8tOfw6SeN4okfUHOeRHVNu4vHLCvp4aGqzfV5n45RwMk+8HimHqvDq34jiEwQzi8oAo=,iv:4XU2OAHtluk9YArhHmTDBkq38miaToGwacbvyBfG1AQ=,tag:IUI3SNp/+ab9hG48t2un1Q==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData)$
+    version: 3.7.3

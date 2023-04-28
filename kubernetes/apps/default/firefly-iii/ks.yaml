@@ -25,14 +25,16 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-firefly-iii-data-importer
+  name: cluster-apps-firefly-iii-data-importer-user-01
   namespace: flux-system
 spec:
   dependsOn:
     - name: cluster-apps-authelia
-    - name: cluster-apps-cloudnative-pg-cluster
     - name: cluster-apps-firefly-iii
-  path: ./kubernetes/apps/default/firefly-iii/data-importer
+  postBuild:
+    substitute:
+      user_id: user-01
+  path: ./kubernetes/apps/default/firefly-iii/data-importer-template
   prune: true
   sourceRef:
     kind: GitRepository
@@ -40,7 +42,67 @@ spec:
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2beta1
       kind: HelmRelease
-      name: firefly-iii-data-importer
+      name: firefly-iii-data-importer-user-01
+      namespace: default
+  interval: 30m
+  retryInterval: 1m
+  timeout: 3m
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-apps-firefly-iii-data-importer-user-02
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: cluster-apps-authelia
+    - name: cluster-apps-firefly-iii
+  postBuild:
+    substitute:
+      user_id: user-02
+  path: ./kubernetes/apps/default/firefly-iii/data-importer-template
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+      kind: HelmRelease
+      name: firefly-iii-data-importer-user-02
+      namespace: default
+  interval: 30m
+  retryInterval: 1m
+  timeout: 3m
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-apps-firefly-iii-data-importer-ingress
+  namespace: flux-system
+  labels:
+    substitution.flux.home.arpa/disabled: "true"
+spec:
+  dependsOn:
+    - name: cluster-apps-firefly-iii
+    - name: cluster-apps-firefly-iii-data-importer-user-01
+    - name: cluster-apps-firefly-iii-data-importer-user-02
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+      - kind: Secret
+        name: cluster-secrets
+      - kind: Secret
+        name: firefly-iii-data-importer-substitutions
+  path: ./kubernetes/apps/default/firefly-iii/data-importer-ingress
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  healthChecks:
+    - apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      name: firefly-iii-data-importer-ingress
       namespace: default
   interval: 30m
   retryInterval: 1m

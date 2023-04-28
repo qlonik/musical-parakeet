@@ -1,0 +1,29 @@
+# yamllint disable
+apiVersion: v1
+kind: Secret
+metadata:
+    name: firefly-iii-data-importer-substitutions
+    namespace: flux-system
+stringData:
+    user_01_username: ENC[AES256_GCM,data:Kv/FgQGz,iv:820TiEHkuuANU3AOlDF9YTxscun2vPqSh/dVwAMvuYs=,tag:4EdqevKY1ZL1PV/4E/kacg==,type:str]
+    user_02_username: ENC[AES256_GCM,data:/EKhvEU4dPo=,iv:2CyG6R9Ay/jrqpHV31y5drLSnBlEgc99jgshOHZ0OlM=,tag:e+b3OAXtNUHB8Xef4yZMHg==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1w68rvrv30t2xfm42ctr02vurav5222065pl03ys6ps5aklraq42s4jeyjl
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBtaWZZU3RIZFUvVmV6SGVK
+            TUdNMm0xZXZ1K09TVFgyM05lS2g1VW9zY2g0CmNHTjNJUlV6S1ljKzBNTC9BVlEv
+            dEc3ZjBXRTFxUWxLcUZibkxrZ1VKbDQKLS0tIEVacjUxeHo5OFpjMUpnNExxRzFl
+            c3hLNWhFTk1acVU0ZkQvcW5SS1JzWG8KSpjfKQSX/FMDMX0ojpfOXx6CMyTPQ0dT
+            LdAza5DeyB5S+e60G+VdNiz8ByvqainkphCqmFX4PoYpk/eHlNDS/w==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2023-04-28T05:42:18Z"
+    mac: ENC[AES256_GCM,data:jXGk6wjCH4f3aCONzloDPFB/SQ9LEKzry+0qSUz5Z5wvPA5IkxFxw/5aeVsevVZ0wbU8q5+POvaPwPmu8ij5AH4lKPJNCLRESw7y0SVU15DUQnVf1qxBOTOPuq3SiejdbbZKmBOR+dmCJb4vICYgjHSnC4tPTT+7YXv3c6fa/y8=,iv:IglsED12c4n8ciOZaDN+P33mat9R2yAizd6Ww1thvFY=,tag:cOk+06XM+2qL0Tjc42R6Fg==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData)$
+    version: 3.7.3

@@ -4,6 +4,8 @@ kind: Kustomization
 resources:
   - ./secret.sops.yaml
   - ./helmrelease.yaml
+  - ./data-importer-resources.sops.yaml
+  - ./data-importer-substitutions.sops.yaml
 
 patchesStrategicMerge:
   - ./patches/postgres-init.yaml

@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: firefly-iii-data-importer
+  name: "firefly-iii-data-importer-${user_id}"
   namespace: default
 spec:
   interval: 15m
@@ -39,8 +39,8 @@ spec:
       FIREFLY_III_ACCESS_TOKEN:
         valueFrom:
           secretKeyRef:
-            name: data-importer-personal-access-tokens
-            key: pat-user-01
+            name: firefly-iii-data-importer-resources
+            key: "${user_id}-pat"
       TRUSTED_PROXIES: "**"
       EXPECT_SECURE_URL: "true"
       REDIS_HOST: http://redis-lb.default.svc.cluster.local
@@ -57,20 +57,15 @@ spec:
         ports:
           http:
             port: &port 8080
-    ingress:
-      main:
+    persistence:
+      upload:
         enabled: true
-        ingressClassName: nginx
-        annotations:
-          auth.home.arpa/enabled: "true"
-        hosts:
-          - host: &host "data-importer.${SECRET_DOMAIN}"
-            paths:
-              - path: "/"
-                pathType: Prefix
-        tls:
-          - hosts:
-              - *host
+        type: pvc
+        storageClass: nfs-slow
+        accessMode: ReadWriteOnce
+        size: 2Gi
+        retain: true
+        mountPath: /var/www/html/storage/upload
     probes:
       liveness: &probes
         enabled: true
