@@ -1,0 +1,98 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: firefly-iii-data-importer
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  dependsOn:
+    - name: firefly-iii
+      namespace: default
+  values:
+    image:
+      repository: fireflyiii/data-importer
+      tag: version-1@sha256:43c1b6f88ec36886f7db09d6530b89430e2b86fc942e2509a7a816aca110169c
+    env:
+      TZ: ${TIMEZONE}
+      FIREFLY_III_URL: http://firefly-iii.default.svc.cluster.local:8080
+      VANITY_URL: "https://firefly-iii.${SECRET_DOMAIN}"
+      FIREFLY_III_ACCESS_TOKEN:
+        valueFrom:
+          secretKeyRef:
+            name: data-importer-personal-access-tokens
+            key: pat-user-01
+      TRUSTED_PROXIES: "**"
+      EXPECT_SECURE_URL: "true"
+      REDIS_HOST: http://redis-lb.default.svc.cluster.local
+      REDIS_PORT: 6379
+      REDIS_PASSWORD:
+        valueFrom:
+          secretKeyRef:
+            name: redis-credentials
+            key: redis-password
+      REDIS_DB: 15
+      REDIS_CACHE_DB: 16
+    service:
+      main:
+        ports:
+          http:
+            port: &port 8080
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: nginx
+        annotations:
+          auth.home.arpa/enabled: "true"
+        hosts:
+          - host: &host "data-importer.${SECRET_DOMAIN}"
+            paths:
+              - path: "/"
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    probes:
+      liveness: &probes
+        enabled: true
+        custom: true
+        spec: &probes-spec
+          httpGet:
+            path: /health
+            port: *port
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+      readiness: *probes
+      startup:
+        enabled: true
+        custom: true
+        spec:
+          <<: *probes-spec
+          failureThreshold: 30
+    resources:
+      requests:
+        cpu: 10m
+        memory: 250Mi
+      limits:
+        memory: 500Mi
