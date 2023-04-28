@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    # - name: cluster-apps-authelia
+    - name: cluster-apps-authelia
     - name: cluster-apps-cloudnative-pg-cluster
   path: ./kubernetes/apps/default/firefly-iii/app
   prune: true
