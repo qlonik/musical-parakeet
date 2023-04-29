@@ -30,7 +30,7 @@ spec:
       type: statefulset
     image:
       repository: docker.io/library/influxdb
-      tag: 2.7.0-alpine@sha256:80c6ef024babe804c026931a32a9da53a0f197e3f9cddb38385321a854ad8dbf
+      tag: 2.7.1-alpine@sha256:11c6b4d43ea0937dc066f66507a3ccc46abc6ff3570cd4f73ae8a5214eb3bb0a
     service:
       main:
         ports:
