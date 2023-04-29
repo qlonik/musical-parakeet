@@ -82,9 +82,11 @@ spec:
     persistence:
       upload:
         enabled: true
-        type: nfs
-        server: "nova.${SECRET_PRIVATE_DOMAIN}"
-        path: /appdata/firefly-iii/files
+        type: pvc
+        storageClass: nfs-slow
+        accessMode: ReadWriteOnce
+        size: 2Gi
+        retain: true
         mountPath: /var/www/html/storage/upload
     # probes:
     #   liveness:
