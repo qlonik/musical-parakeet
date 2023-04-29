@@ -70,7 +70,7 @@ spec:
       liveness: &probes
         enabled: true
         custom: true
-        spec: &probes-spec
+        spec:
           httpGet:
             path: /health
             port: *port
@@ -80,11 +80,7 @@ spec:
           failureThreshold: 3
       readiness: *probes
       startup:
-        enabled: true
-        custom: true
-        spec:
-          <<: *probes-spec
-          failureThreshold: 30
+        enabled: false
     resources:
       requests:
         cpu: 10m
