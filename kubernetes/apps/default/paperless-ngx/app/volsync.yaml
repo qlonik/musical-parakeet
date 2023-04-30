@@ -1,0 +1,38 @@
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: paperless-ngx-data
+  namespace: default
+spec:
+  sourcePVC: data-paperless-ngx-0
+  trigger:
+    schedule: "0 0 * * *"
+  restic:
+    copyMethod: Direct
+    pruneIntervalDays: 10
+    repository: paperless-ngx-data-restic-secret
+    cacheCapacity: 5Gi
+    storageClassName: nfs-fast
+    retain:
+      daily: 10
+      within: 3d
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: paperless-ngx-media
+  namespace: default
+spec:
+  sourcePVC: media-paperless-ngx-0
+  trigger:
+    schedule: "0 0 * * *"
+  restic:
+    copyMethod: Direct
+    pruneIntervalDays: 10
+    repository: paperless-ngx-media-restic-secret
+    cacheCapacity: 5Gi
+    storageClassName: nfs-fast
+    retain:
+      daily: 10
+      within: 3d

@@ -4,10 +4,16 @@ kind: Kustomization
 namespace: default
 resources:
   - ./secret.sops.yaml
-  # - ./restic-secret.sops.yaml
+  - ./restic-secret.sops.yaml
   - ./helmrelease.yaml
-  # - ./volsync.yaml
+  - ./volsync.yaml
 
 patchesStrategicMerge:
   - ./patches/postgres-init.yaml
+  - ./patches/minio-init-bucket.yaml
   - ./patches/tika.yaml
+
+labels:
+  - pairs:
+      app.kubernetes.io/name: paperless-ngx
+      app.kubernetes.io/instance: paperless-ngx
