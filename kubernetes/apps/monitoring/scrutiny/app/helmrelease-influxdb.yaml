@@ -29,7 +29,7 @@ spec:
     controller:
       type: statefulset
     image:
-      repository: docker.io/library/influxdb
+      repository: public.ecr.aws/docker/library/influxdb
       tag: 2.7.1-alpine@sha256:11c6b4d43ea0937dc066f66507a3ccc46abc6ff3570cd4f73ae8a5214eb3bb0a
     service:
       main:
