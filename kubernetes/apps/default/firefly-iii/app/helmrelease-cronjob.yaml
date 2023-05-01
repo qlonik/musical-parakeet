@@ -31,7 +31,7 @@ spec:
     controller:
       type: cronjob
       cronjob:
-        schedule: "* */4 * * *"
+        schedule: "@hourly"
         successfulJobsHistoryLimit: 2
         failedJobsHistoryLimit: 2
         # TODO: add this if supported
