@@ -33,7 +33,7 @@ spec:
       tag: 10.8.10@sha256:1ef614db6a4c589777eb48bc9004d573b9c09f0d6d573a509041c6060f3a956b
     env:
       TZ: ${TIMEZONE}
-      JELLYFIN_PublishedServerUrl: "https://nova.${SECRET_DOMAIN}/{{ .Release.Name }}"
+      JELLYFIN_PublishedServerUrl: "https://{{ .Release.Name }}.${SECRET_DOMAIN}/{{ .Release.Name }}"
     service:
       main:
         type: LoadBalancer
@@ -58,7 +58,7 @@ spec:
           external-dns.alpha.kubernetes.io/target: "ipv4.${SECRET_DOMAIN}"
           hajimari.io/icon: simple-icons:jellyfin
         hosts:
-          - host: &host1 "jellyfin.${SECRET_DOMAIN}"
+          - host: &host1 "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix

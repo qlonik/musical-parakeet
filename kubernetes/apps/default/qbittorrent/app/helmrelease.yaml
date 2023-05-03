@@ -56,7 +56,6 @@ spec:
         enabled: true
         ingressClassName: nginx
         annotations:
-          nginx.ingress.kubernetes.io/rewrite-target: /$2
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_hide_header "x-webkit-csp";
             proxy_hide_header "content-security-policy";
@@ -65,20 +64,14 @@ spec:
             # sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_DOMAIN}/css/base/qbittorrent/nord.css"></head>';
             # sub_filter_once on;
           hajimari.io/icon: mdi:download
-          hajimari.io/url: "https://nova-staging.${SECRET_DOMAIN}/qbittorrent"
         hosts:
-          - host: &host1 "nova-staging.${SECRET_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
-              - path: "/{{ .Release.Name }}(/|$)(.*)"
-                pathType: Prefix
-          - host: &host2 "nova.${SECRET_DOMAIN}"
-            paths:
-              - path: "/{{ .Release.Name }}(/|$)(.*)"
+              - path: "/"
                 pathType: Prefix
         tls:
           - hosts:
-              - *host1
-              - *host2
+              - *host
     podSecurityContext:
       runAsUser: 568
       runAsGroup: 568

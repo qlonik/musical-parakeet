@@ -49,26 +49,18 @@ spec:
         annotations:
           auth.home.arpa/enabled: "true"
           nginx.ingress.kubernetes.io/configuration-snippet: |
-            rewrite ^/books$ /books/ permanent;
-            rewrite ^/books(/|$)(.*) /$2 break;
-            proxy_set_header X-Script-Name "/books";
             proxy_set_header Accept-Encoding "";
             # sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_DOMAIN}/css/base/calibre-web/nord.css"></head>';
             # sub_filter_once on;
           hajimari.io/icon: mdi:download
         hosts:
-          - host: &host1 "nova-staging.${SECRET_DOMAIN}"
+          - host: &host "books.${SECRET_DOMAIN}"
             paths:
-              - path: "/books"
-                pathType: Prefix
-          - host: &host2 "nova.${SECRET_DOMAIN}"
-            paths:
-              - path: "/books"
+              - path: "/"
                 pathType: Prefix
         tls:
           - hosts:
-              - *host1
-              - *host2
+              - *host
       opds:
         enabled: true
         primary: false
@@ -77,25 +69,18 @@ spec:
           auth.home.arpa/enabled: "true"
           auth.home.arpa/type: "basic"
           nginx.ingress.kubernetes.io/configuration-snippet: |
-            rewrite ^/books(/|$)(.*) /$2 break;
-            proxy_set_header X-Script-Name "/books";
             # need to hide header to trigger proxy-based authentication
             proxy_set_header Authorization "";
             proxy_set_header Accept-Encoding "";
           hajimari.io/icon: mdi:download
         hosts:
-          - host: *host1
+          - host: *host
             paths:
-              - path: "/books/opds"
-                pathType: Prefix
-          - host: *host2
-            paths:
-              - path: "/books/opds"
+              - path: "/opds"
                 pathType: Prefix
         tls:
           - hosts:
-              - *host1
-              - *host2
+              - *host
     # disable for linuxserver.io image
     podSecurityContext:
       # runAsUser: 568

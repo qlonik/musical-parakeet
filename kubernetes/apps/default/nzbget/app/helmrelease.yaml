@@ -51,18 +51,13 @@ spec:
             # sub_filter_once on;
           hajimari.io/icon: mdi:download
         hosts:
-          - host: &host1 "nova-staging.${SECRET_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
-              - path: "/{{ .Release.Name }}"
-                pathType: Prefix
-          - host: &host2 "nova.${SECRET_DOMAIN}"
-            paths:
-              - path: "/{{ .Release.Name }}"
+              - path: "/"
                 pathType: Prefix
         tls:
           - hosts:
-              - *host1
-              - *host2
+              - *host
     # disable for linuxserver.io image
     # podSecurityContext:
     #   runAsUser: 568

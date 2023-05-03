@@ -58,53 +58,38 @@ spec:
         annotations:
           auth.home.arpa/enabled: "true"
           nginx.ingress.kubernetes.io/configuration-snippet: |
-            rewrite ^/calibre$ /calibre/ permanent;
-            rewrite ^/calibre(/|$)(.*) /$2 break;
             proxy_set_header Accept-Encoding "";
             # sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_DOMAIN}/css/base/calibre/nord.css"></head>';
             # sub_filter_once on;
           hajimari.io/icon: mdi:download
         hosts:
-          - host: &host1 "nova-staging.${SECRET_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
-              - path: "/{{ .Release.Name }}"
-                pathType: Prefix
-          - host: &host2 "nova.${SECRET_DOMAIN}"
-            paths:
-              - path: "/{{ .Release.Name }}"
+              - path: "/"
                 pathType: Prefix
         tls:
           - hosts:
-              - *host1
-              - *host2
+              - *host
       content-server:
         enabled: true
         primary: false
         ingressClassName: nginx
         annotations:
           nginx.ingress.kubernetes.io/configuration-snippet: |
-            rewrite ^/calibre/opds$ /calibre/opds/ permanent;
+            rewrite ^/opds$ /opds/ permanent;
             proxy_set_header Accept-Encoding "";
           hajimari.io/icon: mdi:download
         hosts:
-          - host: *host1
+          - host: *host
             paths:
-              - path: "/{{ .Release.Name }}/opds"
-                pathType: Prefix
-                service:
-                  name: calibre-content-server
-                  port: 8081
-          - host: *host2
-            paths:
-              - path: "/{{ .Release.Name }}/opds"
+              - path: "/opds"
                 pathType: Prefix
                 service:
                   name: calibre-content-server
                   port: 8081
         tls:
           - hosts:
-              - *host1
-              - *host2
+              - *host
     # disable for linuxserver.io image
     podSecurityContext:
       # runAsUser: 568

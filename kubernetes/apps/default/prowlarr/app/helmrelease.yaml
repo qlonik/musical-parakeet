@@ -34,7 +34,6 @@ spec:
     env:
       TZ: ${TIMEZONE}
       PROWLARR__INSTANCE_NAME: Prowlarr
-      PROWLARR__URL_BASE: "/{{ .Release.Name }}"
       PROWLARR__LOG_LEVEL: info
       PROWLARR__AUTHENTICATION_METHOD: External
     envFrom:
@@ -56,18 +55,13 @@ spec:
             # sub_filter_once on;
           hajimari.io/icon: mdi:movie-search
         hosts:
-          - host: &host1 "nova-staging.${SECRET_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
-              - path: "/{{ .Release.Name }}"
-                pathType: Prefix
-          - host: &host2 "nova.${SECRET_DOMAIN}"
-            paths:
-              - path: "/{{ .Release.Name }}"
+              - path: "/"
                 pathType: Prefix
         tls:
           - hosts:
-              - *host1
-              - *host2
+              - *host
     podSecurityContext:
       runAsUser: 568
       runAsGroup: 568
