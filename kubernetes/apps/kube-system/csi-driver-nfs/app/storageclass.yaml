@@ -5,7 +5,7 @@ metadata:
   name: nfs-slow
 provisioner: nfs.csi.k8s.io
 parameters:
-  server: "nova.${SECRET_PRIVATE_DOMAIN}"
+  server: nova.home.arpa
   share: /appdata/pvc
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
@@ -21,7 +21,7 @@ metadata:
   name: nfs-fast
 provisioner: nfs.csi.k8s.io
 parameters:
-  server: "nova.${SECRET_PRIVATE_DOMAIN}"
+  server: nova.home.arpa
   share: /appdata-fast/pvc
 reclaimPolicy: Delete
 volumeBindingMode: Immediate

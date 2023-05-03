@@ -73,25 +73,25 @@ spec:
       audio:
         enabled: true
         type: nfs
-        server: "nova.${SECRET_PRIVATE_DOMAIN}"
+        server: nova.home.arpa
         path: /downloads/youtube/audio
         mountPath: /app/audio
       video:
         enabled: true
         type: nfs
-        server: "nova.${SECRET_PRIVATE_DOMAIN}"
+        server: nova.home.arpa
         path: /downloads/youtube/video
         mountPath: /app/video
       subscriptions:
         enabled: true
         type: nfs
-        server: "nova.${SECRET_PRIVATE_DOMAIN}"
+        server: nova.home.arpa
         path: /downloads/youtube/subscriptions
         mountPath: /app/subscriptions
       users:
         enabled: true
         type: nfs
-        server: "nova.${SECRET_PRIVATE_DOMAIN}"
+        server: nova.home.arpa
         path: /downloads/youtube/users
         mountPath: /app/users
     resources:

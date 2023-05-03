@@ -113,7 +113,7 @@ spec:
       books:
         enabled: true
         type: nfs
-        server: nova.${SECRET_PRIVATE_DOMAIN}
+        server: nova.home.arpa
         path: /books/ebooks
         readOnly: true
         mountPath: /books/ebooks

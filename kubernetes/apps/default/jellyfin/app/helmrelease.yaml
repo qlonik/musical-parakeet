@@ -86,21 +86,21 @@ spec:
       movies:
         enabled: true
         type: nfs
-        server: nova.${SECRET_PRIVATE_DOMAIN}
+        server: nova.home.arpa
         path: /movies
         mountPath: /data/movies
         readOnly: true
       music:
         enabled: true
         type: nfs
-        server: nova.${SECRET_PRIVATE_DOMAIN}
+        server: nova.home.arpa
         path: /music
         mountPath: /data/music
         readOnly: true
       series:
         enabled: true
         type: nfs
-        server: nova.${SECRET_PRIVATE_DOMAIN}
+        server: nova.home.arpa
         path: /series
         mountPath: /data/tvshows
         readOnly: true

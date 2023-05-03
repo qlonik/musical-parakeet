@@ -77,13 +77,13 @@ spec:
       media-movies:
         enabled: true
         type: nfs
-        server: "nova.${SECRET_PRIVATE_DOMAIN}"
+        server: nova.home.arpa
         path: /movies
         mountPath: /media/movies
       media-series:
         enabled: true
         type: nfs
-        server: "nova.${SECRET_PRIVATE_DOMAIN}"
+        server: nova.home.arpa
         path: /series
         mountPath: /media/series
       add-ons:

@@ -95,7 +95,7 @@ spec:
       downloads:
         enabled: true
         type: nfs
-        server: nova.${SECRET_PRIVATE_DOMAIN}
+        server: nova.home.arpa
         path: /downloads/qbittorrent
         mountPath: /downloads/qbittorrent
       incomplete:

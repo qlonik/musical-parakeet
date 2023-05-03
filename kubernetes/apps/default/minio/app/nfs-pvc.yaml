@@ -10,7 +10,7 @@ spec:
   capacity:
     storage: 1Mi
   nfs:
-    server: "nova.${SECRET_PRIVATE_DOMAIN}"
+    server: nova.home.arpa
     path: /appdata/minio
   mountOptions: ["nfsvers=4.2", "nconnect=8", "hard", "noatime"]
   claimRef:

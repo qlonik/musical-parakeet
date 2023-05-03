@@ -83,13 +83,13 @@ spec:
       music:
         enabled: true
         type: nfs
-        server: "nova.${SECRET_PRIVATE_DOMAIN}"
+        server: nova.home.arpa
         path: /movies
         mountPath: /media/movies
       downloads:
         enabled: true
         type: nfs
-        server: "nova.${SECRET_PRIVATE_DOMAIN}"
+        server: nova.home.arpa
         path: /downloads
         mountPath: /media/downloads
     resources:

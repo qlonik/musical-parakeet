@@ -124,7 +124,7 @@ spec:
       downloads:
         enabled: true
         type: nfs
-        server: nova.${SECRET_PRIVATE_DOMAIN}
+        server: nova.home.arpa
         path: /downloads/transmission
         mountPath: /downloads/transmission
       incomplete:

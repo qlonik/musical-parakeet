@@ -87,13 +87,13 @@ spec:
       export:
         enabled: true
         type: nfs
-        server: "nova.${SECRET_PRIVATE_DOMAIN}"
+        server: nova.home.arpa
         path: /appdata/paperless-ngx/export
         mountPath: /usr/src/paperless/export
       consume:
         enabled: true
         type: nfs
-        server: "nova.${SECRET_PRIVATE_DOMAIN}"
+        server: nova.home.arpa
         path: /appdata/paperless-ngx/consume
         mountPath: /usr/src/paperless/consume
     resources:

@@ -122,13 +122,13 @@ spec:
       books:
         enabled: true
         type: nfs
-        server: nova.${SECRET_PRIVATE_DOMAIN}
+        server: nova.home.arpa
         path: /books
         mountPath: /media/books
       books-to-import:
         enabled: true
         type: nfs
-        server: nova.${SECRET_PRIVATE_DOMAIN}
+        server: nova.home.arpa
         path: /downloads/books-to-import
         mountPath: /media/downloads/books-to-import
     resources:
