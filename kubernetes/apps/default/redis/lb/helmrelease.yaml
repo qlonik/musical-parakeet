@@ -33,7 +33,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: public.ecr.aws/docker/library/haproxy
-      tag: 2.7.7-alpine@sha256:15c5415f2631803486c7afd8d931f0e0cdbd7899f3f938c7dafae72e2187ee20
+      tag: 2.7.8-alpine@sha256:61ca1e58d4f21a5330058b5b12fd70482c30247b4197d8e4388228e6d05aa2a5
     env:
       REDIS_PASSWORD:
         valueFrom:
