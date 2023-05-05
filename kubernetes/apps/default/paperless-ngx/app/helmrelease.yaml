@@ -30,7 +30,7 @@ spec:
       type: statefulset
     image:
       repository: ghcr.io/paperless-ngx/paperless-ngx
-      tag: 1.14.2@sha256:d49c5d029e04a62d11c131a5d753b3895b45d23a1abc30759b2fc8a7c04dc847
+      tag: 1.14.4@sha256:3ec9e875030cb63ee2e92beea97aaf829ae8b2d23253b25fd7aefb816e361431
     env:
       # PAPERLESS_CONSUMER_DELETE_DUPLICATES: true
       # PAPERLESS_CONSUMER_POLLING: 60
