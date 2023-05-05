@@ -6,6 +6,5 @@ resources:
   - ./restic-secret.sops.yaml
   - ./helmrelease.yaml
   - ./volsync.yaml
-
 patchesStrategicMerge:
   - ./patches/minio-init-bucket.yaml

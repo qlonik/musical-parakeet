@@ -7,7 +7,6 @@ resources:
   - ./restic-secret.sops.yaml
   - ./helmrelease.yaml
   - ./volsync.yaml
-
 patchesStrategicMerge:
   - ./patches/postgres-init.yaml
   - ./patches/minio-init-bucket.yaml

@@ -10,5 +10,6 @@ resources:
   - ./helmrelease.yaml
 
 patchesStrategicMerge:
-  - ./patches/postgres-init.yaml
   - ./patches/extra-configs.yaml
+  - ./patches/minio-init-bucket.yaml
+  - ./patches/postgres-init.yaml

@@ -6,6 +6,9 @@ resources:
   - ./restic-secret.sops.yaml
   - ./helmrelease.yaml
   - ./volsync.yaml
+patchesStrategicMerge:
+  - ./patches/minio-init-bucket.yaml
+
 labels:
   - pairs:
       app.kubernetes.io/name: jellyfin
