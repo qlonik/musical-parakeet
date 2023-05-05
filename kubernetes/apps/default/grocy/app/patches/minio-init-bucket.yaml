@@ -7,7 +7,7 @@ metadata:
 spec:
   values:
     initContainers:
-      init-minio-bucket:
+      minio-init-bucket:
         image: ghcr.io/qlonik/minio-init-bucket:RELEASE.2023-04-12T02-21-51Z@sha256:4ce4b3e62f4a1922bbcb9cfbcac529d42ba1702a0914fbdcd79a3bb00425ee2c
         env:
           MINIO_HOST: http://minio.default.svc.cluster.local:9000
@@ -24,10 +24,10 @@ spec:
           MINIO_BUCKET_NAME:
             valueFrom:
               secretKeyRef:
-                name: grocy-restic-secret
+                name: "{{ .Release.Name }}-restic-secret"
                 key: AWS_ACCESS_KEY_ID
           MINIO_BUCKET_PASSWORD:
             valueFrom:
               secretKeyRef:
-                name: grocy-restic-secret
+                name: "{{ .Release.Name }}-restic-secret"
                 key: AWS_SECRET_ACCESS_KEY
