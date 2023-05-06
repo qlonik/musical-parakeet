@@ -9,6 +9,7 @@ resources:
   - ./calico.yaml
   - ./cloudnative-pg.yaml
   - ./csi-driver-nfs.yaml
+  - ./descheduler.yaml
   - ./external-dns.yaml
   - ./hajimari.yaml
   - ./ingress-nginx.yaml
