@@ -31,7 +31,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: nginxinc/nginx-unprivileged
-      tag: stable-alpine@sha256:d66196d3b37793dc4ca71f02c85a7d36bd15557f58f856423d773e8634761d96
+      tag: stable-alpine@sha256:c04ba7592a7f0f0b502e13b76b9ac152c8cee2870e033e989103548b2bf60038
     service:
       main:
         ports:
