@@ -94,7 +94,7 @@ spec:
     redis:
       enabled: false
     cronjob:
-      enabled: false
+      enabled: true
     startupProbe:
       enabled: true
       failureThreshold: 90
