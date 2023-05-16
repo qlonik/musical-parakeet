@@ -25,6 +25,11 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: minio
+      namespace: default
+    - name: redis-lb
+      namespace: default
   values:
     controller:
       type: statefulset

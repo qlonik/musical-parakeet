@@ -26,6 +26,13 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: authelia
+      namespace: default
+    - name: minio
+      namespace: default
+    - name: redis-lb
+      namespace: default
   values:
     nextcloud:
       host: &host "cloud.${SECRET_DOMAIN}"
