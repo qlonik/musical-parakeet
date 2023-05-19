@@ -5,8 +5,6 @@ metadata:
   name: cluster-apps-redis
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: cluster-apps-local-path-provisioner
   path: ./kubernetes/apps/default/redis/app
   prune: true
   sourceRef:

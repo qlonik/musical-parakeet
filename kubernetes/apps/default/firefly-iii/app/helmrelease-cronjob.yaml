@@ -27,9 +27,6 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
-  dependsOn:
-    - name: firefly-iii
-      namespace: default
   values:
     controller:
       type: cronjob

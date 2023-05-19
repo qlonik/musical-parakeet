@@ -10,7 +10,6 @@ spec:
     - name: cluster-apps-cloudnative-pg-cluster
     - name: cluster-apps-csi-driver-nfs
     - name: cluster-apps-local-path-provisioner
-    - name: cluster-apps-minio
     - name: cluster-apps-redis-lb
     - name: cluster-apps-volsync
   path: ./kubernetes/apps/default/nextcloud/app

@@ -26,5 +26,3 @@ instance.
 3. Add a new mapping from the username to the backing service in the
    `data-importer-ingress/config/data-importer.conf`. This should just be a copy
    of one of the existing lines with bumped user index.
-4. Add a new HelmRelease dependency to `dependsOn` list in
-   `data-importer-ingress/helmrelease.yaml`.
