@@ -108,20 +108,20 @@ spec:
         enabled: true
         type: emptyDir
         mountPath: /config/transcodes
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: feature.node.kubernetes.io/pci-0300_1002.present
-                  operator: In
-                  values:
-                    - "true"
+    # affinity:
+    #   nodeAffinity:
+    #     requiredDuringSchedulingIgnoredDuringExecution:
+    #       nodeSelectorTerms:
+    #         - matchExpressions:
+    #             - key: feature.node.kubernetes.io/pci-0300_1002.present
+    #               operator: In
+    #               values:
+    #                 - "true"
     resources:
       requests:
-        amd.com/gpu: 1
+        # amd.com/gpu: 1
         cpu: 100m
         memory: 1Gi
       limits:
-        amd.com/gpu: 1
+        # amd.com/gpu: 1
         memory: 4Gi
