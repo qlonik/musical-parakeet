@@ -60,7 +60,7 @@ spec:
         mountPath: /dev
         type: hostPath
         hostPath: /dev
-        readOnly: true
+        # readOnly: true
     resources:
       requests:
         cpu: 100m
