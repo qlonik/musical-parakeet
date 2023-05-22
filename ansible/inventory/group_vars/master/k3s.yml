@@ -31,9 +31,15 @@ k3s_server:
   cluster-cidr: "10.42.0.0/16"
   # Network CIDR to use for service IPs
   service-cidr: "10.43.0.0/16"
+  kubelet-arg:
+    # https://github.com/k3s-io/k3s/issues/1264#issuecomment-1037316446
+    - "node-status-update-frequency=4s"
   kube-controller-manager-arg:
     # Required to monitor kube-controller-manager with kube-prometheus-stack
     - "bind-address=0.0.0.0"
+    # https://github.com/k3s-io/k3s/issues/1264#issuecomment-1037316446
+    - "node-monitor-period=4s"
+    - "node-monitor-grace-period=16s"
   kube-proxy-arg:
     # Required to monitor kube-proxy with kube-prometheus-stack
     - "metrics-bind-address=0.0.0.0"
@@ -45,3 +51,6 @@ k3s_server:
   kube-apiserver-arg:
     # Required for HAProxy health-checks
     - "anonymous-auth=true"
+    # https://github.com/k3s-io/k3s/issues/1264#issuecomment-1037316446
+    - "default-not-ready-toleration-seconds=20"
+    - "default-unreachable-toleration-seconds=20"
