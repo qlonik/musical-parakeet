@@ -27,6 +27,7 @@ spec:
     keepHistory: false
   dependsOn:
     - name: qbittorrent
+      namespace: default
   values:
     controller:
       type: cronjob

@@ -25,6 +25,11 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: firefly-iii-data-importer-user-01
+      namespace: default
+    - name: firefly-iii-data-importer-user-02
+      namespace: default
   values:
     controller:
       annotations:

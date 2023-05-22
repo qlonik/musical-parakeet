@@ -5,6 +5,9 @@ metadata:
   name: cluster-apps-grocy
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: cluster-apps-minio
+    - name: cluster-apps-volsync
   path: ./kubernetes/apps/default/grocy/app
   prune: true
   sourceRef:

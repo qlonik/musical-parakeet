@@ -25,6 +25,9 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: vikunja-api
+      namespace: default
   values:
     controller:
       replicas: 1

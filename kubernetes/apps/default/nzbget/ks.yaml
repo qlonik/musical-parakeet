@@ -6,8 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    # - name: cluster-apps-external-secrets-stores
-    # - name: cluster-apps-rook-ceph-cluster
+    - name: cluster-apps-minio
     - name: cluster-apps-volsync
   path: ./kubernetes/apps/default/nzbget/app
   prune: true
