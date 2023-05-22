@@ -1,0 +1,7 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./namespace.yaml
+  # For this to work, read https://github.com/onedr0p/flux-cluster-template/discussions/591#discussioncomment-4637535
+  - ./tigera-operator/ks.yaml

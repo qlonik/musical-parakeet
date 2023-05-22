@@ -33,6 +33,8 @@ k3s_server_manifests_urls:
     filename: kube-vip-rbac.yaml
   # Tigera Operator
   # https://github.com/projectcalico/calico/issues/7003
+  # When bootstrapping the cluster for the first time, see
+  # https://github.com/onedr0p/flux-cluster-template/discussions/591#discussioncomment-4637535
   - url: https://raw.githubusercontent.com/projectcalico/calico/v3.24.2/manifests/tigera-operator.yaml
     filename: calico-tigera-operator.yaml
   # Prometheus Operator
