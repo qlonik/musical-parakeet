@@ -72,12 +72,15 @@ spec:
     service:
       main:
         enabled: true
+        ports:
+          http:
+            port: *port-ui
+      bittorrent:
+        enabled: true
         type: LoadBalancer
         externalIPs: ["${METALLB_TRANSMISSION_ADDR}"]
         externalTrafficPolicy: Local
         ports:
-          http:
-            port: *port-ui
           bittorrent-tcp:
             enabled: true
             port: *port-bt
