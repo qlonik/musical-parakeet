@@ -119,6 +119,15 @@ spec:
         subPath: configuration.yml
         mountPath: /config/configuration.yml
         readOnly: false
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: node.home.arpa/type
+                  operator: NotIn
+                  values:
+                    - "transient"
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname

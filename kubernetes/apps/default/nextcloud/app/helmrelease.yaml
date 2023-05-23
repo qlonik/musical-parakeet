@@ -138,3 +138,12 @@ spec:
       tls:
         - hosts:
             - *host
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: node.home.arpa/type
+                  operator: NotIn
+                  values:
+                    - "transient"

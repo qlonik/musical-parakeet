@@ -31,8 +31,19 @@ spec:
     auth:
       existingSecret: redis-credentials
       existingSecretPasswordKey: redis-password
+    master:
+      affinity: &transient-node-affinity
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node.home.arpa/type
+                    operator: NotIn
+                    values:
+                      - "transient"
     replica:
       replicaCount: 1
+      affinity: *transient-node-affinity
     sentinel:
       enabled: true
       masterSet: redis-master

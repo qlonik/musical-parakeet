@@ -43,3 +43,13 @@ spec:
     barmanObjectStore:
       <<: *barman-object-store
       serverName: postgres-v2
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: node.home.arpa/type
+                operator: NotIn
+                values:
+                  - "transient"
