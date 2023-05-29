@@ -8,12 +8,11 @@ spec:
   values:
     initContainers:
       03-db-migrations:
-        image: ghcr.io/qlonik/attic-develop:171c89fbe0f099e8bf6e466a1a1a12578f703f0e@sha256:910e1457607f161327b04750f5b04cec9245fa54af3603e092b70ba09df54743
+        image: ghcr.io/zhaofengli/attic:latest@sha256:c3cb75ad3d8da5bfc864969ea967438d50df3f957aba2d031e5f89e6e3932a68
         envFrom:
           - secretRef:
               name: attic-credentials
         args:
-          - /app/result/bin/atticd
           - --config
           - /config/server.toml
           - --mode
