@@ -33,7 +33,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/foxcpp/maddy
-      tag: 0.6.3@sha256:616288f54b7a8328135b093c27d46d14fab4f3650753d9ea853262bf4e5f6eef
+      tag: 0.7.0@sha256:fdcc500eac9b35e2eab5597921be3407075892831f24c01c009e83591dc3b020
     env:
       DEBUG: "true"
       SMTP_PORT: 465
