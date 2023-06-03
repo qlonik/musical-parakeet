@@ -28,6 +28,11 @@ spec:
               annotations:
                 auth.home.arpa/type: "basic"
       mutate:
+        targets:
+          - apiVersion: "{{ request.object.apiVersion }}"
+            kind: "{{ request.object.kind }}"
+            name: "{{ request.object.metadata.name }}"
+            namespace: "{{ request.object.metadata.namespace }}"
         patchStrategicMerge:
           metadata:
             annotations: &auth-keys
@@ -50,6 +55,11 @@ spec:
                 auth.home.arpa/enabled: "true"
                 auth.home.arpa/type: "basic"
       mutate:
+        targets:
+          - apiVersion: "{{ request.object.apiVersion }}"
+            kind: "{{ request.object.kind }}"
+            name: "{{ request.object.metadata.name }}"
+            namespace: "{{ request.object.metadata.namespace }}"
         patchStrategicMerge:
           metadata:
             annotations:

@@ -26,6 +26,11 @@ spec:
               annotations:
                 external-dns.alpha.kubernetes.io/target: "ipv4.${SECRET_DOMAIN}"
       mutate:
+        targets:
+          - apiVersion: "{{ request.object.apiVersion }}"
+            kind: "{{ request.object.kind }}"
+            name: "{{ request.object.metadata.name }}"
+            namespace: "{{ request.object.metadata.namespace }}"
         patchStrategicMerge:
           metadata:
             annotations:
