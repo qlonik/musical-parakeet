@@ -9,7 +9,7 @@ resources:
   - ./volsync.yaml
   - ./helmrelease.yaml
 
-patchesStrategicMerge:
-  - ./patches/extra-configs.yaml
-  - ./patches/minio-init-bucket.yaml
-  - ./patches/postgres-init.yaml
+patches:
+  - path: ./patches/extra-configs.yaml
+  - path: ./patches/minio-init-bucket.yaml
+  - path: ./patches/postgres-init.yaml

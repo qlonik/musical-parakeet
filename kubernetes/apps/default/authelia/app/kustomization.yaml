@@ -5,9 +5,9 @@ resources:
   - ./secret.sops.yaml
   - ./helmrelease.yaml
 
-patchesStrategicMerge:
-  - ./patches/env.yaml
-  - ./patches/postgres-init.yaml
+patches:
+  - path: ./patches/env.yaml
+  - path: ./patches/postgres-init.yaml
 
 configMapGenerator:
   - name: authelia-config

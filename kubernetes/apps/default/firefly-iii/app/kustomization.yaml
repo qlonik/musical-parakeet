@@ -8,5 +8,5 @@ resources:
   - ./data-importer-resources.sops.yaml
   - ./data-importer-substitutions.sops.yaml
 
-patchesStrategicMerge:
-  - ./patches/postgres-init.yaml
+patches:
+  - path: ./patches/postgres-init.yaml

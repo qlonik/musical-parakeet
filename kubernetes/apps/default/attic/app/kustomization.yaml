@@ -8,10 +8,10 @@ resources:
   - ./helmrelease.yaml
   - ./helmrelease-cronjob.yaml
 
-patchesStrategicMerge:
-  - ./patches/postgres-init.yaml
-  - ./patches/minio-init-bucket.yaml
-  - ./patches/db-migrations.yaml
+patches:
+  - path: ./patches/postgres-init.yaml
+  - path: ./patches/minio-init-bucket.yaml
+  - path: ./patches/db-migrations.yaml
 
 configMapGenerator:
   - name: attic-config
