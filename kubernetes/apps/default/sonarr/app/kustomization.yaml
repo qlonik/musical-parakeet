@@ -7,5 +7,6 @@ resources:
   - ./restic-secret.sops.yaml
   - ./helmrelease.yaml
   - ./volsync.yaml
+
 patches:
   - path: ./patches/minio-init-bucket.yaml

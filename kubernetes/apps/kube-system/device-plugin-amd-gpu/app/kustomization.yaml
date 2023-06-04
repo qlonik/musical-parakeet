@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: kube-system
 resources:
   - ./helmrelease.yaml
+
 labels:
   - pairs:
       app.kubernetes.io/name: device-plugin-amd-gpu

@@ -7,5 +7,6 @@ resources:
   - ./helmrelease.yaml
   - ./volsync.yaml
   - ./cronjobs
+
 patches:
   - path: ./patches/minio-init-bucket.yaml
