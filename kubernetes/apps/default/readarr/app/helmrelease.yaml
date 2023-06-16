@@ -33,7 +33,7 @@ spec:
       type: statefulset
     image:
       repository: ghcr.io/onedr0p/readarr-develop
-      tag: 0.1.6.1867@sha256:e40ce8e09a0f3e5ed47ac71098b146ef55c915c744abd8d069ead82cc2d00754
+      tag: 0.1.8.1889@sha256:59d04ce2c28fc63d9ccb9d35880d2483828ce4018743a84e3d204a17955437dd
     env:
       TZ: ${TIMEZONE}
     envFrom:
