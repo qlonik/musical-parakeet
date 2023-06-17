@@ -10,3 +10,4 @@ resources:
 
 patches:
   - path: ./patches/minio-init-bucket.yaml
+  - path: ./patches/reannounce-sidecar.yaml

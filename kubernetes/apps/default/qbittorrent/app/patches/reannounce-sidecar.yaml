@@ -1,0 +1,13 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: qbittorrent
+  namespace: default
+spec:
+  values:
+    sidecars:
+      reannounce:
+        image: ghcr.io/buroa/qbittools:v0.1.0
+        imagePullPolicy: IfNotPresent
+        args: ["reannounce", "-s", "localhost", "-p", "80"]
