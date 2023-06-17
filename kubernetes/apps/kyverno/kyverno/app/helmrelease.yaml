@@ -35,6 +35,17 @@ spec:
     admissionController:
       serviceMonitor:
         enabled: true
+      rbac:
+        clusterRole:
+          extraResources:
+            - apiGroups:
+                - ""
+              resources:
+                - pods
+              verbs:
+                - create
+                - update
+                - delete
       # topologySpreadConstraints:
       #   - maxSkew: 1
       #     topologyKey: kubernetes.io/hostname
@@ -42,9 +53,17 @@ spec:
       #     labelSelector:
       #       matchLabels:
       #         app.kubernetes.io/instance: kyverno
+      #         app.kubernetes.io/component: kyverno
     backgroundController:
       serviceMonitor:
         enabled: true
+      rbac:
+        clusterRole:
+          extraResources:
+            - apiGroups:
+                - ""
+              resources:
+                - pods
     cleanupController:
       serviceMonitor:
         enabled: true
