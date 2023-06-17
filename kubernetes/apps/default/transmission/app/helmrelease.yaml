@@ -33,7 +33,7 @@ spec:
       type: statefulset
     image:
       repository: ghcr.io/onedr0p/transmission
-      tag: 4.0.3@sha256:e35223d340658249c2a7c59f4ae5d79da962f567d13f7edf0f3be953ce400dd6
+      tag: 4.0.3@sha256:6b1154ac5f3e3b89d874bb977143bbc470000abd784d5dcb45a33ee24ac35069
     env:
       TZ: ${TIMEZONE}
       TRANSMISSION__DOWNLOAD_DIR: /downloads/transmission/complete
