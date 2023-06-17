@@ -40,7 +40,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/zhaofengli/attic
-      tag: latest@sha256:c3cb75ad3d8da5bfc864969ea967438d50df3f957aba2d031e5f89e6e3932a68
+      tag: latest@sha256:2104ae158aaa6c941e873d106fbb743ae33ad5bc2f94dffe4a5ccfc4462452bb
     envFrom:
       - secretRef:
           name: attic-credentials
