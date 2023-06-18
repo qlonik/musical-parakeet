@@ -1,0 +1,15 @@
+ydl_server:
+  port: 8080
+  host: 0.0.0.0
+  metadata_db_path: "/youtube-dl/.ydl-metadata.db"
+  output_playlist: "/youtube-dl/playlists/%(playlist_title)s [%(playlist_id)s]/%(playlist_index|)s%(playlist_index& - |)s%(title)s [%(id)s].%(ext)s"
+
+ydl_options:
+  output: "/youtube-dl/downloads/%(channel)s [%(channel_id)s]/%(title)s [%(id)s].%(ext)s"
+  cache-dir: "/youtube-dl/.cache"
+  restrict-filenames: True
+  no-playlist: True
+  write-thumbnail: True
+  write-description: True
+  write-info-json: True
+  write-playlist-metafiles: True

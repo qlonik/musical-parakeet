@@ -1,0 +1,23 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-apps-youtube-dl-server
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: cluster-apps-minio
+    - name: cluster-apps-volsync
+  path: ./kubernetes/apps/default/youtube-dl-server/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+      kind: HelmRelease
+      name: youtube-dl-server
+      namespace: default
+  interval: 30m
+  retryInterval: 1m
+  timeout: 3m

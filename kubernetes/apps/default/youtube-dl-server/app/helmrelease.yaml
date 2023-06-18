@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: youtubedl-material
+  name: youtube-dl-server
   namespace: default
 spec:
   interval: 15m
@@ -32,71 +32,64 @@ spec:
     controller:
       type: statefulset
     image:
-      repository: ghcr.io/tzahi12345/youtubedl-material
-      tag: 4.3.2@sha256:2f943d584711cb07c3535b518939fabb2ab90fdd7452d9a9938cd05378468ed9
+      repository: nbr23/youtube-dl-server
+      tag: yt-dlp@sha256:df977e4e137f482d5e8d99ac1bc1f9e97c337fee4cebb8f59d83b94c1d2b22d2
     env:
       TZ: ${TIMEZONE}
-      UID: 568
-      GID: 568
-      ALLOW_CONFIG_MUTATIONS: "true"
     service:
       main:
         ports:
           http:
-            port: 17442
+            port: 8080
     ingress:
       main:
         enabled: true
         ingressClassName: nginx
         annotations:
-          nginx.ingress.kubernetes.io/configuration-snippet: |
-            proxy_set_header Accept-Encoding "";
           hajimari.io/icon: mdi:filmstrip
         hosts:
-          - host: &host "ytdl-old.${SECRET_DOMAIN}"
+          - host: &host "ytdl.${SECRET_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
               - *host
-    # podSecurityContext:
-    #   runAsUser: 568
-    #   runAsGroup: 568
-    #   fsGroup: 568
-    #   fsGroupChangePolicy: "OnRootMismatch"
-    #   supplementalGroups: [10000]
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: "OnRootMismatch"
     volumeClaimTemplates:
-      - name: config
-        mountPath: /app/appdata
+      - name: data
+        mountPath: /youtube-dl/
         accessMode: ReadWriteMany
         size: 1Gi
         storageClass: nfs-fast
     persistence:
-      audio:
+      config:
+        enabled: true
+        type: configMap
+        name: youtube-dl-server-config
+        subPath: config.yml
+        mountPath: /app_config/config.yml
+        readOnly: true
+      downloads:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /downloads/youtube/audio
-        mountPath: /app/audio
-      video:
+        path: /downloads/youtube/downloads
+        mountPath: /youtube-dl/downloads
+      playlists:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /downloads/youtube/video
-        mountPath: /app/video
-      subscriptions:
+        path: /downloads/youtube/playlists
+        mountPath: /youtube-dl/playlists
+      cache-dir:
         enabled: true
-        type: nfs
-        server: nova.home.arpa
-        path: /downloads/youtube/subscriptions
-        mountPath: /app/subscriptions
-      users:
-        enabled: true
-        type: nfs
-        server: nova.home.arpa
-        path: /downloads/youtube/users
-        mountPath: /app/users
+        type: emptyDir
+        mountPath: /youtube-dl/.cache
     resources:
       requests:
         cpu: 10m
