@@ -1,0 +1,95 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app linkding
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      replicas: 1
+      strategy: RollingUpdate
+      annotations:
+        reloader.stakater.com/auto: "true"
+    image:
+      repository: sissbruecker/linkding
+      tag: 1.19.0@sha256:210f3660299bc46fc7f3d209b0676bdd10d2897e363cef792f7bd5554dc4cf4c
+    env:
+      LD_SUPERUSER_NAME: admin
+      LD_ENABLE_AUTH_PROXY: "True"
+      LD_AUTH_PROXY_USERNAME_HEADER: HTTP_REMOTE_USER
+      LD_AUTH_PROXY_LOGOUT_URL: "https://auth.${SECRET_DOMAIN}/logout"
+      # LD_CSRF_TRUSTED_ORIGINS: "https://bookmarks.${SECRET_DOMAIN}"
+      LD_DB_ENGINE: postgres
+      LD_DB_HOST: "postgres-rw.default.svc.cluster.local"
+      LD_DB_PORT: "5432"
+    envFrom:
+      - secretRef:
+          name: linkding-credentials
+    service:
+      main:
+        ports:
+          http:
+            port: &port 9090
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: nginx
+        annotations:
+          auth.home.arpa/enabled: "true"
+        hosts:
+          - host: &host "bookmarks.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    probes:
+      liveness: &probes
+        enabled: true
+        custom: true
+        spec:
+          httpGet:
+            path: /health
+            port: *port
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+      readiness: *probes
+      startup:
+        enabled: false
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: *app
+    resources:
+      requests:
+        cpu: 10m
+        memory: 100Mi
+      limits:
+        memory: 750Mi
