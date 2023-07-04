@@ -21,6 +21,7 @@ resources:
   - ./linkding/ks.yaml
   - ./maddy/ks.yaml
   - ./minio/ks.yaml
+  - ./n8n/ks.yaml
   - ./nextcloud/ks.yaml
   - ./nzbget/ks.yaml
   - ./openldap/ks.yaml
