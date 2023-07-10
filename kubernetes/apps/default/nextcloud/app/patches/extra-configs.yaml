@@ -19,6 +19,7 @@ spec:
               0 => 'localhost',
               1 => getenv('NEXTCLOUD_TRUSTED_DOMAINS'),
             ),
+            'overwrite.cli.url' => 'https://' . getenv('NEXTCLOUD_TRUSTED_DOMAINS'),
             'ldapProviderFactory' => 'OCA\\User_LDAP\\LDAPProviderFactory',
           );
         reverse-proxy.config.php: |-
@@ -30,6 +31,8 @@ spec:
               2 => '${SVC_CIDR}',
             ),
             'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
+            'overwriteprotocol' => 'https',
+            'overwritehost' => getenv('NEXTCLOUD_TRUSTED_DOMAINS'),
           );
         oidc-login.config.php: |-
           <?php
