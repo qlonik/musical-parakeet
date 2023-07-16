@@ -9,4 +9,5 @@ resources:
   - ./volsync.yaml
 
 patches:
+  - path: ./patches/postgres-init.yaml
   - path: ./patches/minio-init-bucket.yaml
