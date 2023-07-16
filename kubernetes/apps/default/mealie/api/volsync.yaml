@@ -1,0 +1,38 @@
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: mealie-data
+  namespace: default
+spec:
+  sourcePVC: mealie-api-data
+  trigger:
+    schedule: "0 0 * * *"
+  restic:
+    copyMethod: Direct
+    pruneIntervalDays: 10
+    repository: mealie-data-restic-secret
+    cacheCapacity: 2Gi
+    storageClassName: nfs-fast
+    retain:
+      daily: 10
+      within: 3d
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: mealie-backups
+  namespace: default
+spec:
+  sourcePVC: mealie-api-backups
+  trigger:
+    schedule: "0 0 * * *"
+  restic:
+    copyMethod: Direct
+    pruneIntervalDays: 10
+    repository: mealie-backups-restic-secret
+    cacheCapacity: 2Gi
+    storageClassName: nfs-fast
+    retain:
+      daily: 10
+      within: 3d

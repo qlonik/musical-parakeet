@@ -1,0 +1,33 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: mealie-api
+  namespace: default
+spec:
+  values:
+    initContainers:
+      minio-init-bucket:
+        image: ghcr.io/qlonik/minio-init-bucket:RELEASE.2023-04-12T02-21-51Z@sha256:4ce4b3e62f4a1922bbcb9cfbcac529d42ba1702a0914fbdcd79a3bb00425ee2c
+        env:
+          MINIO_HOST: http://minio.default.svc.cluster.local:9000
+          MINIO_SUPER_ACCESS_KEY:
+            valueFrom:
+              secretKeyRef:
+                name: minio-secret
+                key: MINIO_ROOT_USER
+          MINIO_SUPER_SECRET_KEY:
+            valueFrom:
+              secretKeyRef:
+                name: minio-secret
+                key: MINIO_ROOT_PASSWORD
+          MINIO_BUCKET_NAME:
+            valueFrom:
+              secretKeyRef:
+                name: mealie-data-restic-secret
+                key: AWS_ACCESS_KEY_ID
+          MINIO_BUCKET_PASSWORD:
+            valueFrom:
+              secretKeyRef:
+                name: mealie-data-restic-secret
+                key: AWS_SECRET_ACCESS_KEY

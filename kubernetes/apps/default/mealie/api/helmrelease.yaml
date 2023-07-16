@@ -1,0 +1,125 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: mealie-api
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  dependsOn:
+    - name: openldap
+      namespace: default
+  values:
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
+    image:
+      repository: docker.io/hkotel/mealie
+      tag: api-nightly@sha256:2d25c51a9b864b8307c5140630cd60eeb526408f7eb11d4a4db5bf72d46fd608
+    env:
+      TZ: "${TIMEZONE}"
+      PUID: 568
+      PGID: 568
+
+      ALLOW_SIGNUP: "false"
+      API_PORT: &port 9000
+      AUTO_BACKUP_ENABLED: "true"
+      BASE_URL: "https://recipes.${SECRET_DOMAIN}"
+      DEFAULT_EMAIL: "admin@${SECRET_DOMAIN}"
+      TOKEN_TIME: 720
+
+      DB_ENGINE: postgres
+      POSTGRES_SERVER: postgres-rw.default.svc.cluster.local
+      POSTGRES_PORT: 5432
+
+      SMTP_HOST: smtp-relay.default.svc.cluster.local
+      SMTP_PORT: 2525
+      SMTP_FROM_NAME: Mealie
+      SMTP_FROM_EMAIL: "mealie@${SECRET_DOMAIN}"
+      SMTP_AUTH_STRATEGY: NONE
+
+      LDAP_AUTH_ENABLED: "true"
+      LDAP_SERVER_URL: ldap://openldap.default.svc.cluster.local:389
+      LDAP_TLS_INSECURE: "false"
+      LDAP_TLS_CACERTFILE: ""
+      LDAP_ENABLE_STARTTLS: "false"
+      LDAP_BASE_DN: dc=home,dc=arpa
+      LDAP_QUERY_BIND: cn=admin,dc=home,dc=arpa
+      LDAP_QUERY_PASSWORD:
+        valueFrom:
+          secretKeyRef:
+            name: openldap-credentials
+            key: LDAP_ADMIN_PASSWORD
+      LDAP_USER_FILTER: "(memberOf=cn=user,ou=groups,dc=home,dc=arpa)(objectClass=inetOrgPerson)"
+      LDAP_ADMIN_FILTER: "(memberOf=cn=admin,ou=groups,dc=home,dc=arpa)(objectClass=inetOrgPerson)"
+      LDAP_ID_ATTRIBUTE: uid
+      LDAP_NAME_ATTRIBUTE: uid
+      LDAP_MAIL_ATTRIBUTE: mail
+    envFrom:
+      - secretRef:
+          name: mealie-secret
+    service:
+      main:
+        ports:
+          http:
+            port: *port
+    probes:
+      liveness: &probes
+        enabled: true
+        custom: true
+        spec:
+          httpGet:
+            path: /api/app/about
+            port: *port
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+      readiness: *probes
+      startup:
+        enabled: false
+    podSecurityContext:
+      fsGroup: 568
+      fsGroupChangePolicy: "OnRootMismatch"
+    persistence:
+      data:
+        enabled: true
+        type: pvc
+        storageClass: nfs-fast
+        accessMode: ReadWriteMany
+        size: 2Gi
+        retain: true
+        mountPath: /app/data
+      backups:
+        enabled: true
+        type: pvc
+        storageClass: nfs-slow
+        accessMode: ReadWriteMany
+        size: 10Gi
+        retain: true
+        mountPath: /app/data/backups
+    resources:
+      requests:
+        cpu: 10m
+        memory: 200Mi
+      limits:
+        memory: 1000Mi
