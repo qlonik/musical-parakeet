@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./attic/ks.yaml
+  - ./audiobookshelf/ks.yaml
   - ./authelia/ks.yaml
   - ./bazarr/ks.yaml
   - ./calibre/ks.yaml

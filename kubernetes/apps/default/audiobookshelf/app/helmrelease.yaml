@@ -1,0 +1,90 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: audiobookshelf
+  namespace: default
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      type: statefulset
+    image:
+      repository: ghcr.io/advplyr/audiobookshelf
+      tag: 2.3.0@sha256:af7bb9721592e25fe80a6535f09fe22bc524056476b49be1340d65e64cc052f6
+    env:
+      TZ: "${TIMEZONE}"
+      AUDIOBOOKSHELF_UID: 568
+      AUDIOBOOKSHELF_GID: 568
+      CONFIG_PATH: /config
+      METADATA_PATH: /config/metadata
+    service:
+      main:
+        ports:
+          http:
+            port: 80
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: nginx
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: "OnRootMismatch"
+    volumeClaimTemplates:
+      - name: config
+        mountPath: /config
+        accessMode: ReadWriteMany
+        size: 5Gi
+        storageClass: nfs-fast
+    persistence:
+      audiobooks:
+        enabled: true
+        type: nfs
+        server: nova.home.arpa
+        path: /books/audio
+        mountPath: /media/audiobooks
+      podcasts:
+        enabled: true
+        type: nfs
+        server: nova.home.arpa
+        path: /podcasts
+        mountPath: /media/podcasts
+      cache:
+        enabled: true
+        mountPath: /.npm
+        type: emptyDir
+    resources:
+      requests:
+        cpu: 50m
+        memory: 100Mi
+      limits:
+        memory: 500Mi
