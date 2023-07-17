@@ -1,0 +1,66 @@
+---
+name: Actionsflow
+
+# event `repository_dispatch` with the type `webhook` is reserved by Actionsflow.
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/actionsflow.yaml"
+      - "workflows/**"
+  repository_dispatch:
+    types: [webhook]
+  workflow_dispatch:
+    inputs:
+      include:
+        description: |
+          --include: workflow file filter
+            You can use glob format to filter your workflows. The default value
+            is empty value, meaning no filter will be applied.
+        required: false
+        default: ""
+      force:
+        description: "--force: whether force to run workflow (true or false)"
+        required: false
+        default: "false"
+      verbose:
+        description: "--verbose: debug workflow (true or false)"
+        required: false
+        default: "false"
+
+jobs:
+  run:
+    runs-on: ["arc-runner-set-home-ops"]
+    name: Run
+    concurrency: actionsflow
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run Actionsflow
+        uses: qlonik/actionsflow-action@v2
+        with:
+          args: >-
+            build
+            ${{ github.event.inputs.include != '' && format('--include "{0}"', github.event.inputs.include) || '' }}
+            -f ${{ github.event.inputs.force == 'true' && 'true' || 'false' }}
+            --verbose ${{ github.event.inputs.verbose == 'true' && 'true' || 'false' }}
+          json-secrets: ${{ toJSON(secrets) }}
+          json-github: ${{ toJSON(github) }}
+
+      - name: Install act
+        run: curl -fsSL https://raw.githubusercontent.com/nektos/act/master/install.sh | bash -s -- -b ~/bin/
+      - name: Run act
+        run: |-
+          ~/bin/act \
+            ${{ github.event.inputs.verbose == 'true' && '--verbose' || '' }} \
+            --eventpath ./dist/event.json \
+            --workflows ./dist/workflows \
+            --secret-file ./dist/.secrets \
+            --env-file ./dist/.env \
+            --platform ubuntu-18.04=actionsflow/act-environment:v1 \
+            --platform ubuntu-20.04=actionsflow/act-environment:v1 \
+            --platform ubuntu-latest=actionsflow/act-environment:v1

@@ -1,0 +1,17 @@
+---
+name: Reset Actionsflow Cache
+
+on:
+  workflow_dispatch:
+
+jobs:
+  reset:
+    runs-on: ubuntu-latest
+    name: Reset Actionsflow Cache
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Actionsflow Clean
+        uses: qlonik/actionsflow-action@v2
+        with:
+          args: clean
+          json-secrets: ${{ toJSON(secrets) }}
