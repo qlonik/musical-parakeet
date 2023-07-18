@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./actions-runner-controller/ks.yaml
+  - ./actionsflow-webhook/ks.yaml
