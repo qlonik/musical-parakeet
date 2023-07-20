@@ -62,6 +62,4 @@ jobs:
             --workflows ./dist/workflows \
             --secret-file ./dist/.secrets \
             --env-file ./dist/.env \
-            --platform ubuntu-18.04=actionsflow/act-environment:v1 \
-            --platform ubuntu-20.04=actionsflow/act-environment:v1 \
-            --platform ubuntu-latest=actionsflow/act-environment:v1
+            --platform ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-latest
