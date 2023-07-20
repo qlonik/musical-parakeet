@@ -54,6 +54,10 @@ jobs:
       - name: Install act
         run: curl -fsSL https://raw.githubusercontent.com/nektos/act/master/install.sh | bash -s -- -b ~/bin/
       - name: Run act
+        # Consider adding support for cache artifacts
+        # https://github.com/nektos/act/issues/329#issuecomment-1187246629
+        # With this, cache action can be used in actionsflow workflows, caught by act
+        # and then uploaded to actual github cache
         run: |-
           ~/bin/act \
             ${{ github.event.inputs.verbose == 'true' && '--verbose' || '' }} \
