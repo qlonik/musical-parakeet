@@ -57,6 +57,7 @@ jobs:
         run: |-
           ~/bin/act \
             ${{ github.event.inputs.verbose == 'true' && '--verbose' || '' }} \
+            --bind \
             --eventpath ./dist/event.json \
             --workflows ./dist/workflows \
             --secret-file ./dist/.secrets \
