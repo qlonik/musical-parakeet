@@ -8,7 +8,7 @@ spec:
   values:
     sidecars:
       gotenberg:
-        image: docker.io/gotenberg/gotenberg:7.8.3@sha256:01131aa43819db671104388c8e9bd6a55f8d8cbc5eb217331240c2b16b078554
+        image: docker.io/gotenberg/gotenberg:7.9.1@sha256:8f18226026e6f9ca81738e8e3e7764caf2a822c3a41368d9feaf38ecf71f248f
         # The gotenberg chromium route is used to convert .eml files. We do not
         # want to allow external content like tracking pixels or even javascript.
         command:
