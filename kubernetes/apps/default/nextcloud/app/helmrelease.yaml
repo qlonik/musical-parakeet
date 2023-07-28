@@ -113,7 +113,8 @@ spec:
       className: nginx
       annotations:
         external-dns.alpha.kubernetes.io/target: "ipv4.${SECRET_DOMAIN}"
-        nginx.ingress.kubernetes.io/enable-cors: "true"
+        # Can re-enable if https://github.com/nextcloud/helm/issues/410 is resolved
+        nginx.ingress.kubernetes.io/enable-cors: "false"
         nginx.ingress.kubernetes.io/cors-allow-methods: |-
           GET,PUT,POST,DELETE,PATCH,OPTIONS,HEAD,CONNECT,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK,TRACE
         nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
