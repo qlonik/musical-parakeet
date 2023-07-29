@@ -17,3 +17,7 @@ creation_rules:
     key_groups:
       - age:
           - age1w68rvrv30t2xfm42ctr02vurav5222065pl03ys6ps5aklraq42s4jeyjl
+  - path_regex: workflows/.*\.sops\.yaml
+    key_groups:
+      - age:
+          - age1w68rvrv30t2xfm42ctr02vurav5222065pl03ys6ps5aklraq42s4jeyjl

@@ -1,0 +1,86 @@
+### Process firefly transactions
+#
+# This action expects the github secret `PROCESS_FIREFLY_TRANSACTIONS` in
+# the following format:
+# ```json
+# {
+#   "nc_user": "user",
+#   "nc_password": "password",
+#   "firefly_users": [{
+#     "pat": "eyJ0...",
+#     "accounts": { "1": "Credit card", "2": "Cash" },
+#     "cospend_payer_username": "user"
+#   }, ...]
+# }
+# ```
+# It should conform to the `PROCESS_FIREFLY_TRANSACTIONS` schema definition in
+# `workflows/process-firefly-transactions/submit-to-cospend/src/schema.ts`.
+# The current secret value is saved in
+# `workflows/process-firefly-transactions/secret.sops.yaml`.
+#
+# A transaction is expected to have a set of tags starting with `"cospend:"`
+# describing metadata about transaction to be added to Cospend.
+# All transactions tagged with `"cospend:done"` tag are considered as already
+# processed, so they are skipped. Example tags for an incoming transaction:
+# ```
+# cospend:project:purchases
+# cospend:for:user
+# cospend:category:Grocery
+# cospend:mode:Debit card
+# ```
+# All possible keys and values are described by `transactionConfigurationInputS`
+# schema definition in
+# `workflows/process-firefly-transactions/submit-to-cospend/src/schema.ts`.
+#
+# Each transaction is processed by the script in
+# `workflows/process-firefly-transactions/submit-to-cospend/`. It expects to
+# receive, `nc_base_url`, `nc_user`, and `nc_password` as environment variables
+# with the information how to connect and authenticate with nextcloud server.
+# You should use username and application password of a user that permissions to
+# create transactions in cospend project. The script also expects `input` env
+# var, which is a JSON string describing loaded transaction. The `input` object
+# should conform to the `TransactionInput` schema defined in
+# `workflows/process-firefly-transactions/submit-to-cospend/src/schema.ts`.
+#
+# To test this workflow, perform the following steps:
+# - Comment out `run_install` configuration to pnpm in this workflow.
+# - Set `baseURL` in `on.script` to public firefly address.
+# - Set `nc_base_url` and `ff3_base_rul` in env of `Process a transaction` step
+#   to public nextcloud and firefly addresses.
+# - Run the script `./workflows/process-firefly-transactions/test-locally.sh`
+#   from the root of the repository.
+
+on:
+  script:
+    path: ./workflows/process-firefly-transactions/load-unprocessed.cjs
+    secrets: ${{ secrets.PROCESS_FIREFLY_TRANSACTIONS }}
+    deduplicationKey: id
+    config:
+      force: true
+      limit: 10
+      filter:
+        "transaction.attributes.transactions":
+          $elemMatch:
+            tags:
+              $elemMatch: { $regex: "^cospend:" }
+              $nin: ["cospend:done"]
+
+jobs:
+  print:
+    name: Print
+    runs-on: ubuntu-latest
+    steps:
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: |
+            - cwd: workflows/process-firefly-transactions/submit-to-cospend/
+              args: [--frozen-lockfile, --strict-peer-dependencies]
+      - name: Process a transaction
+        env:
+          input: ${{ toJSON(on.script.outputs) }}
+          nc_user: ${{ fromJSON(secrets.PROCESS_FIREFLY_TRANSACTIONS).nc_user }}
+          nc_password:
+            ${{ fromJSON(secrets.PROCESS_FIREFLY_TRANSACTIONS).nc_password }}
+        working-directory: workflows/process-firefly-transactions/submit-to-cospend/
+        run: pnpm start
