@@ -31,7 +31,7 @@ spec:
   values:
     image:
       repository: docker.io/hkotel/mealie
-      tag: frontend-nightly@sha256:8f1160d798f7cba905cda401e81b34c46b782bd07bcc0011a559375662bd9e08
+      tag: frontend-nightly@sha256:f5aa2c69fd9f1c9fef8fc822f92eb206ade116ddddef54ad0549cf3b6dc786e9
     env:
       TZ: ${TIMEZONE}
       API_URL: http://mealie-api.default.svc.cluster.local:9000
