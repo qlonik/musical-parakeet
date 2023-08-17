@@ -2,7 +2,9 @@ import * as os from "node:os";
 import { inspect } from "node:util";
 import Axios, { AxiosInstance } from "axios";
 import * as S from "@effect/schema/Schema";
+import * as RA from "@effect/data/ReadonlyArray";
 import * as E from "@effect/data/Either";
+import * as O from "@effect/data/Option";
 import {
   CospendProjectBillsFrom,
   CospendProjectBillsS,
@@ -16,6 +18,7 @@ import {
 } from "./schema.js";
 import { formatErrors } from "@effect/schema/TreeFormatter";
 import { stripIndent } from "common-tags";
+import { pipe } from "@effect/data/Function";
 
 const API_BASE = "/index.php/apps/cospend";
 const FF3_API_BASE = "/api";
@@ -182,6 +185,24 @@ async function main() {
       continue;
     }
 
+    const categoryid = pipe(
+      O.fromNullable(category),
+      O.flatMap((name) =>
+        RA.findFirst(Object.values(p.categories), (_) => _.name === name)
+      ),
+      O.map((_) => _.id.toString()),
+      O.getOrElse(() => "")
+    );
+
+    const paymentmodeid = pipe(
+      O.fromNullable(paymentMethod),
+      O.flatMap((name) =>
+        RA.findFirst(Object.values(p.paymentmodes), (_) => _.name === name)
+      ),
+      O.map((_) => _.id.toString()),
+      O.getOrElse(() => "")
+    );
+
     const OBJECT_TO_SEND = {
       timestamp: new Date(t.date).getTime() / 1000,
       what: t.description,
@@ -189,8 +210,8 @@ async function main() {
       amount: t.amount,
       payer,
       payed_for,
-      ...(category ? { category } : {}),
-      ...(paymentMethod ? { paymentMethod } : {}),
+      categoryid,
+      paymentmodeid,
     };
 
     const { data: newBillId } =
