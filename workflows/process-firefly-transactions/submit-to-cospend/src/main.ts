@@ -187,6 +187,7 @@ async function main() {
 
     const categoryid = pipe(
       O.fromNullable(category),
+      O.orElse(() => O.fromNullable(t.category_name)),
       O.flatMap((name) =>
         RA.findFirst(Object.values(p.categories), (_) => _.name === name)
       ),
