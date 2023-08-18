@@ -49,6 +49,12 @@
 #   to public nextcloud and firefly addresses.
 # - Run the script `./workflows/process-firefly-transactions/test-locally.sh`
 #   from the root of the repository.
+#
+# For reference:
+# - The Firefly III API is documented here:
+#   `https://docs.firefly-iii.org/firefly-iii/api/`.
+# - The cospend API is defined here:
+#   `https://github.com/julien-nc/cospend-nc/blob/main/appinfo/routes.php`.
 
 on:
   script:
