@@ -222,6 +222,8 @@ const FireflyTransaction = S.struct({
         amount: S.string,
         description: S.string,
         tags: S.array(S.string),
+        category_id: S.nullable(S.string),
+        category_name: S.nullable(S.string),
       })
     ),
   }),
