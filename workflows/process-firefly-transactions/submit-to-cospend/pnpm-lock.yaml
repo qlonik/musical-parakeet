@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   '@actions/core':
     specifier: ^1.10.0
@@ -31,8 +35,8 @@ devDependencies:
     specifier: ^1.8.1
     version: 1.8.1
   '@types/node':
-    specifier: ^16.18.40
-    version: 16.18.40
+    specifier: ^18.0.0
+    version: 18.0.0
   tsx:
     specifier: ^3.12.7
     version: 3.12.7
@@ -309,8 +313,8 @@ packages:
     resolution: {integrity: sha512-20R/mDpKSPWdJs5TOpz3e7zqbeCNuMCPhV7Yndk9KU2Rbij2r5W4RzwDPkzC+2lzUqXYu9rFzTktCBnDjHuNQg==}
     dev: true
 
-  /@types/node@16.18.40:
-    resolution: {integrity: sha512-+yno3ItTEwGxXiS/75Q/aHaa5srkpnJaH+kdkTVJ3DtJEwv92itpKbxU+FjPoh2m/5G9zmUQfrL4A4C13c+iGA==}
+  /@types/node@18.0.0:
+    resolution: {integrity: sha512-cHlGmko4gWLVI27cGJntjs/Sj8th9aYwplmZFwmmgYQQvL5NUsgVJG7OddLvNfLqYS31KFN0s3qlaD9qCaxACA==}
     dev: true
 
   /asynckit@0.4.0:
