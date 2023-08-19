@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   '@actions/core':
     specifier: ^1.10.0
@@ -17,8 +21,8 @@ dependencies:
     specifier: ^1.4.0
     version: 1.4.0
   common-tags:
-    specifier: 1.8.1
-    version: 1.8.1
+    specifier: 1.8.2
+    version: 1.8.2
 
 devDependencies:
   '@tsconfig/node16':
@@ -338,8 +342,8 @@ packages:
       delayed-stream: 1.0.0
     dev: false
 
-  /common-tags@1.8.1:
-    resolution: {integrity: sha512-uOZd85rJqrdEIE/JjhW5YAeatX8iqjjvVzIyfx7JL7G5r9Tep6YpYT9gEJWhWpVyDQEyzukWd6p2qULpJ8tmBw==}
+  /common-tags@1.8.2:
+    resolution: {integrity: sha512-gk/Z852D2Wtb//0I+kRFNKKE9dIIVirjoqPoA1wJU+XePVXZfGeBpk45+A1rKO4Q43prqWBNY/MiIeRLbPWUaA==}
     engines: {node: '>=4.0.0'}
     dev: false
 
