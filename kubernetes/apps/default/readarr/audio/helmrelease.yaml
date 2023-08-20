@@ -30,7 +30,7 @@ spec:
       type: statefulset
     image:
       repository: ghcr.io/onedr0p/readarr-develop
-      tag: 0.2.3.1955@sha256:7fb2344ad4981906116624be51347de42ed4ec33713847bccef3b1d4f05fa5ca
+      tag: 0.3.3.2171@sha256:0ffcc215397104b3ec5cff972d55da4a6062870fa67c2b8c758a80e425c40a63
     env:
       TZ: ${TIMEZONE}
       READARR__URL_BASE: /audio
