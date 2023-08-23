@@ -8,6 +8,6 @@ spec:
   values:
     sidecars:
       reannounce:
-        image: ghcr.io/buroa/qbittools:v0.1.1
+        image: ghcr.io/buroa/qbittools:v0.5.0
         imagePullPolicy: IfNotPresent
         args: ["reannounce", "-s", "localhost", "-p", "80"]
