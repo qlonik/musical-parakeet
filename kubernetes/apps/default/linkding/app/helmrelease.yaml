@@ -33,7 +33,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: sissbruecker/linkding
-      tag: 1.19.0@sha256:210f3660299bc46fc7f3d209b0676bdd10d2897e363cef792f7bd5554dc4cf4c
+      tag: 1.20.1@sha256:34f43ebfd8d1f3aae8ca2adbb507262317d1c2dfa80937b100bee4b631f8a62a
     env:
       LD_SUPERUSER_NAME: admin
       LD_ENABLE_AUTH_PROXY: "True"
