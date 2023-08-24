@@ -7,7 +7,7 @@ metadata:
 spec:
   sourcePVC: mealie-api-data
   trigger:
-    schedule: "0 0 * * *"
+    schedule: "0 */24 * * *"
   restic:
     copyMethod: Direct
     pruneIntervalDays: 10
@@ -26,7 +26,7 @@ metadata:
 spec:
   sourcePVC: mealie-api-backups
   trigger:
-    schedule: "0 0 * * *"
+    schedule: "0 */24 * * *"
   restic:
     copyMethod: Direct
     pruneIntervalDays: 10
