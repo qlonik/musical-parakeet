@@ -23,7 +23,6 @@ resources:
   - ./maddy/ks.yaml
   - ./mealie/ks.yaml
   - ./minio/ks.yaml
-  - ./n8n/ks.yaml
   - ./nextcloud/ks.yaml
   - ./nzbget/ks.yaml
   - ./openldap/ks.yaml
