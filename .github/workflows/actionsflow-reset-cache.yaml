@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Reset Actionsflow Cache
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
       - name: Run Actionsflow Clean
         uses: qlonik/actionsflow-action@b225675c3c8f9ee1bcbe12e528b237997a29de10 # v2
         with:
