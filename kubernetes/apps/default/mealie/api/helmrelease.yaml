@@ -34,7 +34,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: docker.io/hkotel/mealie
-      tag: api-nightly@sha256:90459615779835fc0259d604a02e0778a35b49afba07a0d6c95ef6e00fd82ffa
+      tag: api-nightly@sha256:de411e508396bdbeaa6506cc1e68e1af39073477caaa8d4b0a52369f0f1f424a
     env:
       TZ: "${TIMEZONE}"
       PUID: 568
