@@ -1,18 +1,22 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   '@actions/core':
     specifier: ^1.10.0
     version: 1.10.0
   '@effect/data':
-    specifier: ^0.17.1
-    version: 0.17.1
+    specifier: ^0.18.0
+    version: 0.18.3
   '@effect/io':
     specifier: ^0.38.0
-    version: 0.38.0(@effect/data@0.17.1)
+    version: 0.38.0(@effect/data@0.18.3)
   '@effect/schema':
     specifier: ^0.33.1
-    version: 0.33.1(@effect/data@0.17.1)(@effect/io@0.38.0)
+    version: 0.33.1(@effect/data@0.18.3)(@effect/io@0.38.0)
   axios:
     specifier: ^1.4.0
     version: 1.4.0
@@ -55,26 +59,26 @@ packages:
       tunnel: 0.0.6
     dev: false
 
-  /@effect/data@0.17.1:
-    resolution: {integrity: sha512-QCYkLE5Y5Dm5Yax5R3GmW4ZIgTx7W+kSZ7yq5eqQ/mFWa8i4yxbLuu8cudqzdeZtRtTGZKlhDxfFfgVtMywXJg==}
+  /@effect/data@0.18.3:
+    resolution: {integrity: sha512-xNG4CwxE758EK0v81EIPnKv9QeU/x9st1Doab/Fjf7sb9V3n55C85aBiKChpKgGD8pKCPHcjGydLsRHVUvzpwg==}
     dev: false
 
-  /@effect/io@0.38.0(@effect/data@0.17.1):
+  /@effect/io@0.38.0(@effect/data@0.18.3):
     resolution: {integrity: sha512-qlVC9ASxNC+L2NKX5qOV9672CE5wWizfwBSFaX2XLI7CC118WRvohCTIPQ52n50Bj5TmR20+na+U9C7e4VkqzA==}
     peerDependencies:
       '@effect/data': ^0.17.1
     dependencies:
-      '@effect/data': 0.17.1
+      '@effect/data': 0.18.3
     dev: false
 
-  /@effect/schema@0.33.1(@effect/data@0.17.1)(@effect/io@0.38.0):
+  /@effect/schema@0.33.1(@effect/data@0.18.3)(@effect/io@0.38.0):
     resolution: {integrity: sha512-h+fQInui4q3we8fegAygL0Cs5B2DD/+oC3JWthOh8eLcbKkbYM9smCD/PsHuyQ+BaeWiSP5JdvREGlP4Sg+Ysw==}
     peerDependencies:
       '@effect/data': ^0.17.1
       '@effect/io': ^0.38.0
     dependencies:
-      '@effect/data': 0.17.1
-      '@effect/io': 0.38.0(@effect/data@0.17.1)
+      '@effect/data': 0.18.3
+      '@effect/io': 0.38.0(@effect/data@0.18.3)
       fast-check: 3.12.0
     dev: false
 
