@@ -28,4 +28,4 @@ spec:
             memory: 1Gi
 
       tika:
-        image: ghcr.io/paperless-ngx/tika:2.8.0-minimal@sha256:85fa0dd02555ee052a04ae2dbabdd47d7fbd42516690e1beb80b7dfceef403dd
+        image: ghcr.io/paperless-ngx/tika:2.8.0-minimal@sha256:f849adc8694e746e36c055f81a6e2459619d3e5d6c46f713c910022e773d272a
