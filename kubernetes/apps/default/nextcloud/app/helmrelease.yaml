@@ -39,16 +39,11 @@ spec:
       existingSecret:
         enabled: true
         secretName: nextcloud-credentials
-        usernameKey: NEXTCLOUD_USERNAME
-        passwordKey: NEXTCLOUD_PASSWORD
-        smtpUsernameKey: SMTP_USERNAME
-        smtpPasswordKey: SMTP_PASSWORD
       mail:
         enabled: true
         fromAddress: nextcloud
         domain: "${SECRET_DOMAIN}"
         smtp:
-          host: smtp-relay.default.svc.cluster.local
           port: 2525
           secure: ""
       extraEnv:
