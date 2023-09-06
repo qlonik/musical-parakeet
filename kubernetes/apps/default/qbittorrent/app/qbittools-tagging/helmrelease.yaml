@@ -37,7 +37,7 @@ spec:
     restartPolicy: OnFailure
     image:
       repository: ghcr.io/buroa/qbittools
-      tag: v0.5.0
+      tag: v0.9.3
     args:
       - tagging
       - --not-working
