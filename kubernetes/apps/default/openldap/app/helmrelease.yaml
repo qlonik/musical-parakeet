@@ -14,7 +14,7 @@ spec:
         kind: HelmRepository
         name: openldap
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   timeout: 15m
   install:
     createNamespace: true

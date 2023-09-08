@@ -14,7 +14,7 @@ spec:
         kind: HelmRepository
         name: nextcloud
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   timeout: 15m
   install:
     createNamespace: true
@@ -107,7 +107,7 @@ spec:
       enabled: true
       className: nginx
       annotations:
-        external-dns.alpha.kubernetes.io/target: "ipv4.${SECRET_DOMAIN}"
+        external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
         # Can re-enable if https://github.com/nextcloud/helm/issues/410 is resolved
         nginx.ingress.kubernetes.io/enable-cors: "false"
         nginx.ingress.kubernetes.io/cors-allow-methods: |-

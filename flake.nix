@@ -28,20 +28,17 @@
             ansible
             ansible-lint
             ipcalc
-            # terraform
-            terraform
-            cf-terraforming
             jq
             yq-go
             # dev tools
             age
+            cloudflared
             sops
             envsubst
             go-task
             minio-client
             pre-commit
             nodePackages.prettier
-            tflint
             yamllint
 
             # for using neovim with python3 provided by nix environment
