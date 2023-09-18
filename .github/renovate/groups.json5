@@ -14,7 +14,7 @@
     },
     {
       "description": "Github Actions Runner",
-      "groupName": "GithubActions",
+      "groupName": "Github Actions",
       "matchPackagePatterns": ["gha-runner-scale-set"],
       "matchDatasources": ["docker"],
       "versioning": "semver",
