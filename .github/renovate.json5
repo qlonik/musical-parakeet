@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base",
+    "config:recommended",
     "docker:enableMajor",
     ":disableRateLimiting",
     ":dependencyDashboard",
@@ -9,18 +9,18 @@
     ":enablePreCommit",
     ":automergeDigest",
     ":automergeBranch",
-    "github>onedr0p/flux-cluster-template//.github/renovate/autoMerge.json5",
-    "github>onedr0p/flux-cluster-template//.github/renovate/commitMessage.json5",
-    "github>onedr0p/flux-cluster-template//.github/renovate/groups.json5",
-    "github>onedr0p/flux-cluster-template//.github/renovate/labels.json5",
-    "github>onedr0p/flux-cluster-template//.github/renovate/semanticCommits.json5",
+    "github>/.github/renovate/autoMerge.json5",
+    "github>/.github/renovate/commitMessage.json5",
+    "github>/.github/renovate/groups.json5",
+    "github>/.github/renovate/labels.json5",
+    "github>/.github/renovate/semanticCommits.json5",
     "helpers:pinGitHubActionDigests"
   ],
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
   "suppressNotifications": ["prIgnoreNotification"],
   "rebaseWhen": "conflicted",
-  "schedule": ["every saturday"],
+  "schedule": ["on saturday"],
   "pre-commit": {
     "enabled": true
   },
@@ -39,6 +39,7 @@
   "regexManagers": [
     {
       "description": "Process various other dependencies",
+      "customType": "regex",
       "fileMatch": [
         "ansible/.+\\.ya?ml$",
         "kubernetes/.+\\.ya?ml$"
