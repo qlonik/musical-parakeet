@@ -18,6 +18,9 @@
   ],
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+  "nix": {
+    "enabled": true,
+  },
   "suppressNotifications": ["prIgnoreNotification"],
   "rebaseWhen": "conflicted",
   "schedule": ["on saturday"],
