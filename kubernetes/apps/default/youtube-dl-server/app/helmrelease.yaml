@@ -33,7 +33,7 @@ spec:
       type: statefulset
     image:
       repository: nbr23/youtube-dl-server
-      tag: yt-dlp@sha256:e585a045ab42bf8d3bdc164f8b102beb22072eb35dea39e0685f37f973b071a7
+      tag: yt-dlp@sha256:2cdc4f92283fe238bbab571b28995453c427e4f415dc919d03fa184671e30ae2
     env:
       TZ: ${TIMEZONE}
     service:
