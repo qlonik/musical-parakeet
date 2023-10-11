@@ -22,6 +22,17 @@
         "commitMessageTopic": "{{{groupName}}} group"
       },
       "separateMinorPatch": true
+    },
+    {
+      "description": "@effect TS library group",
+      "groupName": "effect-ts",
+      "matchPackagePatterns": ["@effect/"],
+      "matchDatasources": ["npm"],
+      "versioning": "semver",
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "separateMinorPatch": true
     }
   ]
 }
