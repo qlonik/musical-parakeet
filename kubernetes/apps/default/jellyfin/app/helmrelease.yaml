@@ -36,8 +36,7 @@ spec:
       tag: 10.8.10@sha256:1ef614db6a4c589777eb48bc9004d573b9c09f0d6d573a509041c6060f3a956b
     env:
       TZ: ${TIMEZONE}
-      JELLYFIN_PublishedServerUrl:
-        "https://{{ .Release.Name }}.${SECRET_DOMAIN}/"
+      JELLYFIN_PublishedServerUrl: "https://{{ .Release.Name }}.${SECRET_DOMAIN}/"
     service:
       main:
         type: LoadBalancer
