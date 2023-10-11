@@ -36,8 +36,8 @@ spec:
         schedule: "@hourly"
     restartPolicy: OnFailure
     image:
-      repository: ghcr.io/buroa/qbittools
-      tag: v0.9.3
+      repository: ghcr.io/buroa/qbtools
+      tag: v0.10.0
     args:
       - tagging
       - --not-working
