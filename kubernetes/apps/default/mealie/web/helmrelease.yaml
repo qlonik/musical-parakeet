@@ -45,7 +45,7 @@ spec:
         enabled: true
         ingressClassName: nginx
         annotations:
-          # external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+          external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
           hajimari.io/appName: Recipes
           hajimari.io/group: Home
           hajimari.io/icon: mdi:food
