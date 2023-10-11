@@ -70,7 +70,7 @@ spec:
             name: openldap-credentials
             key: LDAP_ADMIN_PASSWORD
       LDAP_USER_FILTER: "(memberOf=cn=user,ou=groups,dc=home,dc=arpa)(objectClass=inetOrgPerson)"
-      LDAP_ADMIN_FILTER: "(memberOf=cn=admin,ou=groups,dc=home,dc=arpa)(objectClass=inetOrgPerson)"
+      LDAP_ADMIN_FILTER: "(&(memberOf=cn=admin,ou=groups,dc=home,dc=arpa)(objectClass=inetOrgPerson))"
       LDAP_ID_ATTRIBUTE: uid
       LDAP_NAME_ATTRIBUTE: uid
       LDAP_MAIL_ATTRIBUTE: mail
