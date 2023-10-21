@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: nextcloud-main
   namespace: default
+  labels:
+    app.kubernetes.io/name: nextcloud
 spec:
   storageClassName: nfs-fast
   accessModes:
@@ -35,6 +37,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: nextcloud-data
   namespace: default
+  labels:
+    app.kubernetes.io/name: nextcloud
 spec:
   storageClassName: nfs-slow
   accessModes: ["ReadWriteMany"]
