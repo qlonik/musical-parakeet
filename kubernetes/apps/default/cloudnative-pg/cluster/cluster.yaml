@@ -17,7 +17,7 @@ spec:
     enablePodMonitor: true
 
   externalClusters:
-    - name: &active-cluster postgres-v1
+    - name: &active-cluster postgres-v2
       barmanObjectStore: &barman-object-store
         wal:
           compression: bzip2
@@ -32,14 +32,14 @@ spec:
             name: postgres-secret
             key: s3-secret-access-key
   bootstrap:
-    initdb:
-      owner: app
-      database: app
-    # recovery:
-    #   source: *active-cluster
+    # initdb:
+    #   owner: app
+    #   database: app
+    recovery:
+      source: *active-cluster
 
   backup:
     retentionPolicy: 30d
     barmanObjectStore:
       <<: *barman-object-store
-      serverName: postgres-v2
+      serverName: postgres-v3
