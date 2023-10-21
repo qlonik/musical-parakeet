@@ -16,37 +16,29 @@
       {
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
-            # k8s
-            kubectl
+            age
+            cilium-cli
+            cloudflared
             fluxcd
+            go-task
+            jq
+            kubectl
             kubernetes-helm
             kustomize
-            stern
-            # add following when available
-            # weaveworks/tap/gitops
-            # ansible
-            ansible
-            ansible-lint
-            ipcalc
-            jq
-            yq-go
-            # dev tools
-            age
-            cloudflared
-            sops
-            envsubst
-            go-task
             minio-client
-            pre-commit
             nodePackages.prettier
+            pre-commit
+            python3
+            python310Packages.pynvim # for using neovim with python3 provided by nix environment
+            sops
+            stern
             yamllint
-
-            # for using neovim with python3 provided by nix environment
-            python310Packages.pynvim
+            yq-go
           ];
 
           shellHook = ''
             export LOCALE_ARCHIVE="${pkgs.glibcLocales}/lib/locale/locale-archive"
+            pre-commit install --install-hooks
           '';
         };
       });

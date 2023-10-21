@@ -54,7 +54,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: nginx
+        ingressClassName: external
         annotations:
           auth.home.arpa/enabled: "true"
         hosts:

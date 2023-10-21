@@ -53,7 +53,7 @@ spec:
             port: 8080
         type: LoadBalancer
         annotations:
-          metallb.universe.tf/loadBalancerIPs: "${METALLB_AUTHELIA_ADDR}"
+          io.cilium/lb-ipam-ips: "${LB_AUTHELIA_ADDR}"
         externalTrafficPolicy: Local
     # serviceMonitor:
     #   main:
@@ -68,10 +68,10 @@ spec:
       main:
         enabled: true
         primary: true
-        ingressClassName: "nginx"
+        ingressClassName: external
         annotations:
           cert-manager.io/cluster-issuer: "letsencrypt-production"
-          external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
           nginx.ingress.kubernetes.io/configuration-snippet: |
             add_header Cache-Control "no-store";
             add_header Pragma "no-cache";
@@ -90,9 +90,9 @@ spec:
         # Deprecated. Delete once other resources are migrated to main ingress
         enabled: true
         primary: false
-        ingressClassName: "nginx"
+        ingressClassName: internal
         annotations:
-          external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
           nginx.ingress.kubernetes.io/configuration-snippet: |
             add_header Cache-Control "no-store";
             add_header Pragma "no-cache";

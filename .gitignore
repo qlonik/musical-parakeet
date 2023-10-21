@@ -10,7 +10,7 @@ kubeconfig
 *.pub
 *.key
 # Ansible
-xanmanning.k3s*
+.venv*
 # Nix
 /.direnv/
 /result

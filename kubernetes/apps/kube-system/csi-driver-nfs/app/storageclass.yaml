@@ -9,11 +9,7 @@ parameters:
   share: /appdata/pvc
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
-mountOptions:
-  - nfsvers=4.2
-  - nconnect=8
-  - hard
-  - noatime
+mountOptions: ["hard", "noatime"]
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -25,8 +21,4 @@ parameters:
   share: /appdata-fast/pvc
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
-mountOptions:
-  - nfsvers=4.2
-  - nconnect=8
-  - hard
-  - noatime
+mountOptions: ["hard", "noatime"]

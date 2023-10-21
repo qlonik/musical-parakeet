@@ -1,16 +1,17 @@
 {
   "files.associations": {
     "*.json5": "jsonc",
-    "**/ansible/**/*.yml": "ansible",
-    "**/ansible/**/*.sops.yml": "yaml",
-    "**/ansible/**/inventory/**/*.yml": "yaml",
+    "**/ansible/**/*.yaml": "ansible",
+    "**/ansible/**/*.sops.yaml": "yaml",
+    "**/ansible/**/inventory/**/*.yaml": "yaml",
     "**/kubernetes/**/*.sops.toml": "plaintext",
     "**/kubernetes/**/.decrypted~*.sops.toml": "toml"
   },
   "yaml.schemas": {
-    "ansible": "ansible/*.yml",
-    "Kubernetes": "kubernetes/*.yaml"
+    "ansible": "**/ansible/*.yaml",
+    "Kubernetes": "**/kubernetes/*.yaml"
   },
+  "sops.defaults.ageKeyFile": "age.key",
   "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairs": true,
   "editor.guides.bracketPairsHorizontal": true,

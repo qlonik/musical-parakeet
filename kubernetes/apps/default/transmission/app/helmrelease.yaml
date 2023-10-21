@@ -78,7 +78,8 @@ spec:
       bittorrent:
         enabled: true
         type: LoadBalancer
-        externalIPs: ["${METALLB_TRANSMISSION_ADDR}"]
+        annotations:
+          io.cilium/lb-ipam-ips: "${LB_TRANSMISSION_ADDR}"
         externalTrafficPolicy: Local
         ports:
           bittorrent-tcp:
@@ -94,7 +95,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: nginx
+        ingressClassName: internal
         annotations:
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_set_header Accept-Encoding "";

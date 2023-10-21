@@ -47,7 +47,8 @@ spec:
         enabled: true
         primary: false
         type: LoadBalancer
-        externalIPs: ["${METALLB_CALIBRE_SERVER_ADDR}"]
+        annotations:
+          io.cilium/lb-ipam-ips: "${LB_CALIBRE_SERVER_ADDR}"
         externalTrafficPolicy: Local
         ports:
           content-server:
@@ -57,7 +58,7 @@ spec:
       main:
         enabled: true
         primary: true
-        ingressClassName: nginx
+        ingressClassName: internal
         annotations:
           auth.home.arpa/enabled: "true"
           nginx.ingress.kubernetes.io/configuration-snippet: |
@@ -76,7 +77,7 @@ spec:
       content-server:
         enabled: true
         primary: false
-        ingressClassName: nginx
+        ingressClassName: internal
         annotations:
           nginx.ingress.kubernetes.io/configuration-snippet: |
             rewrite ^/opds$ /opds/ permanent;

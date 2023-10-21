@@ -27,8 +27,8 @@ spec:
           $CONFIG = array (
             'trusted_proxies' => array (
               0 => '127.0.0.1',
-              1 => '${POD_CIDR}',
-              2 => '${SVC_CIDR}',
+              1 => '${CLUSTER_CIDR}',
+              2 => '${SERVICE_CIDR}',
             ),
             'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
             'overwriteprotocol' => 'https',

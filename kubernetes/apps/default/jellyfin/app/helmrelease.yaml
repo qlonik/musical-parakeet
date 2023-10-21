@@ -40,7 +40,8 @@ spec:
     service:
       main:
         type: LoadBalancer
-        externalIPs: ["${METALLB_JELLYFIN_ADDR}"]
+        annotations:
+          io.cilium/lb-ipam-ips: "${LB_JELLYFIN_ADDR}"
         externalTrafficPolicy: Local
         ports:
           http:
@@ -56,9 +57,9 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: nginx
+        ingressClassName: external
         annotations:
-          external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
           hajimari.io/icon: simple-icons:jellyfin
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"

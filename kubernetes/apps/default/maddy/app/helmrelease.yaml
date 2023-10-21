@@ -50,7 +50,7 @@ spec:
             port: 9749
         type: LoadBalancer
         annotations:
-          metallb.universe.tf/loadBalancerIPs: "${METALLB_SMTP_RELAY_ADDR}"
+          io.cilium/lb-ipam-ips: "${LB_SMTP_RELAY_ADDR}"
         externalTrafficPolicy: Local
     serviceMonitor:
       main:

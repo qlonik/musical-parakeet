@@ -5,7 +5,7 @@ metadata:
   name: weave-gitops
   namespace: flux-system
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: weave-gitops
@@ -16,7 +16,6 @@ spec:
         namespace: flux-system
   maxHistory: 2
   install:
-    createNamespace: true
     remediation:
       retries: 3
   upgrade:
@@ -28,10 +27,11 @@ spec:
   values:
     adminUser:
       create: true
+      createSecret: false
       username: admin
     ingress:
       enabled: true
-      className: nginx
+      className: internal
       annotations:
         hajimari.io/icon: sawtooth-wave
       hosts:
@@ -42,15 +42,12 @@ spec:
       tls:
         - hosts:
             - *host
+    networkPolicy:
+      create: false
     metrics:
       enabled: true
     rbac:
       create: true
       impersonationResourceNames: ["admin"]
     podAnnotations:
-      secret.reloader.stakater.com/reload: weave-gitops-secret
-  valuesFrom:
-    - kind: Secret
-      name: weave-gitops-secret
-      valuesKey: adminPassword
-      targetPath: adminUser.passwordHash
+      secret.reloader.stakater.com/reload: cluster-user-auth

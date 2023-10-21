@@ -23,7 +23,7 @@ spec:
         any:
           - resources:
               annotations:
-                external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+                external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
       mutate:
         targets:
           - apiVersion: "{{ request.object.apiVersion }}"

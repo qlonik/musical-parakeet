@@ -105,9 +105,9 @@ spec:
       failureThreshold: 90
     ingress:
       enabled: true
-      className: nginx
+      className: external
       annotations:
-        external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+        external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
         # Can re-enable if https://github.com/nextcloud/helm/issues/410 is resolved
         nginx.ingress.kubernetes.io/enable-cors: "false"
         nginx.ingress.kubernetes.io/cors-allow-methods: |-
