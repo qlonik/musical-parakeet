@@ -55,16 +55,6 @@ spec:
       enabled: true
       initialDelaySeconds: 60
 
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: node.home.arpa/type
-                  operator: NotIn
-                  values:
-                    - "transient"
-
   valuesFrom:
     - kind: Secret
       name: bootstrap-ldif

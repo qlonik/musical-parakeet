@@ -91,12 +91,3 @@ spec:
         mountPath: /usr/local/etc/haproxy/haproxy.cfg
         subPath: haproxy.cfg
         readOnly: true
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: node.home.arpa/type
-                  operator: NotIn
-                  values:
-                    - "transient"

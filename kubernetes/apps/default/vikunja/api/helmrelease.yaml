@@ -79,15 +79,6 @@ spec:
         type: pvc
         existingClaim: vikunja-api-files
         mountPath: /app/vikunja/files
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: node.home.arpa/type
-                  operator: NotIn
-                  values:
-                    - "transient"
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname

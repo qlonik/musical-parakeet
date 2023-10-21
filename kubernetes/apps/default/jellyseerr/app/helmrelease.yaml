@@ -66,15 +66,6 @@ spec:
         accessMode: ReadWriteMany
         size: 1Gi
         storageClass: nfs-fast
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: node.home.arpa/type
-                  operator: NotIn
-                  values:
-                    - "transient"
     resources:
       requests:
         cpu: 10m
