@@ -228,7 +228,7 @@ async function main() {
     });
   }
 
-  const shouldUpdate = pipe(
+  await pipe(
     toUpdate,
     RA.some((o: Record<string, unknown>) =>
       pipe(
@@ -236,11 +236,7 @@ async function main() {
         RA.difference(["transaction_journal_id"]),
         RA.isNonEmptyArray
       )
-    )
-  );
-
-  await pipe(
-    shouldUpdate,
+    ),
     T.if({
       onFalse: T.unit,
       onTrue: T.promise((signal) =>
