@@ -19,6 +19,7 @@ import {
 import { formatErrors } from "@effect/schema/TreeFormatter";
 import { stripIndent } from "common-tags";
 import { pipe } from "effect/Function";
+import * as T from "effect/Effect";
 
 const API_BASE = "/index.php/apps/cospend";
 const FF3_API_BASE = "/api";
@@ -239,21 +240,27 @@ async function main() {
   );
 
   if (shouldUpdate) {
-    await Axios.put(
-      `${FF3_API_BASE}/v1/transactions/${transaction.id}`,
-      {
-        apply_rules: true,
-        fire_webhooks: true,
-        transactions: toUpdate,
-      },
-      {
-        baseURL: ff3_base_url,
-        headers: {
-          Authorization: `Bearer ${pat}`,
-          "Content-Type": "application/json",
-          Accept: "application/vnd.api+json",
-        },
-      }
+    await pipe(
+      T.promise((signal) =>
+        Axios.put(
+          `${FF3_API_BASE}/v1/transactions/${transaction.id}`,
+          {
+            apply_rules: true,
+            fire_webhooks: true,
+            transactions: toUpdate,
+          },
+          {
+            baseURL: ff3_base_url,
+            headers: {
+              Authorization: `Bearer ${pat}`,
+              "Content-Type": "application/json",
+              Accept: "application/vnd.api+json",
+            },
+            signal,
+          }
+        )
+      ),
+      T.runPromise
     );
   }
 }
