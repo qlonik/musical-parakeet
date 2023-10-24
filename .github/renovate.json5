@@ -18,9 +18,6 @@
   ],
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
-  "nix": {
-    "enabled": true,
-  },
   "suppressNotifications": ["prIgnoreNotification"],
   "rebaseWhen": "conflicted",
   "schedule": ["on saturday"],
@@ -52,6 +49,9 @@
     "fileMatch": [
       "(^|/)kustomization\\.ya?ml(\\.j2)?$"
     ]
+  },
+  "nix": {
+    "enabled": true
   },
   "regexManagers": [
     {
