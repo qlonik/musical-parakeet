@@ -75,8 +75,7 @@ async function main() {
     transaction,
   } = res.right;
 
-  let shouldUpdate = false;
-  const toUpdate = [];
+  const toUpdate: Record<string, unknown>[] = [];
 
   for (const t of transaction.attributes.transactions) {
     if (t.tags.includes(done_label_value)) {
@@ -149,7 +148,6 @@ async function main() {
         transaction_journal_id: t.transaction_journal_id,
         tags: t.tags.concat(done_label_value),
       });
-      shouldUpdate = true;
       continue;
     }
 
@@ -227,8 +225,18 @@ async function main() {
       transaction_journal_id: t.transaction_journal_id,
       tags: t.tags.concat(done_label_value),
     });
-    shouldUpdate = true;
   }
+
+  const shouldUpdate = pipe(
+    toUpdate,
+    RA.some((o: Record<string, unknown>) =>
+      pipe(
+        Object.keys(o),
+        RA.difference(["transaction_journal_id"]),
+        RA.isNonEmptyArray
+      )
+    )
+  );
 
   if (shouldUpdate) {
     await Axios.put(
