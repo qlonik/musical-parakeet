@@ -26,7 +26,7 @@
     {
       "description": "@effect TS library group",
       "groupName": "effect-ts",
-      "matchPackagePatterns": ["@effect/"],
+      "matchPackagePrefixes": ["@effect"],
       "matchDatasources": ["npm"],
       "versioning": "semver",
       "group": {
