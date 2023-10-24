@@ -4,21 +4,18 @@ dependencies:
   '@actions/core':
     specifier: ^1.10.0
     version: 1.10.0
-  '@effect/data':
-    specifier: ^0.17.1
-    version: 0.17.1
-  '@effect/io':
-    specifier: ^0.38.0
-    version: 0.38.0(@effect/data@0.17.1)
   '@effect/schema':
-    specifier: ^0.33.1
-    version: 0.33.1(@effect/data@0.17.1)(@effect/io@0.38.0)
+    specifier: ^0.45.6
+    version: 0.45.6(effect@2.0.0-next.50)(fast-check@3.13.2)
   axios:
     specifier: ^1.4.0
     version: 1.4.0
   common-tags:
     specifier: 1.8.1
     version: 1.8.1
+  effect:
+    specifier: 2.0.0-next.50
+    version: 2.0.0-next.50
 
 devDependencies:
   '@tsconfig/node16':
@@ -55,27 +52,14 @@ packages:
       tunnel: 0.0.6
     dev: false
 
-  /@effect/data@0.17.1:
-    resolution: {integrity: sha512-QCYkLE5Y5Dm5Yax5R3GmW4ZIgTx7W+kSZ7yq5eqQ/mFWa8i4yxbLuu8cudqzdeZtRtTGZKlhDxfFfgVtMywXJg==}
-    dev: false
-
-  /@effect/io@0.38.0(@effect/data@0.17.1):
-    resolution: {integrity: sha512-qlVC9ASxNC+L2NKX5qOV9672CE5wWizfwBSFaX2XLI7CC118WRvohCTIPQ52n50Bj5TmR20+na+U9C7e4VkqzA==}
+  /@effect/schema@0.45.6(effect@2.0.0-next.50)(fast-check@3.13.2):
+    resolution: {integrity: sha512-SmlZXxOlKUK4fwVvX9uegMAM5q2UL/PaNLagltMl0hM7EOihmj+Euq1dgGdxQmcwrYCrLgvpPGCFbAs/BAsvGA==}
     peerDependencies:
-      '@effect/data': ^0.17.1
+      effect: 2.0.0-next.50
+      fast-check: ^3.13.1
     dependencies:
-      '@effect/data': 0.17.1
-    dev: false
-
-  /@effect/schema@0.33.1(@effect/data@0.17.1)(@effect/io@0.38.0):
-    resolution: {integrity: sha512-h+fQInui4q3we8fegAygL0Cs5B2DD/+oC3JWthOh8eLcbKkbYM9smCD/PsHuyQ+BaeWiSP5JdvREGlP4Sg+Ysw==}
-    peerDependencies:
-      '@effect/data': ^0.17.1
-      '@effect/io': ^0.38.0
-    dependencies:
-      '@effect/data': 0.17.1
-      '@effect/io': 0.38.0(@effect/data@0.17.1)
-      fast-check: 3.12.0
+      effect: 2.0.0-next.50
+      fast-check: 3.13.2
     dev: false
 
   /@esbuild-kit/cjs-loader@2.4.2:
@@ -348,6 +332,10 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: false
 
+  /effect@2.0.0-next.50:
+    resolution: {integrity: sha512-dlwI31Vza4ybFtNDstx3AnZkBBzaSMMNfZmwXNrzm1S3fE1IoQzoHCHelBH9gSZCRtE4gzZbplyWD/B6iePGxg==}
+    dev: false
+
   /esbuild@0.17.19:
     resolution: {integrity: sha512-XQ0jAPFkK/u3LcVRcvVHQcTIqD6E2H1fvZMA5dQPSOWb3suUbWbfbRf94pjc0bNzRYLfIrDRQXr7X+LHIm5oHw==}
     engines: {node: '>=12'}
@@ -378,8 +366,8 @@ packages:
       '@esbuild/win32-x64': 0.17.19
     dev: true
 
-  /fast-check@3.12.0:
-    resolution: {integrity: sha512-SqahE9mlL3+lhjJ39joMLwcj6F+24hfZdf/tchlNO8sHcTdrUUdA5P/ZbSFZM9Xpzs36XaneGwE0FWepm/zyOA==}
+  /fast-check@3.13.2:
+    resolution: {integrity: sha512-ouTiFyeMoqmNg253xqy4NSacr5sHxH6pZpLOaHgaAdgZxFWdtsfxExwolpveoAE9CJdV+WYjqErNGef6SqA5Mg==}
     engines: {node: '>=8.0.0'}
     dependencies:
       pure-rand: 6.0.2

@@ -1,22 +1,23 @@
 import * as S from "@effect/schema/Schema";
-import { Brand } from "@effect/data/Brand";
-import * as Str from "@effect/data/String";
+import { Brand } from "effect/Brand";
+import * as Str from "effect/String";
+import type { Simplify } from "effect/Types";
 
 export type AddBrandedId<
   Brand extends string,
   IdKey extends string,
   BrandedIdSchema extends S.Schema<any>,
   StructSchema extends S.Schema<any>
-> = S.Spread<
+> = Simplify<
   { [_ in `${Brand}${Capitalize<IdKey>}`]: BrandedIdSchema } & {
     [_ in `${Brand}`]: S.Schema<
-      S.Spread<
-        S.From<StructSchema> &
-          S.Spread<S.FromStruct<{ [_ in IdKey]: BrandedIdSchema }>>
+      Simplify<
+        S.Schema.From<StructSchema> &
+          Simplify<S.FromStruct<{ [_ in IdKey]: BrandedIdSchema }>>
       >,
-      S.Spread<
-        S.To<StructSchema> &
-          S.Spread<S.ToStruct<{ [_ in IdKey]: BrandedIdSchema }>>
+      Simplify<
+        S.Schema.To<StructSchema> &
+          Simplify<S.ToStruct<{ [_ in IdKey]: BrandedIdSchema }>>
       >
     >;
   }

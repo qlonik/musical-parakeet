@@ -2,9 +2,9 @@ import * as os from "node:os";
 import { inspect } from "node:util";
 import Axios, { AxiosInstance } from "axios";
 import * as S from "@effect/schema/Schema";
-import * as RA from "@effect/data/ReadonlyArray";
-import * as E from "@effect/data/Either";
-import * as O from "@effect/data/Option";
+import * as RA from "effect/ReadonlyArray";
+import * as E from "effect/Either";
+import * as O from "effect/Option";
 import {
   CospendProjectBillsFrom,
   CospendProjectBillsS,
@@ -18,7 +18,7 @@ import {
 } from "./schema.js";
 import { formatErrors } from "@effect/schema/TreeFormatter";
 import { stripIndent } from "common-tags";
-import { pipe } from "@effect/data/Function";
+import { pipe } from "effect/Function";
 
 const API_BASE = "/index.php/apps/cospend";
 const FF3_API_BASE = "/api";

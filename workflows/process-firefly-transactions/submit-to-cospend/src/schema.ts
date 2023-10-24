@@ -1,7 +1,7 @@
 import * as S from "@effect/schema/Schema";
 import { markdown } from "./template-tags.js";
 import { addBrandedKey } from "./schema-extra.js";
-import { pipe } from "@effect/data/Function";
+import { pipe } from "effect/Function";
 
 const Id = S.number.pipe(
   // TODO(qlonik): `S.int()` adds a refinement which conflicts with
@@ -148,13 +148,13 @@ const { Bill, BillId } = addBrandedKey(
   })
 );
 
-export type CospendProjectDescriptionFrom = S.From<
+export type CospendProjectDescriptionFrom = S.Schema.From<
   typeof CospendProjectDescriptionS
 >;
-export type CospendProjectDescriptionTo = S.To<
+export type CospendProjectDescriptionTo = S.Schema.To<
   typeof CospendProjectDescriptionS
 >;
-export type ProjectId = S.To<typeof ProjectId>;
+export type ProjectId = S.Schema.To<typeof ProjectId>;
 export const { Project: CospendProjectDescriptionS, ProjectId } = addBrandedKey(
   "Project",
   ["id", IdStr],
@@ -188,8 +188,10 @@ export const { Project: CospendProjectDescriptionS, ProjectId } = addBrandedKey(
   })
 );
 
-export type CospendProjectBillsFrom = S.From<typeof CospendProjectBillsS>;
-export type CospendProjectBillsTo = S.To<typeof CospendProjectBillsS>;
+export type CospendProjectBillsFrom = S.Schema.From<
+  typeof CospendProjectBillsS
+>;
+export type CospendProjectBillsTo = S.Schema.To<typeof CospendProjectBillsS>;
 export const CospendProjectBillsS = S.struct({
   bills: S.array(Bill),
   allBillIds: S.array(BillId),
@@ -230,7 +232,7 @@ const FireflyTransaction = S.struct({
 });
 // </editor-fold>
 
-export type transactionConfigurationInputS = S.To<
+export type transactionConfigurationInputS = S.Schema.To<
   typeof transactionConfigurationInputS
 >;
 export const transactionConfigurationInputS = S.struct({
@@ -242,7 +244,9 @@ export const transactionConfigurationInputS = S.struct({
   mode: S.optional(PaymentModeName),
 });
 
-export type FireflyTransactionInput = S.From<typeof fireflyTransactionInputS>;
+export type FireflyTransactionInput = S.Schema.From<
+  typeof fireflyTransactionInputS
+>;
 export const {
   TransactionInput: fireflyTransactionInputS,
   TransactionInputId,
@@ -259,7 +263,7 @@ export const {
   })
 );
 
-export type PROCESS_FIREFLY_TRANSACTIONS = S.From<
+export type PROCESS_FIREFLY_TRANSACTIONS = S.Schema.From<
   typeof PROCESS_FIREFLY_TRANSACTIONS
 >;
 const PROCESS_FIREFLY_TRANSACTIONS = S.struct({
