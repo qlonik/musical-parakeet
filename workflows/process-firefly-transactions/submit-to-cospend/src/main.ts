@@ -239,9 +239,11 @@ async function main() {
     )
   );
 
-  if (shouldUpdate) {
-    await pipe(
-      T.promise((signal) =>
+  await pipe(
+    shouldUpdate,
+    T.if({
+      onFalse: T.unit,
+      onTrue: T.promise((signal) =>
         Axios.put(
           `${FF3_API_BASE}/v1/transactions/${transaction.id}`,
           {
@@ -260,9 +262,9 @@ async function main() {
           }
         )
       ),
-      T.runPromise
-    );
-  }
+    }),
+    T.runPromise
+  );
 }
 
 function handleError(err: unknown): void {
