@@ -1,30 +1,9 @@
-import * as S from "@effect/schema/Schema";
-import { markdown } from "./template-tags.js";
-import { addBrandedKey } from "./schema-extra.js";
 import { pipe } from "effect/Function";
+import * as S from "@effect/schema/Schema";
+import { DateFromUnixSeconds, Email, Id, IdStr } from "./generic.js";
+import { addBrandedKey } from "../schema-extra.js";
+import { markdown } from "../template-tags.js";
 
-const Id = S.number.pipe(
-  // TODO(qlonik): `S.int()` adds a refinement which conflicts with
-  //  `S.templateLiteral()`. Could add int after passed to templateLiteral?
-  // S.int(),
-  S.brand("ID"),
-);
-const IdStr = S.string.pipe(S.brand("ID"));
-
-const Email = S.string.pipe(S.brand("email"));
-
-const DateFromUnixSeconds = pipe(
-  S.number,
-  S.finite(),
-  S.transform(
-    S.DateFromSelf,
-    (i) => new Date(i * 1000),
-    (d) => Math.trunc(d.getTime() / 1000),
-  ),
-  S.validDate(),
-);
-
-// <editor-fold desc="Cospend model">
 export const { Member, MemberId, MemberUserid } = pipe(
   S.struct({
     name: S.string,
@@ -190,87 +169,4 @@ export const CospendProjectBillsS = S.struct({
   bills: S.array(Bill),
   allBillIds: S.array(BillId),
   timestamp: DateFromUnixSeconds,
-});
-// </editor-fold>
-
-// <editor-fold desc="Firefly model">
-const FireflyUserId = IdStr.pipe(S.brand("firefly-user"));
-const FireflyPersonalAccessToken = S.string.pipe(
-  S.brand("ff3-personal-access-token"),
-);
-
-const FireflyTransaction = S.struct({
-  type: S.literal("transactions"),
-  id: IdStr.pipe(S.brand("firefly-transactions")),
-  attributes: S.struct({
-    created_at: S.Date,
-    updated_at: S.Date,
-    user: FireflyUserId,
-    transactions: S.array(
-      S.struct({
-        user: FireflyUserId,
-        transaction_journal_id: IdStr.pipe(
-          S.brand("firefly-transaction-journal"),
-        ),
-        type: S.literal("withdrawal"),
-        date: S.Date,
-        currency_decimal_places: S.number,
-        amount: S.string,
-        description: S.string,
-        tags: S.array(S.string),
-        category_id: S.nullable(S.string),
-        category_name: S.nullable(S.string),
-      }),
-    ),
-  }),
-});
-// </editor-fold>
-
-export type transactionConfigurationInputS = S.Schema.To<
-  typeof transactionConfigurationInputS
->;
-export const transactionConfigurationInputS = S.struct({
-  project: ProjectId,
-  for: S.optional(S.union(S.literal("all"), MemberUserid)).withDefault(
-    () => "all",
-  ),
-  category: S.optional(CategoryName),
-  mode: S.optional(PaymentModeName),
-});
-
-export type FireflyTransactionInput = S.Schema.From<
-  typeof fireflyTransactionInputS
->;
-export const {
-  TransactionInput: fireflyTransactionInputS,
-  TransactionInputId,
-} = addBrandedKey(
-  "TransactionInput",
-  ["id", IdStr],
-  S.struct({
-    info: S.struct({
-      pat: FireflyPersonalAccessToken,
-      cospend_payer_username: MemberUserid,
-      cospend_payment_mode: PaymentModeName,
-    }),
-    transaction: FireflyTransaction,
-  }),
-);
-
-export type PROCESS_FIREFLY_TRANSACTIONS = S.Schema.From<
-  typeof PROCESS_FIREFLY_TRANSACTIONS
->;
-const PROCESS_FIREFLY_TRANSACTIONS = S.struct({
-  nc_user: MemberUserid,
-  nc_password: S.string.pipe(S.brand("nextcloud-app-password")),
-  firefly_users: S.array(
-    S.struct({
-      pat: FireflyPersonalAccessToken,
-      accounts: S.record(
-        S.identifier("ff3-account-id")(S.string),
-        PaymentModeName,
-      ),
-      cospend_payer_username: MemberUserid,
-    }),
-  ),
 });

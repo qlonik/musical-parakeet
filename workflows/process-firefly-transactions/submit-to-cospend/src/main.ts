@@ -12,10 +12,12 @@ import {
   CospendProjectDescriptionFrom,
   CospendProjectDescriptionS,
   CospendProjectDescriptionTo,
-  fireflyTransactionInputS,
   ProjectId,
+} from "./model/cospend.js";
+import {
+  fireflyTransactionInputS,
   transactionConfigurationInputS,
-} from "./schema.js";
+} from "./model/program-inputs.js";
 import { formatErrors } from "@effect/schema/TreeFormatter";
 import { stripIndent } from "common-tags";
 import { pipe } from "effect/Function";
