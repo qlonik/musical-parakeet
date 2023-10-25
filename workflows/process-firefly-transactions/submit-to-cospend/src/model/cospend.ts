@@ -121,6 +121,10 @@ const { Bill, BillId } = addBrandedKey(
   }),
 );
 
+export const BillIdStr = IdStr.pipe(S.identifier("Bill"), S.brand("Bill"));
+export type BillIdStrFrom = S.Schema.From<typeof BillIdStr>;
+export type BillIdStrTo = S.Schema.To<typeof BillIdStr>;
+
 export type CospendProjectDescriptionFrom = S.Schema.From<
   typeof CospendProjectDescriptionS
 >;
