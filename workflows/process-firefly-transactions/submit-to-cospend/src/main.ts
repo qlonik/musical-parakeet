@@ -1,19 +1,10 @@
 import * as os from "node:os";
 import { inspect } from "node:util";
-import Axios, { AxiosInstance } from "axios";
+import Axios from "axios";
 import * as S from "@effect/schema/Schema";
 import * as RA from "effect/ReadonlyArray";
 import * as E from "effect/Either";
 import * as O from "effect/Option";
-import {
-  CospendProjectBillsFrom,
-  CospendProjectBillsS,
-  CospendProjectBillsTo,
-  CospendProjectDescriptionFrom,
-  CospendProjectDescriptionS,
-  CospendProjectDescriptionTo,
-  ProjectId,
-} from "./model/cospend.js";
 import {
   fireflyTransactionInputS,
   transactionConfigurationInputS,
@@ -22,9 +13,14 @@ import { formatErrors } from "@effect/schema/TreeFormatter";
 import { stripIndent } from "common-tags";
 import { pipe } from "effect/Function";
 import * as T from "effect/Effect";
-
-const API_BASE = "/index.php/apps/cospend";
-const FF3_API_BASE = "/api";
+import { getCospendProjectDescription } from "./queries/get-cospend-project-description.js";
+import { getCospendProjectBills } from "./queries/get-cospend-project-bills.js";
+import {
+  CospendApiServiceLive,
+  FireflyApiServiceLive,
+} from "./queries/axios-instances.js";
+import { createCospendProjectBill } from "./queries/create-cospend-project-bill.js";
+import { updateFireflyTransactionTags } from "./queries/update-firefly-transaction-tags.js";
 
 async function main() {
   const {
@@ -63,10 +59,6 @@ async function main() {
     return;
   }
 
-  const axios = Axios.create({
-    baseURL: `${nc_base_url}${API_BASE}`,
-    auth: { username: nc_user, password: nc_password },
-  });
   const done_label_value = tag_prefix + done_marker;
   const {
     id,
@@ -138,8 +130,13 @@ async function main() {
         );
 
         const [p, { bills }] = yield* _(
-          T.promise(() => manageCache(axios, project)),
+          T.zip(
+            getCospendProjectDescription(project),
+            getCospendProjectBills(project),
+            { concurrent: true },
+          ),
         );
+
         const tid = `${id}:tj_${t.transaction_journal_id}`;
 
         const foundBills = bills.filter(
@@ -244,14 +241,8 @@ async function main() {
           paymentmodeid,
         };
 
-        const { data: newBillId } = yield* _(
-          T.promise((signal) =>
-            axios.post</* number id of a newly added bill */ string>(
-              `/api-priv/projects/${project}/bills`,
-              OBJECT_TO_SEND,
-              { signal },
-            ),
-          ),
+        const newBillId = yield* _(
+          createCospendProjectBill(project, OBJECT_TO_SEND),
         );
 
         yield* _(
@@ -266,7 +257,7 @@ async function main() {
         };
       }),
     ),
-    (x) => x satisfies T.Effect<never, never, Record<string, unknown>[]>,
+    (x) => x satisfies T.Effect<unknown, unknown, Record<string, unknown>[]>,
     T.flatMap((toUpdate) =>
       pipe(
         toUpdate,
@@ -278,30 +269,15 @@ async function main() {
           ),
         ),
         T.if({
+          onTrue: updateFireflyTransactionTags(transaction.id, toUpdate),
           onFalse: T.unit,
-          onTrue: T.promise((signal) =>
-            Axios.put(
-              `${FF3_API_BASE}/v1/transactions/${transaction.id}`,
-              {
-                apply_rules: true,
-                fire_webhooks: true,
-                transactions: toUpdate,
-              },
-              {
-                baseURL: ff3_base_url,
-                headers: {
-                  Authorization: `Bearer ${pat}`,
-                  "Content-Type": "application/json",
-                  Accept: "application/vnd.api+json",
-                },
-                signal,
-              },
-            ),
-          ),
         }),
       ),
     ),
     T.asUnit,
+    T.withRequestCaching(true),
+    T.provide(CospendApiServiceLive(nc_base_url, nc_user, nc_password)),
+    T.provide(FireflyApiServiceLive(ff3_base_url, pat)),
     T.runPromise,
   );
 }
@@ -320,46 +296,6 @@ function handleError(err: unknown): void {
   process.exitCode = 1;
   process.stdout.write(cmd);
 }
-
-const manageCache = (() => {
-  const _projectCacheInProgress: Record<
-    CospendProjectDescriptionTo["id"],
-    Promise<readonly [CospendProjectDescriptionTo, CospendProjectBillsTo]>
-  > = {};
-  const projectCache: Record<
-    CospendProjectDescriptionTo["id"],
-    readonly [CospendProjectDescriptionTo, CospendProjectBillsTo]
-  > = {};
-
-  return function manageCache(
-    axios: AxiosInstance,
-    project: ProjectId,
-  ): Promise<readonly [CospendProjectDescriptionTo, CospendProjectBillsTo]> {
-    let p;
-    if ((p = projectCache[project])) return Promise.resolve(p);
-    if ((p = _projectCacheInProgress[project])) return p;
-    p = undefined;
-
-    return (_projectCacheInProgress[project] = Promise.all([
-      axios.get<CospendProjectDescriptionFrom>(`/api-priv/projects/${project}`),
-      axios.get<CospendProjectBillsFrom>(`/api-priv/projects/${project}/bills`),
-    ])
-      .then(([pr, bills]) =>
-        S.decodeSync(S.tuple(CospendProjectDescriptionS, CospendProjectBillsS))(
-          [pr.data, bills.data],
-          { errors: "all" },
-        ),
-      )
-      .then((data) => {
-        delete _projectCacheInProgress[project];
-        return (projectCache[project] = data);
-      })
-      .catch((error) => {
-        delete _projectCacheInProgress[project];
-        throw error;
-      }));
-  };
-})();
 
 process.on("unhandledRejection", handleError);
 main().catch(handleError);
