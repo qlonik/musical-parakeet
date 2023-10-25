@@ -76,9 +76,8 @@ async function main() {
     transaction,
   } = res.right;
 
-  const toUpdate = await pipe(
-    transaction.attributes.transactions,
-    RA.map(async (t): Promise<Record<string, unknown>> => {
+  const toUpdate = T.forEach(transaction.attributes.transactions, (t) =>
+    T.promise(async (): Promise<Record<string, unknown>> => {
       if (t.tags.includes(done_label_value)) {
         return { transaction_journal_id: t.transaction_journal_id };
       }
@@ -219,41 +218,45 @@ async function main() {
         transaction_journal_id: t.transaction_journal_id,
         tags: t.tags.concat(done_label_value),
       };
-    }),
-    (_) => Promise.all(_)
+    })
   );
 
   await pipe(
     toUpdate,
-    RA.some((o: Record<string, unknown>) =>
+    T.flatMap((toUpdate) =>
       pipe(
-        Object.keys(o),
-        RA.difference(["transaction_journal_id"]),
-        RA.isNonEmptyArray
+        toUpdate,
+        RA.some((o: Record<string, unknown>) =>
+          pipe(
+            Object.keys(o),
+            RA.difference(["transaction_journal_id"]),
+            RA.isNonEmptyArray
+          )
+        ),
+        T.if({
+          onFalse: T.unit,
+          onTrue: T.promise((signal) =>
+            Axios.put(
+              `${FF3_API_BASE}/v1/transactions/${transaction.id}`,
+              {
+                apply_rules: true,
+                fire_webhooks: true,
+                transactions: toUpdate,
+              },
+              {
+                baseURL: ff3_base_url,
+                headers: {
+                  Authorization: `Bearer ${pat}`,
+                  "Content-Type": "application/json",
+                  Accept: "application/vnd.api+json",
+                },
+                signal,
+              }
+            )
+          ),
+        })
       )
     ),
-    T.if({
-      onFalse: T.unit,
-      onTrue: T.promise((signal) =>
-        Axios.put(
-          `${FF3_API_BASE}/v1/transactions/${transaction.id}`,
-          {
-            apply_rules: true,
-            fire_webhooks: true,
-            transactions: toUpdate,
-          },
-          {
-            baseURL: ff3_base_url,
-            headers: {
-              Authorization: `Bearer ${pat}`,
-              "Content-Type": "application/json",
-              Accept: "application/vnd.api+json",
-            },
-            signal,
-          }
-        )
-      ),
-    }),
     T.runPromise
   );
 }
