@@ -5,6 +5,7 @@
       "description": "Flux Group",
       "groupName": "Flux",
       "matchPackagePatterns": ["flux"],
+      "excludePackagePatterns": ["influxdb"],
       "matchDatasources": ["docker", "github-tags"],
       "versioning": "semver",
       "group": {
