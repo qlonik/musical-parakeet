@@ -76,153 +76,152 @@ async function main() {
     transaction,
   } = res.right;
 
-  const toUpdate = T.forEach(transaction.attributes.transactions, (t) =>
-    T.promise(async (): Promise<Record<string, unknown>> => {
-      if (t.tags.includes(done_label_value)) {
-        return { transaction_journal_id: t.transaction_journal_id };
-      }
+  await pipe(
+    transaction.attributes.transactions,
+    T.forEach((t) =>
+      T.promise(async (): Promise<Record<string, unknown>> => {
+        if (t.tags.includes(done_label_value)) {
+          return { transaction_journal_id: t.transaction_journal_id };
+        }
 
-      const tags = t.tags
-        .filter((t) => t.startsWith(tag_prefix) && t !== done_label_value)
-        .map((t) => {
-          const content = t.slice(tag_prefix.length);
-          const i = content.indexOf(field_separator);
-          return i === -1
-            ? ([content, true] as const)
-            : ([
-                content.slice(0, i),
-                content.slice(i + 1, content.length),
-              ] as const);
-        });
+        const tags = t.tags
+          .filter((t) => t.startsWith(tag_prefix) && t !== done_label_value)
+          .map((t) => {
+            const content = t.slice(tag_prefix.length);
+            const i = content.indexOf(field_separator);
+            return i === -1
+              ? ([content, true] as const)
+              : ([
+                  content.slice(0, i),
+                  content.slice(i + 1, content.length),
+                ] as const);
+          });
 
-      if (tags.length === 0) {
-        return { transaction_journal_id: t.transaction_journal_id };
-      }
+        if (tags.length === 0) {
+          return { transaction_journal_id: t.transaction_journal_id };
+        }
 
-      const res = S.parseEither(transactionConfigurationInputS)(
-        Object.fromEntries(tags),
-        { errors: "all" }
-      );
-      if (E.isLeft(res)) {
-        console.log(
-          `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${t.transaction_journal_id}"}', since transaction configuration does not match schema.`
+        const res = S.parseEither(transactionConfigurationInputS)(
+          Object.fromEntries(tags),
+          { errors: "all" }
         );
-        console.log(formatErrors(res.left.errors));
-        return { transaction_journal_id: t.transaction_journal_id };
-      }
-      const {
-        project: project,
-        for: payFor,
-        category,
-        mode: transactionPaymentMode,
-      } = res.right;
-      const paymentMethod =
-        transactionPaymentMode || accountPaymentMode || undefined;
+        if (E.isLeft(res)) {
+          console.log(
+            `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${t.transaction_journal_id}"}', since transaction configuration does not match schema.`
+          );
+          console.log(formatErrors(res.left.errors));
+          return { transaction_journal_id: t.transaction_journal_id };
+        }
+        const {
+          project: project,
+          for: payFor,
+          category,
+          mode: transactionPaymentMode,
+        } = res.right;
+        const paymentMethod =
+          transactionPaymentMode || accountPaymentMode || undefined;
 
-      console.log(
-        `parsed transaction config: ${inspect(res.right, { depth: null })}`
-      );
-
-      const [p, { bills }] = await manageCache(axios, project);
-      const tid = `${id}:tj_${t.transaction_journal_id}`;
-
-      const foundBills = bills.filter(({ comment }) =>
-        comment?.startsWith(tid + "\n")
-      );
-      if (foundBills.length > 1) {
         console.log(
-          "found more than one matching bill submitted to cospend. Refusing to process this bill"
+          `parsed transaction config: ${inspect(res.right, { depth: null })}`
         );
-        return { transaction_journal_id: t.transaction_journal_id };
-      }
 
-      if (foundBills.length === 1) {
-        console.log(
-          "found one matching bill submitted to cospend. No need to process it again"
+        const [p, { bills }] = await manageCache(axios, project);
+        const tid = `${id}:tj_${t.transaction_journal_id}`;
+
+        const foundBills = bills.filter(({ comment }) =>
+          comment?.startsWith(tid + "\n")
         );
+        if (foundBills.length > 1) {
+          console.log(
+            "found more than one matching bill submitted to cospend. Refusing to process this bill"
+          );
+          return { transaction_journal_id: t.transaction_journal_id };
+        }
+
+        if (foundBills.length === 1) {
+          console.log(
+            "found one matching bill submitted to cospend. No need to process it again"
+          );
+          return {
+            transaction_journal_id: t.transaction_journal_id,
+            tags: t.tags.concat(done_label_value),
+          };
+        }
+
+        if (foundBills.length === 0) {
+          console.log("No matching bill is found, about to create a new one");
+        }
+
+        const activeUsersMap = Object.fromEntries(
+          p.active_members.map((m) => [m.userid, m.id.toString()] as const)
+        );
+        const allUsersMap = Object.fromEntries(
+          p.members.map((m) => [m.userid, m.id.toString()] as const)
+        );
+
+        const payer = allUsersMap[payerUsername];
+        const payed_for =
+          !payFor || payFor === "all"
+            ? Object.values(activeUsersMap).join(",")
+            : allUsersMap[payFor];
+
+        if (payer == null) {
+          console.log(
+            `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${t.transaction_journal_id}"}', "nc_payer_username" field does not match any known project member.`
+          );
+          return { transaction_journal_id: t.transaction_journal_id };
+        }
+        if (payed_for == null) {
+          console.log(
+            `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${t.transaction_journal_id}"}', unknown "pay-for" target.`
+          );
+          return { transaction_journal_id: t.transaction_journal_id };
+        }
+
+        const categoryid = pipe(
+          O.fromNullable(category),
+          O.orElse(() => O.fromNullable(t.category_name)),
+          O.flatMap((name) =>
+            RA.findFirst(Object.values(p.categories), (_) => _.name === name)
+          ),
+          O.map((_) => _.id.toString()),
+          O.getOrElse(() => "")
+        );
+
+        const paymentmodeid = pipe(
+          O.fromNullable(paymentMethod),
+          O.flatMap((name) =>
+            RA.findFirst(Object.values(p.paymentmodes), (_) => _.name === name)
+          ),
+          O.map((_) => _.id.toString()),
+          O.getOrElse(() => "")
+        );
+
+        const OBJECT_TO_SEND = {
+          timestamp: new Date(t.date).getTime() / 1000,
+          what: t.description,
+          comment: tid + "\n\n",
+          amount: t.amount,
+          payer,
+          payed_for,
+          categoryid,
+          paymentmodeid,
+        };
+
+        const { data: newBillId } =
+          await axios.post</* number id of a newly added bill */ string>(
+            `/api-priv/projects/${project}/bills`,
+            OBJECT_TO_SEND
+          );
+
+        console.log(`Successfully saved new bill at id "${newBillId}"`);
+
         return {
           transaction_journal_id: t.transaction_journal_id,
           tags: t.tags.concat(done_label_value),
         };
-      }
-
-      if (foundBills.length === 0) {
-        console.log("No matching bill is found, about to create a new one");
-      }
-
-      const activeUsersMap = Object.fromEntries(
-        p.active_members.map((m) => [m.userid, m.id.toString()] as const)
-      );
-      const allUsersMap = Object.fromEntries(
-        p.members.map((m) => [m.userid, m.id.toString()] as const)
-      );
-
-      const payer = allUsersMap[payerUsername];
-      const payed_for =
-        !payFor || payFor === "all"
-          ? Object.values(activeUsersMap).join(",")
-          : allUsersMap[payFor];
-
-      if (payer == null) {
-        console.log(
-          `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${t.transaction_journal_id}"}', "nc_payer_username" field does not match any known project member.`
-        );
-        return { transaction_journal_id: t.transaction_journal_id };
-      }
-      if (payed_for == null) {
-        console.log(
-          `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${t.transaction_journal_id}"}', unknown "pay-for" target.`
-        );
-        return { transaction_journal_id: t.transaction_journal_id };
-      }
-
-      const categoryid = pipe(
-        O.fromNullable(category),
-        O.orElse(() => O.fromNullable(t.category_name)),
-        O.flatMap((name) =>
-          RA.findFirst(Object.values(p.categories), (_) => _.name === name)
-        ),
-        O.map((_) => _.id.toString()),
-        O.getOrElse(() => "")
-      );
-
-      const paymentmodeid = pipe(
-        O.fromNullable(paymentMethod),
-        O.flatMap((name) =>
-          RA.findFirst(Object.values(p.paymentmodes), (_) => _.name === name)
-        ),
-        O.map((_) => _.id.toString()),
-        O.getOrElse(() => "")
-      );
-
-      const OBJECT_TO_SEND = {
-        timestamp: new Date(t.date).getTime() / 1000,
-        what: t.description,
-        comment: tid + "\n\n",
-        amount: t.amount,
-        payer,
-        payed_for,
-        categoryid,
-        paymentmodeid,
-      };
-
-      const { data: newBillId } =
-        await axios.post</* number id of a newly added bill */ string>(
-          `/api-priv/projects/${project}/bills`,
-          OBJECT_TO_SEND
-        );
-
-      console.log(`Successfully saved new bill at id "${newBillId}"`);
-
-      return {
-        transaction_journal_id: t.transaction_journal_id,
-        tags: t.tags.concat(done_label_value),
-      };
-    })
-  );
-
-  await pipe(
-    toUpdate,
+      })
+    ),
     T.flatMap((toUpdate) =>
       pipe(
         toUpdate,
