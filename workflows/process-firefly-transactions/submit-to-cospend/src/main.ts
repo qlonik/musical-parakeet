@@ -1,5 +1,4 @@
 import * as os from "node:os";
-import { inspect } from "node:util";
 import Axios from "axios";
 import * as S from "@effect/schema/Schema";
 import * as RA from "effect/ReadonlyArray";
@@ -13,14 +12,24 @@ import { formatErrors } from "@effect/schema/TreeFormatter";
 import { stripIndent } from "common-tags";
 import { pipe } from "effect/Function";
 import * as T from "effect/Effect";
-import { getCospendProjectDescription } from "./queries/get-cospend-project-description.js";
-import { getCospendProjectBills } from "./queries/get-cospend-project-bills.js";
+import {
+  getCospendProjectDescription,
+  GetCospendProjectDescriptionError,
+} from "./queries/get-cospend-project-description.js";
+import {
+  getCospendProjectBills,
+  GetCospendProjectBillsError,
+} from "./queries/get-cospend-project-bills.js";
 import {
   CospendApiServiceLive,
   FireflyApiServiceLive,
 } from "./queries/axios-instances.js";
-import { createCospendProjectBill } from "./queries/create-cospend-project-bill.js";
+import {
+  createCospendProjectBill,
+  CreateCospendProjectBillError,
+} from "./queries/create-cospend-project-bill.js";
 import { updateFireflyTransactionTags } from "./queries/update-firefly-transaction-tags.js";
+import { Cause } from "effect";
 
 async function main() {
   const {
@@ -74,59 +83,52 @@ async function main() {
     transaction.attributes.transactions,
     T.forEach((t) =>
       T.gen(function* (_) {
-        if (t.tags.includes(done_label_value)) {
-          return { transaction_journal_id: t.transaction_journal_id };
+        const transaction_journal_id = t.transaction_journal_id;
+        const inputTags = t.tags;
+        if (inputTags.includes(done_label_value)) {
+          return yield* _(O.none());
         }
 
-        const tags = t.tags
-          .filter((t) => t.startsWith(tag_prefix) && t !== done_label_value)
-          .map((t) => {
-            const content = t.slice(tag_prefix.length);
-            const i = content.indexOf(field_separator);
-            return i === -1
-              ? ([content, true] as const)
-              : ([
-                  content.slice(0, i),
-                  content.slice(i + 1, content.length),
-                ] as const);
-          });
-
-        if (tags.length === 0) {
-          return { transaction_journal_id: t.transaction_journal_id };
-        }
-
-        const res = S.parseEither(transactionConfigurationInputS)(
-          Object.fromEntries(tags),
-          { errors: "all" },
-        );
-        if (E.isLeft(res)) {
-          yield* _(
-            T.sync(() => {
-              console.log(
-                `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${t.transaction_journal_id}"}', since transaction configuration does not match schema.`,
-              );
-              console.log(formatErrors(res.left.errors));
-            }),
-          );
-          return { transaction_journal_id: t.transaction_journal_id };
-        }
         const {
           project: project,
           for: payFor,
           category,
           mode: transactionPaymentMode,
-        } = res.right;
-        const paymentMethod =
-          transactionPaymentMode || accountPaymentMode || undefined;
-
-        yield* _(
-          T.sync(() => {
-            console.log(
-              `parsed transaction config: ${inspect(res.right, {
-                depth: null,
-              })}`,
-            );
-          }),
+        } = yield* _(
+          pipe(
+            T.succeed(inputTags),
+            T.map(
+              RA.filter(
+                (t) => t.startsWith(tag_prefix) && t !== done_label_value,
+              ),
+            ),
+            T.filterOrElse(RA.isNonEmptyArray, O.none),
+            T.map(
+              RA.map((t) => {
+                const content = t.slice(tag_prefix.length);
+                const i = content.indexOf(field_separator);
+                return i === -1
+                  ? ([content, true] as const)
+                  : ([
+                      content.slice(0, i),
+                      content.slice(i + 1, content.length),
+                    ] as const);
+              }),
+            ),
+            T.map(Object.fromEntries<unknown>),
+            T.flatMap((_) =>
+              S.parse(transactionConfigurationInputS)(_, { errors: "all" }),
+            ),
+            T.catchTag("ParseError", ({ errors }) =>
+              T.failSync(() => {
+                console.log(
+                  `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${transaction_journal_id}"}', since transaction configuration does not match schema.`,
+                );
+                console.log(formatErrors(errors));
+                return Cause.NoSuchElementException();
+              }),
+            ),
+          ),
         );
 
         const [p, { bills }] = yield* _(
@@ -137,7 +139,7 @@ async function main() {
           ),
         );
 
-        const tid = `${id}:tj_${t.transaction_journal_id}`;
+        const tid = `${id}:tj_${transaction_journal_id}`;
 
         const foundBills = bills.filter(
           ({ comment }) => comment?.startsWith(tid + "\n"),
@@ -150,7 +152,7 @@ async function main() {
               );
             }),
           );
-          return { transaction_journal_id: t.transaction_journal_id };
+          return { transaction_journal_id: transaction_journal_id };
         }
 
         if (foundBills.length === 1) {
@@ -162,8 +164,8 @@ async function main() {
             }),
           );
           return {
-            transaction_journal_id: t.transaction_journal_id,
-            tags: t.tags.concat(done_label_value),
+            transaction_journal_id: transaction_journal_id,
+            tags: inputTags.concat(done_label_value),
           };
         }
 
@@ -194,21 +196,21 @@ async function main() {
           yield* _(
             T.sync(() => {
               console.log(
-                `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${t.transaction_journal_id}"}', "nc_payer_username" field does not match any known project member.`,
+                `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${transaction_journal_id}"}', "nc_payer_username" field does not match any known project member.`,
               );
             }),
           );
-          return { transaction_journal_id: t.transaction_journal_id };
+          return { transaction_journal_id: transaction_journal_id };
         }
         if (payed_for == null) {
           yield* _(
             T.sync(() => {
               console.log(
-                `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${t.transaction_journal_id}"}', unknown "pay-for" target.`,
+                `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${transaction_journal_id}"}', unknown "pay-for" target.`,
               );
             }),
           );
-          return { transaction_journal_id: t.transaction_journal_id };
+          return { transaction_journal_id: transaction_journal_id };
         }
 
         const categoryid = pipe(
@@ -222,7 +224,9 @@ async function main() {
         );
 
         const paymentmodeid = pipe(
-          O.fromNullable(paymentMethod),
+          O.fromNullable(
+            transactionPaymentMode || accountPaymentMode || undefined,
+          ),
           O.flatMap((name) =>
             RA.findFirst(Object.values(p.paymentmodes), (_) => _.name === name),
           ),
@@ -252,12 +256,24 @@ async function main() {
         );
 
         return {
-          transaction_journal_id: t.transaction_journal_id,
-          tags: t.tags.concat(done_label_value),
+          transaction_journal_id: transaction_journal_id,
+          tags: inputTags.concat(done_label_value),
         };
-      }),
+      }).pipe(
+        T.catchTags({
+          NoSuchElementException: () =>
+            T.succeed({ transaction_journal_id: t.transaction_journal_id }),
+        }),
+      ),
     ),
-    (x) => x satisfies T.Effect<unknown, unknown, Record<string, unknown>[]>,
+    (x) =>
+      x satisfies T.Effect<
+        unknown,
+        | GetCospendProjectDescriptionError
+        | GetCospendProjectBillsError
+        | CreateCospendProjectBillError,
+        Record<string, unknown>[]
+      >,
     T.flatMap((toUpdate) =>
       pipe(
         toUpdate,
