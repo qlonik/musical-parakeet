@@ -6,5 +6,5 @@ import {
 
 export const markdown = createTag(
   stripIndentTransformer(),
-  trimResultTransformer()
+  trimResultTransformer(),
 );

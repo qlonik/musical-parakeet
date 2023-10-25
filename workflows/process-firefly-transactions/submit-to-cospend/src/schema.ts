@@ -7,7 +7,7 @@ const Id = S.number.pipe(
   // TODO(qlonik): `S.int()` adds a refinement which conflicts with
   //  `S.templateLiteral()`. Could add int after passed to templateLiteral?
   // S.int(),
-  S.brand("ID")
+  S.brand("ID"),
 );
 const IdStr = S.string.pipe(S.brand("ID"));
 
@@ -19,9 +19,9 @@ const DateFromUnixSeconds = pipe(
   S.transform(
     S.DateFromSelf,
     (i) => new Date(i * 1000),
-    (d) => Math.trunc(d.getTime() / 1000)
+    (d) => Math.trunc(d.getTime() / 1000),
   ),
-  S.validDate()
+  S.validDate(),
 );
 
 // <editor-fold desc="Cospend model">
@@ -35,7 +35,7 @@ export const { Member, MemberId, MemberUserid } = pipe(
       S.int(),
       S.between(0, 255),
       (color) => S.struct({ r: color, g: color, b: color }),
-      S.identifier("Color")
+      S.identifier("Color"),
     ),
     lastchanged: DateFromUnixSeconds,
   }),
@@ -46,20 +46,18 @@ export const { Member, MemberId, MemberUserid } = pipe(
         "userid",
         S.string.pipe(
           S.brand("userid"),
-          S.documentation(
-            // language=markdown
-            markdown`
+          S.documentation(// language=markdown
+          markdown`
 One of the user ids from cospend (usually nextcloud user id).
-            `
-          )
+          `),
         ),
       ],
-      _
+      _,
     ),
   ({ Member, ...rest }) => ({
     ...addBrandedKey("Member", ["id", Id], Member),
     ...rest,
-  })
+  }),
 );
 const MemberIdStr = S.templateLiteral(MemberId);
 
@@ -75,22 +73,20 @@ export const { Category, CategoryId, CategoryName } = pipe(
       [
         "name",
         S.string.pipe(
-          S.documentation(
-            // language=markdown
-            markdown`
+          S.documentation(// language=markdown
+          markdown`
 Category for the purchase. One of the values specified in the cospend project.
 By default, cospend project has \`'Grocery'\`, \`'Restaurant'\`, \`'Shopping'\`,
 \`'Rent'\` and \`'Utilities'\` among others.
-            `
-          )
+          `),
         ),
       ],
-      _
+      _,
     ),
   ({ Category, ...rest }) => ({
     ...addBrandedKey("Category", ["id", Id], Category),
     ...rest,
-  })
+  }),
 );
 const CategoryIdStr = S.templateLiteral(CategoryId);
 
@@ -107,21 +103,19 @@ export const { PaymentMode, PaymentModeId, PaymentModeName } = pipe(
       [
         "name",
         S.string.pipe(
-          S.documentation(
-            // language=markdown
-            markdown`
+          S.documentation(// language=markdown
+          markdown`
 Method of payment. One of the values specified in the cospend project. By
 default, cospend project has \`'Debit card'\` and \`Credit card\` among others.
-            `
-          )
+          `),
         ),
       ],
-      _
+      _,
     ),
   ({ PaymentMode, ...rest }) => ({
     ...addBrandedKey("PaymentMode", ["id", Id], PaymentMode),
     ...rest,
-  })
+  }),
 );
 const PaymentModeIdStr = S.templateLiteral(PaymentModeId);
 
@@ -145,7 +139,7 @@ const { Bill, BillId } = addBrandedKey(
     repeatallactive: S.number,
     repeatuntil: S.null,
     repeatfreq: S.number,
-  })
+  }),
 );
 
 export type CospendProjectDescriptionFrom = S.Schema.From<
@@ -177,7 +171,7 @@ export const { Project: CospendProjectDescriptionS, ProjectId } = addBrandedKey(
       Member,
       S.omit("activated"),
       S.extend(S.struct({ activated: S.literal(true) })),
-      S.array
+      S.array,
     ),
     members: S.array(Member),
     balance: S.record(MemberIdStr, S.number),
@@ -185,7 +179,7 @@ export const { Project: CospendProjectDescriptionS, ProjectId } = addBrandedKey(
     paymentmodes: S.record(PaymentModeIdStr, PaymentMode),
     shares: S.array(S.unknown),
     currencies: S.array(S.unknown),
-  })
+  }),
 );
 
 export type CospendProjectBillsFrom = S.Schema.From<
@@ -202,7 +196,7 @@ export const CospendProjectBillsS = S.struct({
 // <editor-fold desc="Firefly model">
 const FireflyUserId = IdStr.pipe(S.brand("firefly-user"));
 const FireflyPersonalAccessToken = S.string.pipe(
-  S.brand("ff3-personal-access-token")
+  S.brand("ff3-personal-access-token"),
 );
 
 const FireflyTransaction = S.struct({
@@ -216,7 +210,7 @@ const FireflyTransaction = S.struct({
       S.struct({
         user: FireflyUserId,
         transaction_journal_id: IdStr.pipe(
-          S.brand("firefly-transaction-journal")
+          S.brand("firefly-transaction-journal"),
         ),
         type: S.literal("withdrawal"),
         date: S.Date,
@@ -226,7 +220,7 @@ const FireflyTransaction = S.struct({
         tags: S.array(S.string),
         category_id: S.nullable(S.string),
         category_name: S.nullable(S.string),
-      })
+      }),
     ),
   }),
 });
@@ -238,7 +232,7 @@ export type transactionConfigurationInputS = S.Schema.To<
 export const transactionConfigurationInputS = S.struct({
   project: ProjectId,
   for: S.optional(S.union(S.literal("all"), MemberUserid)).withDefault(
-    () => "all"
+    () => "all",
   ),
   category: S.optional(CategoryName),
   mode: S.optional(PaymentModeName),
@@ -260,7 +254,7 @@ export const {
       cospend_payment_mode: PaymentModeName,
     }),
     transaction: FireflyTransaction,
-  })
+  }),
 );
 
 export type PROCESS_FIREFLY_TRANSACTIONS = S.Schema.From<
@@ -274,9 +268,9 @@ const PROCESS_FIREFLY_TRANSACTIONS = S.struct({
       pat: FireflyPersonalAccessToken,
       accounts: S.record(
         S.identifier("ff3-account-id")(S.string),
-        PaymentModeName
+        PaymentModeName,
       ),
       cospend_payer_username: MemberUserid,
-    })
+    }),
   ),
 });

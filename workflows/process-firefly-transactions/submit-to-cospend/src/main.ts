@@ -103,16 +103,16 @@ async function main() {
 
         const res = S.parseEither(transactionConfigurationInputS)(
           Object.fromEntries(tags),
-          { errors: "all" }
+          { errors: "all" },
         );
         if (E.isLeft(res)) {
           yield* _(
             T.sync(() => {
               console.log(
-                `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${t.transaction_journal_id}"}', since transaction configuration does not match schema.`
+                `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${t.transaction_journal_id}"}', since transaction configuration does not match schema.`,
               );
               console.log(formatErrors(res.left.errors));
-            })
+            }),
           );
           return { transaction_journal_id: t.transaction_journal_id };
         }
@@ -130,26 +130,26 @@ async function main() {
             console.log(
               `parsed transaction config: ${inspect(res.right, {
                 depth: null,
-              })}`
+              })}`,
             );
-          })
+          }),
         );
 
         const [p, { bills }] = yield* _(
-          T.promise(() => manageCache(axios, project))
+          T.promise(() => manageCache(axios, project)),
         );
         const tid = `${id}:tj_${t.transaction_journal_id}`;
 
-        const foundBills = bills.filter(({ comment }) =>
-          comment?.startsWith(tid + "\n")
+        const foundBills = bills.filter(
+          ({ comment }) => comment?.startsWith(tid + "\n"),
         );
         if (foundBills.length > 1) {
           yield* _(
             T.sync(() => {
               console.log(
-                "found more than one matching bill submitted to cospend. Refusing to process this bill"
+                "found more than one matching bill submitted to cospend. Refusing to process this bill",
               );
-            })
+            }),
           );
           return { transaction_journal_id: t.transaction_journal_id };
         }
@@ -158,9 +158,9 @@ async function main() {
           yield* _(
             T.sync(() => {
               console.log(
-                "found one matching bill submitted to cospend. No need to process it again"
+                "found one matching bill submitted to cospend. No need to process it again",
               );
-            })
+            }),
           );
           return {
             transaction_journal_id: t.transaction_journal_id,
@@ -172,17 +172,17 @@ async function main() {
           yield* _(
             T.sync(() => {
               console.log(
-                "No matching bill is found, about to create a new one"
+                "No matching bill is found, about to create a new one",
               );
-            })
+            }),
           );
         }
 
         const activeUsersMap = Object.fromEntries(
-          p.active_members.map((m) => [m.userid, m.id.toString()] as const)
+          p.active_members.map((m) => [m.userid, m.id.toString()] as const),
         );
         const allUsersMap = Object.fromEntries(
-          p.members.map((m) => [m.userid, m.id.toString()] as const)
+          p.members.map((m) => [m.userid, m.id.toString()] as const),
         );
 
         const payer = allUsersMap[payerUsername];
@@ -195,9 +195,9 @@ async function main() {
           yield* _(
             T.sync(() => {
               console.log(
-                `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${t.transaction_journal_id}"}', "nc_payer_username" field does not match any known project member.`
+                `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${t.transaction_journal_id}"}', "nc_payer_username" field does not match any known project member.`,
               );
-            })
+            }),
           );
           return { transaction_journal_id: t.transaction_journal_id };
         }
@@ -205,9 +205,9 @@ async function main() {
           yield* _(
             T.sync(() => {
               console.log(
-                `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${t.transaction_journal_id}"}', unknown "pay-for" target.`
+                `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${t.transaction_journal_id}"}', unknown "pay-for" target.`,
               );
-            })
+            }),
           );
           return { transaction_journal_id: t.transaction_journal_id };
         }
@@ -216,19 +216,19 @@ async function main() {
           O.fromNullable(category),
           O.orElse(() => O.fromNullable(t.category_name)),
           O.flatMap((name) =>
-            RA.findFirst(Object.values(p.categories), (_) => _.name === name)
+            RA.findFirst(Object.values(p.categories), (_) => _.name === name),
           ),
           O.map((_) => _.id.toString()),
-          O.getOrElse(() => "")
+          O.getOrElse(() => ""),
         );
 
         const paymentmodeid = pipe(
           O.fromNullable(paymentMethod),
           O.flatMap((name) =>
-            RA.findFirst(Object.values(p.paymentmodes), (_) => _.name === name)
+            RA.findFirst(Object.values(p.paymentmodes), (_) => _.name === name),
           ),
           O.map((_) => _.id.toString()),
-          O.getOrElse(() => "")
+          O.getOrElse(() => ""),
         );
 
         const OBJECT_TO_SEND = {
@@ -247,22 +247,22 @@ async function main() {
             axios.post</* number id of a newly added bill */ string>(
               `/api-priv/projects/${project}/bills`,
               OBJECT_TO_SEND,
-              { signal }
-            )
-          )
+              { signal },
+            ),
+          ),
         );
 
         yield* _(
           T.sync(() => {
             console.log(`Successfully saved new bill at id "${newBillId}"`);
-          })
+          }),
         );
 
         return {
           transaction_journal_id: t.transaction_journal_id,
           tags: t.tags.concat(done_label_value),
         };
-      })
+      }),
     ),
     (x) => x satisfies T.Effect<never, never, Record<string, unknown>[]>,
     T.flatMap((toUpdate) =>
@@ -272,8 +272,8 @@ async function main() {
           pipe(
             Object.keys(o),
             RA.difference(["transaction_journal_id"]),
-            RA.isNonEmptyArray
-          )
+            RA.isNonEmptyArray,
+          ),
         ),
         T.if({
           onFalse: T.unit,
@@ -293,14 +293,14 @@ async function main() {
                   Accept: "application/vnd.api+json",
                 },
                 signal,
-              }
-            )
+              },
+            ),
           ),
-        })
-      )
+        }),
+      ),
     ),
     T.asUnit,
-    T.runPromise
+    T.runPromise,
   );
 }
 
@@ -331,7 +331,7 @@ const manageCache = (() => {
 
   return function manageCache(
     axios: AxiosInstance,
-    project: ProjectId
+    project: ProjectId,
   ): Promise<readonly [CospendProjectDescriptionTo, CospendProjectBillsTo]> {
     let p;
     if ((p = projectCache[project])) return Promise.resolve(p);
@@ -345,8 +345,8 @@ const manageCache = (() => {
       .then(([pr, bills]) =>
         S.decodeSync(S.tuple(CospendProjectDescriptionS, CospendProjectBillsS))(
           [pr.data, bills.data],
-          { errors: "all" }
-        )
+          { errors: "all" },
+        ),
       )
       .then((data) => {
         delete _projectCacheInProgress[project];
