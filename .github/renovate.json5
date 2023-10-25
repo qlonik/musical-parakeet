@@ -53,8 +53,9 @@
   "nix": {
     "enabled": true
   },
-  "regexManagers": [
+  "customManagers": [
     {
+      "customType": "regex",
       "description": "Process various other dependencies",
       "fileMatch": [
         "(^|/)addons/.+\\.ya?ml(\\.j2)?(\\.j2)?$",
