@@ -76,14 +76,11 @@ async function main() {
     transaction,
   } = res.right;
 
-  const toUpdate: Record<string, unknown>[] = [];
-
-  await pipe(
+  const toUpdate = await pipe(
     transaction.attributes.transactions,
-    RA.map(async (t) => {
+    RA.map(async (t): Promise<Record<string, unknown>> => {
       if (t.tags.includes(done_label_value)) {
-        toUpdate.push({ transaction_journal_id: t.transaction_journal_id });
-        return;
+        return { transaction_journal_id: t.transaction_journal_id };
       }
 
       const tags = t.tags
@@ -100,8 +97,7 @@ async function main() {
         });
 
       if (tags.length === 0) {
-        toUpdate.push({ transaction_journal_id: t.transaction_journal_id });
-        return;
+        return { transaction_journal_id: t.transaction_journal_id };
       }
 
       const res = S.parseEither(transactionConfigurationInputS)(
@@ -113,8 +109,7 @@ async function main() {
           `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${t.transaction_journal_id}"}', since transaction configuration does not match schema.`
         );
         console.log(formatErrors(res.left.errors));
-        toUpdate.push({ transaction_journal_id: t.transaction_journal_id });
-        return;
+        return { transaction_journal_id: t.transaction_journal_id };
       }
       const {
         project: project,
@@ -139,19 +134,17 @@ async function main() {
         console.log(
           "found more than one matching bill submitted to cospend. Refusing to process this bill"
         );
-        toUpdate.push({ transaction_journal_id: t.transaction_journal_id });
-        return;
+        return { transaction_journal_id: t.transaction_journal_id };
       }
 
       if (foundBills.length === 1) {
         console.log(
           "found one matching bill submitted to cospend. No need to process it again"
         );
-        toUpdate.push({
+        return {
           transaction_journal_id: t.transaction_journal_id,
           tags: t.tags.concat(done_label_value),
-        });
-        return;
+        };
       }
 
       if (foundBills.length === 0) {
@@ -175,15 +168,13 @@ async function main() {
         console.log(
           `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${t.transaction_journal_id}"}', "nc_payer_username" field does not match any known project member.`
         );
-        toUpdate.push({ transaction_journal_id: t.transaction_journal_id });
-        return;
+        return { transaction_journal_id: t.transaction_journal_id };
       }
       if (payed_for == null) {
         console.log(
           `Cannot process transaction '{"id": "${id}", "transaction_journal_id": "${t.transaction_journal_id}"}', unknown "pay-for" target.`
         );
-        toUpdate.push({ transaction_journal_id: t.transaction_journal_id });
-        return;
+        return { transaction_journal_id: t.transaction_journal_id };
       }
 
       const categoryid = pipe(
@@ -224,11 +215,10 @@ async function main() {
 
       console.log(`Successfully saved new bill at id "${newBillId}"`);
 
-      toUpdate.push({
+      return {
         transaction_journal_id: t.transaction_journal_id,
         tags: t.tags.concat(done_label_value),
-      });
-      return;
+      };
     }),
     (_) => Promise.all(_)
   );
