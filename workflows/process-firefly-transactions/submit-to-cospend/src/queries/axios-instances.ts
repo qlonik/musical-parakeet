@@ -8,7 +8,7 @@ import { pipe } from "effect/Function";
 import { NetworkError } from "./errors.js";
 
 interface WrappedAxios {
-  request: <R, D = never>(
+  request: <D = never, R = unknown>(
     config: AxiosRequestConfig<D>,
   ) => T.Effect<never, NetworkError, AxiosResponse<R, D>>;
 }
