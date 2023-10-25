@@ -76,7 +76,7 @@ async function main() {
     transaction,
   } = res.right;
 
-  await pipe(
+  return pipe(
     transaction.attributes.transactions,
     T.forEach((t) =>
       T.promise(async (): Promise<Record<string, unknown>> => {
@@ -256,6 +256,7 @@ async function main() {
         })
       )
     ),
+    T.asUnit,
     T.runPromise
   );
 }
