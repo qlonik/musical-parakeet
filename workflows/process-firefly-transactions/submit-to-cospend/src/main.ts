@@ -30,12 +30,7 @@ import {
   CreateCospendProjectBillError,
 } from "./queries/create-cospend-project-bill.js";
 import { updateFireflyTransactionTags } from "./queries/update-firefly-transaction-tags.js";
-import {
-  CospendCategoriesTo,
-  CospendCategoryNameTo,
-  ProjectId,
-} from "./model/cospend.js";
-import { FireflyCategoryName } from "./model/firefly.js";
+import { ProjectId } from "./model/cospend.js";
 
 const skipping = T.fail({ _tag: "skipping" as const });
 function mkError(
@@ -105,21 +100,26 @@ async function main() {
   return pipe(
     transactions,
     T.forEach((t) =>
-      pipe(
-        T.Do,
-        T.let("tid", () => `${id}:tj_${t.transaction_journal_id}`),
-        T.bind("transactionConfig", ({ tid }) =>
-          pipe(
-            T.succeed(t.tags),
-            T.map(RA.filter((t) => t.startsWith(tag_prefix))),
-            T.filterOrElse(
-              (tags) =>
-                RA.isNonEmptyArray(tags) && !tags.includes(done_label_value),
-              () => skipping,
-            ),
-            T.flatMap(
-              getTransactionConfigurationInput(tag_prefix, field_separator),
-            ),
+      T.gen(function* (_) {
+        const tid = `${id}:tj_${t.transaction_journal_id}`;
+
+        const tags = RA.filter(t.tags, (t) => t.startsWith(tag_prefix));
+
+        if (!RA.isNonEmptyArray(tags) || tags.includes(done_label_value)) {
+          return yield* _(skipping);
+        }
+
+        const {
+          project,
+          for: payFor,
+          category,
+          mode: transactionPaymentMode,
+        } = yield* _(
+          getTransactionConfigurationInput(
+            tags,
+            tag_prefix,
+            field_separator,
+          ).pipe(
             T.catchTag("ParseError", ({ errors }) =>
               mkError(
                 tid,
@@ -128,75 +128,66 @@ async function main() {
               ),
             ),
           ),
-        ),
-        T.bind("p", ({ transactionConfig: { project }, tid }) =>
+        );
+
+        const { active_members, members, categories, paymentmodes } = yield* _(
           loadCospendProjectIfNeeded(project, tid),
-        ),
-        T.zipLeft(
+        );
+
+        yield* _(
           T.logDebug("No matching bills found in cospend, creating a new one"),
-        ),
-        T.let("activeUsersMap", ({ p }) =>
-          ReadonlyRecord.fromIterable(p.active_members, (m) => [
-            m.userid,
-            m.id.toString(),
-          ]),
-        ),
-        T.let("allUsersMap", ({ p }) =>
-          ReadonlyRecord.fromIterable(p.members, (m) => [
-            m.userid,
-            m.id.toString(),
-          ]),
-        ),
-        T.let("payer", ({ allUsersMap }) => allUsersMap[payerUsername]),
-        T.let(
-          "payed_for",
-          ({
-            transactionConfig: { for: payFor },
-            activeUsersMap,
-            allUsersMap,
-          }) =>
-            payFor && payFor !== "all"
-              ? allUsersMap[payFor]
-              : Object.values(activeUsersMap).join(","),
-        ),
-        T.tap(({ payer, payed_for, tid }) =>
-          payer != null && payed_for != null
-            ? T.unit
-            : mkError(
-                tid,
-                payer == null
-                  ? '"cospend_payer_username" field does not match any known project member'
-                  : 'unknown "pay-for" target',
-              ),
-        ),
-        T.let(
-          "categoryid",
-          ({ transactionConfig: { category }, p: { categories } }) =>
-            getCategoryId(category, t.category_name, categories),
-        ),
-        T.let(
-          "paymentmodeid",
-          ({
-            transactionConfig: { mode: transactionPaymentMode },
-            p: { paymentmodes },
-          }) =>
-            pipe(
-              O.fromNullable(
-                transactionPaymentMode || accountPaymentMode || undefined,
-              ),
-              O.flatMap((name) =>
-                RA.findFirst(
-                  Object.values(paymentmodes),
-                  (_) => _.name === name,
-                ),
-              ),
-              O.map((_) => _.id.toString()),
-              O.getOrElse(() => ""),
+        );
+
+        const allUsersMap = ReadonlyRecord.fromIterable(members, (m) => [
+          m.userid,
+          m.id.toString(),
+        ]);
+
+        const activeUsersMap = ReadonlyRecord.fromIterable(
+          active_members,
+          (m) => [m.userid, m.id.toString()],
+        );
+
+        const payer = allUsersMap[payerUsername];
+        const payed_for =
+          payFor && payFor !== "all"
+            ? allUsersMap[payFor]
+            : Object.values(activeUsersMap).join(",");
+
+        if (payer == null || payed_for == null) {
+          return yield* _(
+            mkError(
+              tid,
+              payer == null
+                ? '"cospend_payer_username" field does not match any known project member'
+                : 'unknown "pay-for" target',
             ),
-        ),
-        T.let(
-          "OBJECT_TO_SEND",
-          ({ tid, payer, payed_for, categoryid, paymentmodeid }) => ({
+          );
+        }
+
+        const categoryid = pipe(
+          O.fromNullable(category),
+          O.orElse(() => O.fromNullable(t.category_name)),
+          O.flatMap((name) =>
+            RA.findFirst(Object.values(categories), (_) => _.name === name),
+          ),
+          O.map((_) => _.id.toString()),
+          O.getOrElse(() => ""),
+        );
+
+        const paymentmodeid = pipe(
+          O.fromNullable(
+            transactionPaymentMode || accountPaymentMode || undefined,
+          ),
+          O.flatMap((name) =>
+            RA.findFirst(Object.values(paymentmodes), (_) => _.name === name),
+          ),
+          O.map((_) => _.id.toString()),
+          O.getOrElse(() => ""),
+        );
+
+        const newBillId = yield* _(
+          createCospendProjectBill(project, {
             timestamp: new Date(t.date).getTime() / 1000,
             what: t.description,
             comment: tid + "\n\n",
@@ -206,14 +197,11 @@ async function main() {
             categoryid,
             paymentmodeid,
           }),
-        ),
-        T.flatMap(({ transactionConfig: { project }, OBJECT_TO_SEND }) =>
-          createCospendProjectBill(project, OBJECT_TO_SEND),
-        ),
-        T.flatMap((newBillId) =>
+        );
+        return yield* _(
           mkFoundBill(`Successfully saved new bill at id "${newBillId}"`),
-        ),
-
+        );
+      }).pipe(
         // handle all exits from the main loop
         T.map((x) => x satisfies never),
         T.catchTags({
@@ -286,25 +274,24 @@ process.on("unhandledRejection", handleError);
 main().catch(handleError);
 
 function getTransactionConfigurationInput(
+  arr: Array<string>,
   tag_prefix: string,
   field_separator: string,
 ) {
-  return (arr: Array<string>) =>
-    pipe(
-      arr,
-      RA.map((tag) => {
-        const content = tag.slice(tag_prefix.length);
-        const i = content.indexOf(field_separator);
-        return i === -1
-          ? ([content, true] as const)
-          : ([
-              content.slice(0, i),
-              content.slice(i + field_separator.length, content.length),
-            ] as const);
-      }),
-      (data) =>
-        S.parse(transactionConfigurationInputS)(data, { errors: "all" }),
-    );
+  return pipe(
+    arr,
+    RA.map((tag) => {
+      const content = tag.slice(tag_prefix.length);
+      const i = content.indexOf(field_separator);
+      return i === -1
+        ? ([content, true] as const)
+        : ([
+            content.slice(0, i),
+            content.slice(i + field_separator.length, content.length),
+          ] as const);
+    }),
+    (data) => S.parse(transactionConfigurationInputS)(data, { errors: "all" }),
+  );
 }
 
 function loadCospendProjectIfNeeded(project: ProjectId, tid: string) {
@@ -329,21 +316,5 @@ function loadCospendProjectIfNeeded(project: ProjectId, tid: string) {
       ),
     ),
     T.zipRight(getCospendProjectDescription(project), { concurrent: true }),
-  );
-}
-
-function getCategoryId(
-  transactionConfigCategory: CospendCategoryNameTo | undefined,
-  fireflyTransactionCategoryName: FireflyCategoryName,
-  cospendCategories: CospendCategoriesTo,
-) {
-  return pipe(
-    O.fromNullable(transactionConfigCategory),
-    O.orElse(() => O.fromNullable(fireflyTransactionCategoryName)),
-    O.flatMap((name) =>
-      RA.findFirst(Object.values(cospendCategories), (_) => _.name === name),
-    ),
-    O.map((_) => _.id.toString()),
-    O.getOrElse(() => ""),
   );
 }
