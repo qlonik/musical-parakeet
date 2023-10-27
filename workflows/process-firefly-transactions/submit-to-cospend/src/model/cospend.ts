@@ -4,6 +4,8 @@ import { DateFromUnixSeconds, Email, Id, IdStr } from "./generic.js";
 import { addBrandedKey } from "../schema-extra.js";
 import { markdown } from "../template-tags.js";
 
+export type MemberUseridTo = S.Schema.To<typeof MemberUserid>;
+
 export const { Member, MemberId, MemberUserid } = pipe(
   S.struct({
     name: S.string,
@@ -40,8 +42,6 @@ One of the user ids from cospend (usually nextcloud user id).
 );
 const MemberIdStr = S.templateLiteral(MemberId);
 
-export type CospendCategoryNameTo = S.Schema.To<typeof CategoryName>;
-
 export const { Category, CategoryId, CategoryName } = pipe(
   S.struct({
     icon: S.string,
@@ -70,6 +70,8 @@ By default, cospend project has \`'Grocery'\`, \`'Restaurant'\`, \`'Shopping'\`,
   }),
 );
 const CategoryIdStr = S.templateLiteral(CategoryId);
+
+export type PaymentModeNameTo = S.Schema.To<typeof PaymentModeName>;
 
 export const { PaymentMode, PaymentModeId, PaymentModeName } = pipe(
   S.struct({

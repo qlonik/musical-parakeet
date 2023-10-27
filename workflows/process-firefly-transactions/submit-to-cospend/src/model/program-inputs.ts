@@ -21,6 +21,7 @@ export const transactionConfigurationInputS = S.struct({
   mode: S.optional(PaymentModeName),
 });
 
+export type FireflyTransactionInputId = S.Schema.To<typeof TransactionInputId>;
 export type FireflyTransactionInput = S.Schema.From<
   typeof fireflyTransactionInputS
 >;
