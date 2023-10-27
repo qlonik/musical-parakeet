@@ -2,10 +2,8 @@ import * as os from "node:os";
 import Axios from "axios";
 import * as S from "@effect/schema/Schema";
 import * as RA from "effect/ReadonlyArray";
-import * as E from "effect/Either";
-import { fireflyTransactionInputS } from "./model/program-inputs.js";
+import { InputEnvVars, InputEnvVarsTo } from "./model/program-inputs.js";
 import { formatErrors } from "@effect/schema/TreeFormatter";
-import { stripIndent } from "common-tags";
 import { pipe } from "effect/Function";
 import * as T from "effect/Effect";
 import { GetCospendProjectDescriptionError } from "./queries/get-cospend-project-description.js";
@@ -18,47 +16,10 @@ import { CreateCospendProjectBillError } from "./queries/create-cospend-project-
 import { updateFireflyTransactionTags } from "./queries/update-firefly-transaction-tags.js";
 import { processTransaction } from "./process-transaction.js";
 
-async function main() {
-  const {
-    nc_base_url = "http://nextcloud.default.svc.cluster.local:8080",
-    nc_user = null,
-    nc_password = null,
-    ff3_base_url = "http://firefly-iii.default.svc.cluster.local:8080",
-
-    input: _input = "{}",
-    tag_prefix = "cospend:",
-    done_marker = "done",
-    field_separator = ":",
-  } = process.env;
-
-  if (!nc_user || !nc_password) {
-    handleError(`"nc_user" and "nc_password" are required parameters`);
-    return;
-  }
-
-  let jsonParseResult: unknown;
-  try {
-    jsonParseResult = JSON.parse(_input);
-  } catch (e) {
-    handleError(`Input object is not a valid JSON object.`);
-    return;
-  }
-
-  const res = S.parseEither(fireflyTransactionInputS)(jsonParseResult, {
-    errors: "all",
-  });
-  if (E.isLeft(res)) {
-    handleError(stripIndent`
-      Input object does not match the schema.
-      ${formatErrors(res.left.errors)}
-    `);
-    return;
-  }
-
-  const {
+const program = ({
+  input: {
     id,
     info: {
-      pat,
       cospend_payer_username: payerUsername,
       cospend_payment_mode: accountPaymentMode,
     },
@@ -66,9 +27,13 @@ async function main() {
       id: transactionId,
       attributes: { transactions },
     },
-  } = res.right;
+  },
 
-  return pipe(
+  tag_prefix,
+  done_marker,
+  field_separator,
+}: InputEnvVarsTo) =>
+  pipe(
     transactions,
     T.forEach((t) =>
       T.catchTags(
@@ -125,11 +90,38 @@ async function main() {
     ),
     T.asUnit,
     T.withRequestCaching(true),
-    T.provide(CospendApiServiceLive(nc_base_url, nc_user, nc_password)),
-    T.provide(FireflyApiServiceLive(ff3_base_url, pat)),
-    T.runPromise,
   );
-}
+
+const main = T.gen(function* (_) {
+  const inputs = yield* _(
+    pipe(
+      T.sync(() => process.env),
+      T.flatMap((_) => S.parse(InputEnvVars)(_, { errors: "all" })),
+      T.catchTag("ParseError", ({ errors }) =>
+        T.fail({
+          title: "The environment is missing required variables",
+          details: formatErrors(errors),
+        }),
+      ),
+    ),
+  );
+
+  return yield* _(
+    pipe(
+      program(inputs),
+      T.provide(
+        CospendApiServiceLive(
+          inputs.nc_base_url,
+          inputs.nc_user,
+          inputs.nc_password,
+        ),
+      ),
+      T.provide(
+        FireflyApiServiceLive(inputs.ff3_base_url, inputs.input.info.pat),
+      ),
+    ),
+  );
+});
 
 function handleError(err: unknown): void {
   const msg = err instanceof Error ? err.toString() : err;
@@ -147,4 +139,4 @@ function handleError(err: unknown): void {
 }
 
 process.on("unhandledRejection", handleError);
-main().catch(handleError);
+T.runPromise(main).catch(handleError);
