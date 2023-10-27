@@ -17,6 +17,9 @@ export type FireflyTransactionJournalId = S.Schema.To<
   typeof FireflyTransactionJournalId
 >;
 
+export const FireflyCategoryName = S.nullable(S.string);
+export type FireflyCategoryName = S.Schema.To<typeof FireflyCategoryName>;
+
 const FireflyTransactionJournal = S.struct({
   user: FireflyUserId,
   transaction_journal_id: FireflyTransactionJournalId,
@@ -27,7 +30,7 @@ const FireflyTransactionJournal = S.struct({
   description: S.string,
   tags: S.array(S.string),
   category_id: S.nullable(S.string),
-  category_name: S.nullable(S.string),
+  category_name: FireflyCategoryName,
 });
 type FireflyTransactionJournalFrom = S.Schema.From<
   typeof FireflyTransactionJournal

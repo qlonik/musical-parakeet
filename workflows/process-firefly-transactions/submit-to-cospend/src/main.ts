@@ -30,7 +30,12 @@ import {
   CreateCospendProjectBillError,
 } from "./queries/create-cospend-project-bill.js";
 import { updateFireflyTransactionTags } from "./queries/update-firefly-transaction-tags.js";
-import { not } from "effect/Predicate";
+import {
+  CospendCategoriesTo,
+  CospendCategoryNameTo,
+  ProjectId,
+} from "./model/cospend.js";
+import { FireflyCategoryName } from "./model/firefly.js";
 
 const skipping = T.fail({ _tag: "skipping" as const });
 function mkError(
@@ -42,8 +47,8 @@ function mkError(
 
 function mkFoundBill(
   message: string,
-): T.Effect<never, { _tag: "found-bill"; message: string }, never> {
-  return T.fail({ _tag: "found-bill", message });
+): T.Effect<never, { _tag: "foundBill"; message: string }, never> {
+  return T.fail({ _tag: "foundBill", message });
 }
 
 async function main() {
@@ -106,28 +111,14 @@ async function main() {
         T.bind("transactionConfig", ({ tid }) =>
           pipe(
             T.succeed(t.tags),
-            T.filterOrElse(not(RA.contains(done_label_value)), () => skipping),
-            T.map(
-              RA.filter(
-                (t) => t.startsWith(tag_prefix) && t !== done_label_value,
-              ),
+            T.map(RA.filter((t) => t.startsWith(tag_prefix))),
+            T.filterOrElse(
+              (tags) =>
+                RA.isNonEmptyArray(tags) && !tags.includes(done_label_value),
+              () => skipping,
             ),
-            T.filterOrElse(RA.isNonEmptyArray, () => skipping),
-            T.map(
-              RA.map((t) => {
-                const content = t.slice(tag_prefix.length);
-                const i = content.indexOf(field_separator);
-                return i === -1
-                  ? ([content, true] as const)
-                  : ([
-                      content.slice(0, i),
-                      content.slice(i + 1, content.length),
-                    ] as const);
-              }),
-            ),
-            T.map(Object.fromEntries<unknown>),
-            T.flatMap((_) =>
-              S.parse(transactionConfigurationInputS)(_, { errors: "all" }),
+            T.flatMap(
+              getTransactionConfigurationInput(tag_prefix, field_separator),
             ),
             T.catchTag("ParseError", ({ errors }) =>
               mkError(
@@ -139,47 +130,22 @@ async function main() {
           ),
         ),
         T.bind("p", ({ transactionConfig: { project }, tid }) =>
-          pipe(
-            getCospendProjectBills(project),
-            T.map((_) =>
-              RA.filter(
-                _.bills,
-                ({ comment }) => comment?.startsWith(tid + "\n") ?? false,
-              ),
-            ),
-            T.filterOrElse(RA.isEmptyArray, (foundBills) =>
-              T.unified(
-                foundBills.length === 1
-                  ? mkFoundBill(
-                      "found one matching bill submitted to cospend. No need to process it again",
-                    )
-                  : mkError(
-                      tid,
-                      "found more than one matching bill submitted to cospend. Refusing to process this bill",
-                    ),
-              ),
-            ),
-            T.zipRight(getCospendProjectDescription(project), {
-              concurrent: true,
-            }),
-          ),
+          loadCospendProjectIfNeeded(project, tid),
         ),
         T.zipLeft(
           T.logDebug("No matching bills found in cospend, creating a new one"),
         ),
         T.let("activeUsersMap", ({ p }) =>
-          pipe(
-            p.active_members,
-            RA.map((m) => [m.userid, m.id.toString()] as const),
-            ReadonlyRecord.fromEntries,
-          ),
+          ReadonlyRecord.fromIterable(p.active_members, (m) => [
+            m.userid,
+            m.id.toString(),
+          ]),
         ),
         T.let("allUsersMap", ({ p }) =>
-          pipe(
-            p.members,
-            RA.map((m) => [m.userid, m.id.toString()] as const),
-            ReadonlyRecord.fromEntries,
-          ),
+          ReadonlyRecord.fromIterable(p.members, (m) => [
+            m.userid,
+            m.id.toString(),
+          ]),
         ),
         T.let("payer", ({ allUsersMap }) => allUsersMap[payerUsername]),
         T.let(
@@ -203,27 +169,24 @@ async function main() {
                   : 'unknown "pay-for" target',
               ),
         ),
-        T.let("categoryid", ({ transactionConfig: { category }, p }) =>
-          pipe(
-            O.fromNullable(category),
-            O.orElse(() => O.fromNullable(t.category_name)),
-            O.flatMap((name) =>
-              RA.findFirst(Object.values(p.categories), (_) => _.name === name),
-            ),
-            O.map((_) => _.id.toString()),
-            O.getOrElse(() => ""),
-          ),
+        T.let(
+          "categoryid",
+          ({ transactionConfig: { category }, p: { categories } }) =>
+            getCategoryId(category, t.category_name, categories),
         ),
         T.let(
           "paymentmodeid",
-          ({ transactionConfig: { mode: transactionPaymentMode }, p }) =>
+          ({
+            transactionConfig: { mode: transactionPaymentMode },
+            p: { paymentmodes },
+          }) =>
             pipe(
               O.fromNullable(
                 transactionPaymentMode || accountPaymentMode || undefined,
               ),
               O.flatMap((name) =>
                 RA.findFirst(
-                  Object.values(p.paymentmodes),
+                  Object.values(paymentmodes),
                   (_) => _.name === name,
                 ),
               ),
@@ -261,7 +224,7 @@ async function main() {
               T.logDebug(`Cannot process transaction '${tid}':\n` + message),
               T.as({ transaction_journal_id: t.transaction_journal_id }),
             ),
-          "found-bill": ({ message }) =>
+          foundBill: ({ message }) =>
             pipe(
               T.logDebug(message),
               T.as({
@@ -321,3 +284,66 @@ function handleError(err: unknown): void {
 
 process.on("unhandledRejection", handleError);
 main().catch(handleError);
+
+function getTransactionConfigurationInput(
+  tag_prefix: string,
+  field_separator: string,
+) {
+  return (arr: Array<string>) =>
+    pipe(
+      arr,
+      RA.map((tag) => {
+        const content = tag.slice(tag_prefix.length);
+        const i = content.indexOf(field_separator);
+        return i === -1
+          ? ([content, true] as const)
+          : ([
+              content.slice(0, i),
+              content.slice(i + field_separator.length, content.length),
+            ] as const);
+      }),
+      (data) =>
+        S.parse(transactionConfigurationInputS)(data, { errors: "all" }),
+    );
+}
+
+function loadCospendProjectIfNeeded(project: ProjectId, tid: string) {
+  return pipe(
+    getCospendProjectBills(project),
+    T.map((_) =>
+      RA.filter(
+        _.bills,
+        ({ comment }) => comment?.startsWith(tid + "\n") ?? false,
+      ),
+    ),
+    T.filterOrElse(RA.isEmptyArray, (foundBills) =>
+      T.unified(
+        foundBills.length === 1
+          ? mkFoundBill(
+              "found one matching bill submitted to cospend. No need to process it again",
+            )
+          : mkError(
+              tid,
+              "found more than one matching bill submitted to cospend. Refusing to process this bill",
+            ),
+      ),
+    ),
+    T.zipRight(getCospendProjectDescription(project), { concurrent: true }),
+  );
+}
+
+function getCategoryId(
+  transactionConfigCategory: CospendCategoryNameTo | undefined,
+  fireflyTransactionCategoryName: FireflyCategoryName,
+  cospendCategories: CospendCategoriesTo,
+) {
+  return pipe(
+    O.fromNullable(transactionConfigCategory),
+    O.orElse(() => O.fromNullable(fireflyTransactionCategoryName)),
+    O.flatMap((name) =>
+      RA.findFirst(Object.values(cospendCategories), (_) => _.name === name),
+    ),
+    O.map((_) => _.id.toString()),
+    O.getOrElse(() => ""),
+  );
+}

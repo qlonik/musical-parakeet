@@ -40,6 +40,8 @@ One of the user ids from cospend (usually nextcloud user id).
 );
 const MemberIdStr = S.templateLiteral(MemberId);
 
+export type CospendCategoryNameTo = S.Schema.To<typeof CategoryName>;
+
 export const { Category, CategoryId, CategoryName } = pipe(
   S.struct({
     icon: S.string,
@@ -125,6 +127,9 @@ export const BillIdStr = IdStr.pipe(S.identifier("Bill"), S.brand("Bill"));
 export type BillIdStrFrom = S.Schema.From<typeof BillIdStr>;
 export type BillIdStrTo = S.Schema.To<typeof BillIdStr>;
 
+export type CospendCategoriesTo = S.Schema.To<typeof CospendCategories>;
+export const CospendCategories = S.record(CategoryIdStr, Category);
+
 export type CospendProjectDescriptionFrom = S.Schema.From<
   typeof CospendProjectDescriptionS
 >;
@@ -158,7 +163,7 @@ export const { Project: CospendProjectDescriptionS, ProjectId } = addBrandedKey(
     ),
     members: S.array(Member),
     balance: S.record(MemberIdStr, S.number),
-    categories: S.record(CategoryIdStr, Category),
+    categories: CospendCategories,
     paymentmodes: S.record(PaymentModeIdStr, PaymentMode),
     shares: S.array(S.unknown),
     currencies: S.array(S.unknown),
