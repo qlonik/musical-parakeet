@@ -8,7 +8,7 @@ spec:
   values:
     initContainers:
       03-db-migrations:
-        image: ghcr.io/zhaofengli/attic:latest@sha256:06d9ca943cfe38ef954cbe2dd453dac0788f55661f84c31254a3a8044aa3100f
+        image: ghcr.io/zhaofengli/attic:latest@sha256:8a823f6add968152958f14845c22e337090c125fe3b252de0b2afaa3fd7ceabf
         envFrom:
           - secretRef:
               name: attic-credentials
