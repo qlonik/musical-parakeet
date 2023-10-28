@@ -29,7 +29,7 @@ spec:
       type: statefulset
     image:
       repository: public.ecr.aws/docker/library/influxdb
-      tag: 2.7.1@sha256:58b7c77075625c72a1f87bbf25acf0bea89911bab7fb1fc79b55a27e3100d724
+      tag: 2.7.3@sha256:6d1294897df4c09ee451dda330f4fd33e9db6cf0bd1ecc015f6ab50ef0a6720e
     service:
       main:
         ports:
