@@ -33,7 +33,7 @@ spec:
       type: statefulset
     image:
       repository: zurdi15/romm
-      tag: latest@sha256:6f9dbae3b88832a757b808a26dcd91a98723ead0116b02bcf378f91bc2307f4e
+      tag: latest@sha256:2ca61a76807b2c515cb72163a2f5a0a3a7f26ccac2349fed8830f99fe3453a52
     env:
       TZ: ${TIMEZONE}
       ROMM_DB_DRIVER: sqlite
