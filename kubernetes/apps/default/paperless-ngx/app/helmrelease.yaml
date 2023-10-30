@@ -49,6 +49,7 @@ spec:
       PAPERLESS_TIKA_ENABLED: true
       PAPERLESS_TIME_ZONE: "${TIMEZONE}"
       PAPERLESS_URL: "http{{if ne ( len .Values.ingress.main.tls ) 0 }}s{{end}}://{{ (first .Values.ingress.main.hosts).host }}"
+      PAPERLESS_OCR_USER_ARGS: '{"continue_on_soft_render_error": true}'
       USERMAP_GID: 568
       USERMAP_UID: 568
     envFrom:
