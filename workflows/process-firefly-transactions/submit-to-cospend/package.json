@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@actions/core": "^1.10.0",
+    "@effect/platform-node": "^0.25.0",
     "@effect/schema": "^0.45.6",
     "axios": "^1.4.0",
     "common-tags": "1.8.1",
