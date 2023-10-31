@@ -2,6 +2,7 @@ import * as os from "node:os";
 import Axios from "axios";
 import * as S from "@effect/schema/Schema";
 import * as RA from "effect/ReadonlyArray";
+import * as RR from "effect/ReadonlyRecord";
 import { InputEnvVars, InputEnvVarsTo } from "./model/program-inputs.js";
 import { formatErrors } from "@effect/schema/TreeFormatter";
 import { pipe } from "effect/Function";
@@ -45,10 +46,9 @@ const program = ({
     ),
     T.flatMap((toUpdate) =>
       pipe(
-        toUpdate,
-        RA.some((o: Record<string, unknown>) =>
+        RA.some(toUpdate, (o) =>
           pipe(
-            Object.keys(o),
+            RR.keys(o),
             RA.difference(["transaction_journal_id"]),
             RA.isNonEmptyArray,
           ),
