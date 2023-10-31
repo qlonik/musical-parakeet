@@ -160,16 +160,11 @@ export const processTransaction = (
       m.id.toString(),
     ]);
 
-    const activeUsersMap = ReadonlyRecord.fromIterable(active_members, (m) => [
-      m.userid,
-      m.id.toString(),
-    ]);
-
     const payer = allUsersMap[payerUsername];
     const payed_for =
       payFor && payFor !== "all"
         ? allUsersMap[payFor]
-        : Object.values(activeUsersMap).join(",");
+        : RA.map(active_members, (m) => m.id.toString()).join(",");
 
     if (payer == null || payed_for == null) {
       return yield* _(
