@@ -80,7 +80,7 @@ function loadCospendProjectIfNeeded(project: ProjectId, tid: string) {
   );
 }
 
-export function processTransaction(
+export const processTransaction = (
   t: FireflyTransactionJournalTo,
   {
     id,
@@ -97,9 +97,9 @@ export function processTransaction(
     done_marker: string;
     field_separator: string;
   },
-) {
-  const done_label_value = tag_prefix + done_marker;
-  return T.gen(function* (_) {
+) =>
+  T.gen(function* (_) {
+    const done_label_value = tag_prefix + done_marker;
     const tid = `${id}:tj_${t.transaction_journal_id}`;
 
     const tags = RA.filter(t.tags, (t) => t.startsWith(tag_prefix));
@@ -195,4 +195,3 @@ export function processTransaction(
       mkFoundBill(`Successfully saved new bill at id "${newBillId}"`),
     );
   }) satisfies T.Effect<unknown, unknown, never>;
-}
