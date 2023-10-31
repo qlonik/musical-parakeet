@@ -24,6 +24,7 @@ import {
 import * as S from "@effect/schema/Schema";
 import {
   FireflyTransactionInputId,
+  InputEnvVarsTo,
   transactionConfigurationInputS,
 } from "./model/program-inputs.js";
 import {
@@ -31,6 +32,8 @@ import {
   FireflyTransactionJournalTo,
 } from "./model/firefly.js";
 import { CospendApiService } from "./queries/axios-instances.js";
+import * as RR from "effect/ReadonlyRecord";
+import { updateFireflyTransactionTags } from "./queries/update-firefly-transaction-tags.js";
 
 const skipping = T.fail({ _tag: "skipping" as const });
 
@@ -93,7 +96,7 @@ function loadCospendProjectIfNeeded(project: ProjectId, tid: string) {
   );
 }
 
-export const processTransaction = (
+const processTransaction = (
   t: FireflyTransactionJournalTo,
   {
     id,
@@ -229,4 +232,52 @@ export const processTransaction = (
           }),
         ),
     }),
+  );
+
+export const program = ({
+  input: {
+    id,
+    info: {
+      cospend_payer_username: payerUsername,
+      cospend_payment_mode: accountPaymentMode,
+    },
+    transaction: {
+      id: transactionId,
+      attributes: { transactions },
+    },
+  },
+
+  tag_prefix,
+  done_marker,
+  field_separator,
+}: InputEnvVarsTo) =>
+  pipe(
+    transactions,
+    T.forEach((t) =>
+      processTransaction(t, {
+        id,
+        payerUsername,
+        accountPaymentMode,
+        tag_prefix,
+        done_marker,
+        field_separator,
+      }),
+    ),
+    T.flatMap((toUpdate) =>
+      pipe(
+        RA.some(toUpdate, (o) =>
+          pipe(
+            RR.keys(o),
+            RA.difference(["transaction_journal_id"]),
+            RA.isNonEmptyArray,
+          ),
+        ),
+        T.if({
+          onTrue: updateFireflyTransactionTags(transactionId, toUpdate),
+          onFalse: T.unit,
+        }),
+      ),
+    ),
+    T.asUnit,
+    T.withRequestCaching(true),
   );
