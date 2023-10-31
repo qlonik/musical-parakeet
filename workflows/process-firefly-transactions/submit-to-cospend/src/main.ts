@@ -15,6 +15,7 @@ import {
 import { CreateCospendProjectBillError } from "./queries/create-cospend-project-bill.js";
 import { updateFireflyTransactionTags } from "./queries/update-firefly-transaction-tags.js";
 import { processTransaction } from "./process-transaction.js";
+import { Layer } from "effect";
 
 const program = ({
   input: {
@@ -93,7 +94,7 @@ const program = ({
   );
 
 const main = T.gen(function* (_) {
-  const inputs = yield* _(
+  const conf = yield* _(
     pipe(
       T.sync(() => process.env),
       T.flatMap((_) => S.parse(InputEnvVars)(_, { errors: "all" })),
@@ -106,21 +107,12 @@ const main = T.gen(function* (_) {
     ),
   );
 
-  return yield* _(
-    pipe(
-      program(inputs),
-      T.provide(
-        CospendApiServiceLive(
-          inputs.nc_base_url,
-          inputs.nc_user,
-          inputs.nc_password,
-        ),
-      ),
-      T.provide(
-        FireflyApiServiceLive(inputs.ff3_base_url, inputs.input.info.pat),
-      ),
-    ),
+  const layer = pipe(
+    CospendApiServiceLive(conf.nc_base_url, conf.nc_user, conf.nc_password),
+    Layer.merge(FireflyApiServiceLive(conf.ff3_base_url, conf.input.info.pat)),
   );
+
+  return yield* _(T.provide(program(conf), layer));
 });
 
 function handleError(err: unknown): void {
