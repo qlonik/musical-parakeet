@@ -5,19 +5,32 @@ import {
   ProjectId,
 } from "./model/cospend.js";
 import { pipe } from "effect/Function";
-import { getCospendProjectBills } from "./queries/get-cospend-project-bills.js";
+import {
+  getCospendProjectBills,
+  GetCospendProjectBillsError,
+} from "./queries/get-cospend-project-bills.js";
 import * as RA from "effect/ReadonlyArray";
-import { getCospendProjectDescription } from "./queries/get-cospend-project-description.js";
+import {
+  getCospendProjectDescription,
+  GetCospendProjectDescriptionError,
+} from "./queries/get-cospend-project-description.js";
 import { formatErrors } from "@effect/schema/TreeFormatter";
 import { ReadonlyRecord } from "effect";
 import * as O from "effect/Option";
-import { createCospendProjectBill } from "./queries/create-cospend-project-bill.js";
+import {
+  createCospendProjectBill,
+  CreateCospendProjectBillError,
+} from "./queries/create-cospend-project-bill.js";
 import * as S from "@effect/schema/Schema";
 import {
   FireflyTransactionInputId,
   transactionConfigurationInputS,
 } from "./model/program-inputs.js";
-import { FireflyTransactionJournalTo } from "./model/firefly.js";
+import {
+  FireflyTransactionJournalId,
+  FireflyTransactionJournalTo,
+} from "./model/firefly.js";
+import { CospendApiService } from "./queries/axios-instances.js";
 
 const skipping = T.fail({ _tag: "skipping" as const });
 
@@ -97,7 +110,16 @@ export const processTransaction = (
     done_marker: string;
     field_separator: string;
   },
-) =>
+): T.Effect<
+  CospendApiService,
+  | GetCospendProjectDescriptionError
+  | GetCospendProjectBillsError
+  | CreateCospendProjectBillError,
+  {
+    transaction_journal_id: FireflyTransactionJournalId;
+    tags?: ReadonlyArray<string>;
+  }
+> =>
   T.gen(function* (_) {
     const done_label_value = tag_prefix + done_marker;
     const tid = `${id}:tj_${t.transaction_journal_id}`;
@@ -194,4 +216,22 @@ export const processTransaction = (
     return yield* _(
       mkFoundBill(`Successfully saved new bill at id "${newBillId}"`),
     );
-  }) satisfies T.Effect<unknown, unknown, never>;
+  }).pipe(
+    T.catchTags({
+      skipping: () =>
+        T.succeed({ transaction_journal_id: t.transaction_journal_id }),
+      error: ({ tid, message }) =>
+        pipe(
+          T.logDebug(`Cannot process transaction '${tid}':\n` + message),
+          T.as({ transaction_journal_id: t.transaction_journal_id }),
+        ),
+      foundBill: ({ message }) =>
+        pipe(
+          T.logDebug(message),
+          T.as({
+            transaction_journal_id: t.transaction_journal_id,
+            tags: t.tags.concat(tag_prefix + done_marker),
+          }),
+        ),
+    }),
+  );

@@ -6,13 +6,10 @@ import { InputEnvVars, InputEnvVarsTo } from "./model/program-inputs.js";
 import { formatErrors } from "@effect/schema/TreeFormatter";
 import { pipe } from "effect/Function";
 import * as T from "effect/Effect";
-import { GetCospendProjectDescriptionError } from "./queries/get-cospend-project-description.js";
-import { GetCospendProjectBillsError } from "./queries/get-cospend-project-bills.js";
 import {
   CospendApiServiceLive,
   FireflyApiServiceLive,
 } from "./queries/axios-instances.js";
-import { CreateCospendProjectBillError } from "./queries/create-cospend-project-bill.js";
 import { updateFireflyTransactionTags } from "./queries/update-firefly-transaction-tags.js";
 import { processTransaction } from "./process-transaction.js";
 import { Layer } from "effect";
@@ -37,42 +34,15 @@ const program = ({
   pipe(
     transactions,
     T.forEach((t) =>
-      T.catchTags(
-        processTransaction(t, {
-          id,
-          payerUsername,
-          accountPaymentMode,
-          tag_prefix,
-          done_marker,
-          field_separator,
-        }) satisfies T.Effect<unknown, unknown, never>,
-        {
-          skipping: () =>
-            T.succeed({ transaction_journal_id: t.transaction_journal_id }),
-          error: ({ tid, message }) =>
-            pipe(
-              T.logDebug(`Cannot process transaction '${tid}':\n` + message),
-              T.as({ transaction_journal_id: t.transaction_journal_id }),
-            ),
-          foundBill: ({ message }) =>
-            pipe(
-              T.logDebug(message),
-              T.as({
-                transaction_journal_id: t.transaction_journal_id,
-                tags: t.tags.concat(tag_prefix + done_marker),
-              }),
-            ),
-        },
-      ),
+      processTransaction(t, {
+        id,
+        payerUsername,
+        accountPaymentMode,
+        tag_prefix,
+        done_marker,
+        field_separator,
+      }),
     ),
-    (x) =>
-      x satisfies T.Effect<
-        unknown,
-        | GetCospendProjectDescriptionError
-        | GetCospendProjectBillsError
-        | CreateCospendProjectBillError,
-        Record<string, unknown>[]
-      >,
     T.flatMap((toUpdate) =>
       pipe(
         toUpdate,
