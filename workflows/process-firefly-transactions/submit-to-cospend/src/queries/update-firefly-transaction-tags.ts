@@ -10,7 +10,7 @@ import { NetworkError } from "./errors.js";
 
 export class UpdateFireflyTransactionTagsError extends Data.TaggedError(
   "UpdateFireflyTransactionTagsError",
-)<{ error: NetworkError | ParseError }> {}
+)<{ error: NetworkError<unknown, DataToSubmitForUpdate> | ParseError }> {}
 
 export interface UpdateFireflyTransactionTags
   extends Request.Request<UpdateFireflyTransactionTagsError, void> {
@@ -30,7 +30,7 @@ export const UpdateFireflyTransactionTagsResolver = pipe(
     pipe(
       FireflyApiService,
       T.flatMap(({ client }) =>
-        client.request<DataToSubmitForUpdate>({
+        client.request<unknown, DataToSubmitForUpdate>({
           method: "put",
           url: `/v1/transactions/${transactionId}`,
           data: {

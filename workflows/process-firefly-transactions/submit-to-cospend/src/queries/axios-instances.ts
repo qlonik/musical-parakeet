@@ -8,16 +8,23 @@ import { pipe } from "effect/Function";
 import { NetworkError } from "./errors.js";
 
 interface WrappedAxios {
-  request: <D = never, R = unknown>(
-    config: AxiosRequestConfig<D>,
-  ) => T.Effect<never, NetworkError, AxiosResponse<R, D>>;
+  request: <Result = unknown, InputData = never>(
+    config: AxiosRequestConfig<InputData>,
+  ) => T.Effect<
+    never,
+    NetworkError<Result, InputData>,
+    AxiosResponse<Result, InputData>
+  >;
 }
 
 const wrapAxiosInstance = (axios: AxiosInstance): WrappedAxios => ({
-  request: <D, R>(config: AxiosRequestConfig<D>) =>
+  request: <Result, InputData>(config: AxiosRequestConfig<InputData>) =>
     pipe(
       T.tryPromise((signal) =>
-        axios.request<R, AxiosResponse<R, D>, D>({ ...config, signal }),
+        axios.request<Result, AxiosResponse<Result, InputData>, InputData>({
+          ...config,
+          signal,
+        }),
       ),
       T.catchAll((error) =>
         Axios.isAxiosError(error)

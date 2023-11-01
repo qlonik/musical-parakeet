@@ -7,7 +7,7 @@ import { NetworkError } from "./errors.js";
 
 export class CreateCospendProjectBillError extends Data.TaggedError(
   "CreateCospendProjectBillError",
-)<{ error: NetworkError | ParseError }> {}
+)<{ error: NetworkError<unknown, Record<string, unknown>> | ParseError }> {}
 
 export interface CreateCospendProjectBill
   extends Request.Request<CreateCospendProjectBillError, BillIdStrTo> {
@@ -26,7 +26,7 @@ export const CreateCospendProjectBillResolver = pipe(
     pipe(
       CospendApiService,
       T.flatMap(({ client }) =>
-        client.request<CreateCospendProjectBill["data"]>({
+        client.request<unknown, CreateCospendProjectBill["data"]>({
           method: "post",
           url: `/api-priv/projects/${project}/bills`,
           data,
