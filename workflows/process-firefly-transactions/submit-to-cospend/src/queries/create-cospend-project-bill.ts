@@ -3,11 +3,15 @@ import { Schema as S } from "@effect/schema";
 import { Data, Effect as T, Request, RequestResolver, pipe } from "effect";
 import { BillIdStr, BillIdStrTo, ProjectId } from "../model/cospend.js";
 import { CospendApiService } from "./axios-instances.js";
-import { NetworkError } from "./errors.js";
+import { convertErrorToMessage, NetworkError } from "./errors.js";
 
 export class CreateCospendProjectBillError extends Data.TaggedError(
   "CreateCospendProjectBillError",
-)<{ error: NetworkError<unknown, Record<string, unknown>> | ParseError }> {}
+)<{ error: NetworkError<unknown, Record<string, unknown>> | ParseError }> {
+  override toString() {
+    return convertErrorToMessage(this.error, "CreateCospendProjectBill");
+  }
+}
 
 export interface CreateCospendProjectBill
   extends Request.Request<CreateCospendProjectBillError, BillIdStrTo> {

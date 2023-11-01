@@ -8,11 +8,15 @@ import {
   ProjectId,
 } from "../model/cospend.js";
 import { CospendApiService } from "./axios-instances.js";
-import { NetworkError } from "./errors.js";
+import { convertErrorToMessage, NetworkError } from "./errors.js";
 
 export class GetCospendProjectBillsError extends Data.TaggedError(
   "GetCospendProjectBillsError",
-)<{ error: NetworkError | ParseError }> {}
+)<{ error: NetworkError | ParseError }> {
+  override toString() {
+    return convertErrorToMessage(this.error, "GetCospendProjectBills");
+  }
+}
 
 export interface GetCospendProjectBills
   extends Request.Request<GetCospendProjectBillsError, CospendProjectBillsTo> {

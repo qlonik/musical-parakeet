@@ -6,11 +6,15 @@ import {
   FireflyTransactionJournalId,
 } from "../model/firefly.js";
 import { FireflyApiService } from "./axios-instances.js";
-import { NetworkError } from "./errors.js";
+import { convertErrorToMessage, NetworkError } from "./errors.js";
 
 export class UpdateFireflyTransactionTagsError extends Data.TaggedError(
   "UpdateFireflyTransactionTagsError",
-)<{ error: NetworkError<unknown, DataToSubmitForUpdate> | ParseError }> {}
+)<{ error: NetworkError<unknown, DataToSubmitForUpdate> | ParseError }> {
+  override toString() {
+    return convertErrorToMessage(this.error, "UpdateFireflyTransactionTags");
+  }
+}
 
 export interface UpdateFireflyTransactionTags
   extends Request.Request<UpdateFireflyTransactionTagsError, void> {
