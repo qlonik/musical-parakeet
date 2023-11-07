@@ -1,4 +1,3 @@
-import * as core from "@actions/core";
 import { pipe } from "effect/Function";
 import * as T from "effect/Effect";
 import {
@@ -6,7 +5,7 @@ import {
   FireflyApiServiceLive,
 } from "./queries/axios-instances.js";
 import { program } from "./program.js";
-import { Cause, Layer } from "effect";
+import { Layer } from "effect";
 import { Runtime } from "@effect/platform-node";
 import { ApplicationConfigFromEnvLive } from "./config.js";
 
@@ -20,10 +19,6 @@ const mainLayer = pipe(
 pipe(
   program,
   T.provide(mainLayer),
-  T.tapErrorCause((cause) =>
-    T.sync(() => {
-      core.error(Cause.pretty(cause));
-    }),
-  ),
+  T.tapErrorCause(T.logError),
   Runtime.runMain,
 );

@@ -3,7 +3,7 @@ import Axios, {
   type AxiosRequestConfig,
   type AxiosResponse,
 } from "axios";
-import { Context, Effect as T, Layer } from "effect";
+import { Cause, Context, Effect as T, Layer } from "effect";
 import { pipe } from "effect/Function";
 import { NetworkError } from "./errors.js";
 import { ApplicationConfigService } from "../config.js";
@@ -30,14 +30,13 @@ const wrapAxiosInstance = (axios: AxiosInstance): WrappedAxios => ({
       T.catchAll((error) =>
         Axios.isAxiosError(error)
           ? new NetworkError({ error })
-          : T.dieSync(() => {
-              console.log(
-                Axios.isCancel(error)
-                  ? "cancellation was thrown"
-                  : "something unknown was thrown",
-              );
-              return error;
-            }),
+          : pipe(
+              Axios.isCancel(error)
+                ? "cancellation was thrown"
+                : "something unknown was thrown",
+              (_) => T.logError(_, Cause.fail(error)),
+              T.zipRight(T.die(error)),
+            ),
       ),
     ),
 });

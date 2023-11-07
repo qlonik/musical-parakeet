@@ -154,9 +154,7 @@ const processTransaction = (
       loadCospendProjectIfNeeded(project, tid),
     );
 
-    yield* _(
-      T.logDebug("No matching bills found in cospend, creating a new one"),
-    );
+    yield* _(T.logInfo("No matching bills found in cospend"));
 
     const allUsersMap = ReadonlyRecord.fromIterable(members, (m) => [
       m.userid,
@@ -212,7 +210,7 @@ const processTransaction = (
       }),
     );
     return yield* _(
-      mkFoundBill(`Successfully saved new bill at id "${newBillId}"`),
+      mkFoundBill(`Successfully created a new bill at id "${newBillId}"`),
     );
   }).pipe(
     T.catchTags({
@@ -220,12 +218,12 @@ const processTransaction = (
         T.succeed({ transaction_journal_id: t.transaction_journal_id }),
       error: ({ tid, message }) =>
         pipe(
-          T.logDebug(`Cannot process transaction '${tid}':\n` + message),
+          T.logWarning(`Cannot process transaction '${tid}':\n` + message),
           T.as({ transaction_journal_id: t.transaction_journal_id }),
         ),
       foundBill: ({ message }) =>
         pipe(
-          T.logDebug(message),
+          T.logInfo(message),
           T.as({
             transaction_journal_id: t.transaction_journal_id,
             tags: t.tags.concat(tag_prefix + done_marker),
@@ -253,6 +251,10 @@ export const program = T.gen(function* ($) {
     field_separator,
   } = yield* $(ApplicationConfigService);
 
+  if (RA.isEmptyReadonlyArray(transactions)) {
+    return yield* $(T.logInfo("no transactions to process"));
+  }
+
   const toUpdate = yield* $(
     T.forEach(transactions, (t) =>
       processTransaction(t, {
@@ -266,6 +268,8 @@ export const program = T.gen(function* ($) {
     ),
   );
 
+  yield* $(T.logInfo("transactions successfully processed"));
+
   const shouldUpdate = RA.some(toUpdate, (o) =>
     pipe(
       RR.keys(o),
@@ -276,5 +280,6 @@ export const program = T.gen(function* ($) {
 
   if (shouldUpdate) {
     yield* $(updateFireflyTransactionTags(transactionId, toUpdate));
+    yield* $(T.logInfo("updated matching transactions in firefly"));
   }
 }).pipe(T.withRequestCaching(true));
