@@ -15,3 +15,5 @@ kubeconfig
 /.direnv/
 /result
 /result-*
+# Intellij
+/.idea
