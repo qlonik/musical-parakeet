@@ -24,7 +24,6 @@ import {
 import * as S from "@effect/schema/Schema";
 import {
   FireflyTransactionInputId,
-  InputEnvVarsTo,
   transactionConfigurationInputS,
 } from "./model/program-inputs.js";
 import {
@@ -34,6 +33,7 @@ import {
 import { CospendApiService } from "./queries/axios-instances.js";
 import * as RR from "effect/ReadonlyRecord";
 import { updateFireflyTransactionTags } from "./queries/update-firefly-transaction-tags.js";
+import { ApplicationConfigService } from "./config.js";
 
 const skipping = T.fail({ _tag: "skipping" as const });
 
@@ -234,26 +234,27 @@ const processTransaction = (
     }),
   );
 
-export const program = ({
-  input: {
-    id,
-    info: {
-      cospend_payer_username: payerUsername,
-      cospend_payment_mode: accountPaymentMode,
+export const program = T.gen(function* ($) {
+  const {
+    input: {
+      id,
+      info: {
+        cospend_payer_username: payerUsername,
+        cospend_payment_mode: accountPaymentMode,
+      },
+      transaction: {
+        id: transactionId,
+        attributes: { transactions },
+      },
     },
-    transaction: {
-      id: transactionId,
-      attributes: { transactions },
-    },
-  },
 
-  tag_prefix,
-  done_marker,
-  field_separator,
-}: InputEnvVarsTo) =>
-  pipe(
-    transactions,
-    T.forEach((t) =>
+    tag_prefix,
+    done_marker,
+    field_separator,
+  } = yield* $(ApplicationConfigService);
+
+  const toUpdate = yield* $(
+    T.forEach(transactions, (t) =>
       processTransaction(t, {
         id,
         payerUsername,
@@ -263,21 +264,17 @@ export const program = ({
         field_separator,
       }),
     ),
-    T.flatMap((toUpdate) =>
-      pipe(
-        RA.some(toUpdate, (o) =>
-          pipe(
-            RR.keys(o),
-            RA.difference(["transaction_journal_id"]),
-            RA.isNonEmptyArray,
-          ),
-        ),
-        T.if({
-          onTrue: updateFireflyTransactionTags(transactionId, toUpdate),
-          onFalse: T.unit,
-        }),
-      ),
-    ),
-    T.asUnit,
-    T.withRequestCaching(true),
   );
+
+  const shouldUpdate = RA.some(toUpdate, (o) =>
+    pipe(
+      RR.keys(o),
+      RA.difference(["transaction_journal_id"]),
+      RA.isNonEmptyArray,
+    ),
+  );
+
+  if (shouldUpdate) {
+    yield* $(updateFireflyTransactionTags(transactionId, toUpdate));
+  }
+}).pipe(T.withRequestCaching(true));

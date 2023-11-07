@@ -6,6 +6,7 @@ import Axios, {
 import { Context, Effect as T, Layer } from "effect";
 import { pipe } from "effect/Function";
 import { NetworkError } from "./errors.js";
+import { ApplicationConfigService } from "../config.js";
 
 interface WrappedAxios {
   request: <Result = unknown, InputData = never>(
@@ -48,26 +49,20 @@ export const CospendApiService = Context.Tag<CospendApiService>(
   Symbol.for("submit-to-cospend/services/CospendApiService"),
 );
 
-/**
- * @param baseUrl Base url of the nextcloud server
- * @param username Nextcloud user that can edit cospend project
- * @param password Nextcloud user password
- */
-export const CospendApiServiceLive = (
-  baseUrl: string,
-  username: string,
-  password: string,
-) =>
-  Layer.sync(CospendApiService, () =>
-    pipe(
-      Axios.create({
-        baseURL: `${baseUrl}/index.php/apps/cospend`,
-        auth: { username, password },
-      }),
-      wrapAxiosInstance,
-      (client) => CospendApiService.of({ client }),
-    ),
-  );
+export const CospendApiServiceLive = T.gen(function* ($) {
+  const {
+    nc_base_url: baseUrl,
+    nc_user: username,
+    nc_password: password,
+  } = yield* $(ApplicationConfigService);
+
+  const client = Axios.create({
+    baseURL: `${baseUrl}/index.php/apps/cospend`,
+    auth: { username, password },
+  });
+
+  return CospendApiService.of({ client: wrapAxiosInstance(client) });
+}).pipe(Layer.effect(CospendApiService));
 
 export interface FireflyApiService {
   readonly client: WrappedAxios;
@@ -77,22 +72,22 @@ export const FireflyApiService = Context.Tag<FireflyApiService>(
   Symbol.for("submit-to-cospend/services/FireflyApiService"),
 );
 
-/**
- * @param baseUrl Base url of the firefly-iii server
- * @param pat Personal access token of the user who owns transactions
- */
-export const FireflyApiServiceLive = (baseUrl: string, pat: string) =>
-  Layer.sync(FireflyApiService, () =>
-    pipe(
-      Axios.create({
-        baseURL: `${baseUrl}/api`,
-        headers: {
-          Authorization: `Bearer ${pat}`,
-          "Content-Type": "application/json",
-          Accept: "application/vnd.api+json",
-        },
-      }),
-      wrapAxiosInstance,
-      (client) => FireflyApiService.of({ client }),
-    ),
-  );
+export const FireflyApiServiceLive = T.gen(function* ($) {
+  const {
+    ff3_base_url: baseUrl,
+    input: {
+      info: { pat },
+    },
+  } = yield* $(ApplicationConfigService);
+
+  const client = Axios.create({
+    baseURL: `${baseUrl}/api`,
+    headers: {
+      Authorization: `Bearer ${pat}`,
+      "Content-Type": "application/json",
+      Accept: "application/vnd.api+json",
+    },
+  });
+
+  return FireflyApiService.of({ client: wrapAxiosInstance(client) });
+}).pipe(Layer.effect(FireflyApiService));

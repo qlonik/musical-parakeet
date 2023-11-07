@@ -58,39 +58,3 @@ const PROCESS_FIREFLY_TRANSACTIONS = S.struct({
     }),
   ),
 });
-
-export type InputEnvVarsTo = S.Schema.To<typeof InputEnvVars>;
-
-/**
- * sample that works
- *
- * @example
- * ```
- * nc_user=hi
- * nc_password=hi
- * input='{"id":"123","info":{"pat":"","cospend_payer_username":"","cospend_payment_mode":""},"transaction":{"type":"transactions","id":"","attributes":{"user":"","created_at":"2023-10-27T04:34:35.000Z","updated_at":"2023-10-27T04:34:34.000Z","transactions":[]}}}'
- *
- * ```
- */
-export const InputEnvVars = S.struct({
-  nc_base_url: S.optional(S.string).withDefault(
-    () => "http://nextcloud.default.svc.cluster.local:8080",
-  ),
-  nc_user: S.string.pipe(
-    S.required,
-    S.message(() => "missing required environment variable 'nc_user'"),
-  ),
-  nc_password: S.string.pipe(
-    S.required,
-    S.message(() => "missing required environment variable 'nc_password'"),
-  ),
-  ff3_base_url: S.optional(S.string).withDefault(
-    () => "http://firefly-iii.default.svc.cluster.local:8080",
-  ),
-
-  input: S.compose(S.ParseJson, fireflyTransactionInputS),
-
-  tag_prefix: S.optional(S.string).withDefault(() => "cospend:"),
-  done_marker: S.optional(S.string).withDefault(() => "done"),
-  field_separator: S.optional(S.string).withDefault(() => ":"),
-});
