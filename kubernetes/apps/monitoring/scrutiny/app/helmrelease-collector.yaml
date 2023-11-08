@@ -33,7 +33,7 @@ spec:
       type: daemonset
     image:
       repository: ghcr.io/analogj/scrutiny
-      tag: v0.7.1-collector@sha256:d7605ba5268808f19dc5860580187bfe547e2a08399cb4202e8e2e2451c15d49
+      tag: v0.7.2-collector@sha256:9e240fd88683a6564db761f5701359abb7202866948b59abbcedd691b8698999
     env:
       COLLECTOR_API_ENDPOINT: http://scrutiny.monitoring.svc.cluster.local:8080
     service:
