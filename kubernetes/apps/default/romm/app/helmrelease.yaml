@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.2.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -29,65 +29,90 @@ spec:
     - name: minio
       namespace: default
   values:
-    controller:
-      type: statefulset
-    image:
-      repository: zurdi15/romm
-      tag: latest@sha256:d26b35b3f4ca3bd7587a009dcc2c90f0d5b4b9e3d77abc82f053bd67528c8a6b
-    env:
-      TZ: ${TIMEZONE}
-      ROMM_DB_DRIVER: sqlite
-    envFrom:
-      - secretRef:
-          name: romm-secret
+    controllers:
+      main:
+        type: statefulset
+        statefulset:
+          volumeClaimTemplates:
+            - name: database
+              mountPath: /romm/database
+              accessMode: ReadWriteMany
+              size: 5Gi
+              storageClass: nfs-fast
+        pod:
+          enableServiceLinks: false
+        containers:
+          main:
+            image:
+              repository: ghcr.io/zurdi15/romm
+              tag: 2.1.0@sha256:5403e58d0ec714a1aa45c5caf9c897b4eb7fecb403c3041468a707bce4f6bd3b
+            env:
+              TZ: ${TIMEZONE}
+              ROMM_DB_DRIVER: sqlite
+              ENABLE_EXPERIMENTAL_REDIS: false
+              REDIS_HOST: redis-lb.default.svc.cluster.local
+              REDIS_PORT: 6379
+              REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: redis-credentials
+                    key: redis-password
+            envFrom:
+              - secretRef:
+                  name: romm-secret
+            resources:
+              requests:
+                cpu: 10m
+                memory: 250Mi
+              limits:
+                memory: 1Gi
     service:
       main:
         ports:
           http:
-            port: 80
+            port: 8080
     ingress:
       main:
         enabled: true
-        ingressClassName: internal
+        className: internal
         annotations:
-          hajimari.io/icon: mdi:filmstrip
+          hajimari.io/icon: mdi:disc
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
               - path: "/"
                 pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    volumeClaimTemplates:
-      - name: database
-        mountPath: /romm/database
-        accessMode: ReadWriteMany
-        size: 5Gi
-        storageClass: nfs-fast
     persistence:
       config:
         enabled: true
         type: configMap
         name: romm-config
-        subPath: config.yml
-        mountPath: /romm/config.yml
-        readOnly: true
+        globalMounts:
+          - path: /romm/config.yml
+            subPath: config.yml
+            readOnly: true
+      logs:
+        enabled: true
+        type: emptyDir
+        globalMounts:
+          - path: /romm/logs
       library:
         enabled: true
         type: nfs
         server: nova.home.arpa
         path: /downloads/romm/library
-        mountPath: /romm/library
+        globalMounts:
+          - path: /romm/library
       resources:
         enabled: true
         type: nfs
         server: nova.home.arpa
         path: /downloads/romm/resources
-        mountPath: /romm/resources
-    resources:
-      requests:
-        cpu: 10m
-        memory: 250Mi
-      limits:
-        memory: 1Gi
+        globalMounts:
+          - path: /romm/resources
