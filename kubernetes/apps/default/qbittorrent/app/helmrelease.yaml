@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
@@ -9,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.2.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -28,79 +29,186 @@ spec:
   dependsOn:
     - name: minio
       namespace: default
+    - name: volsync
+      namespace: volsync
+
   values:
-    controller:
-      type: statefulset
-    image:
-      repository: ghcr.io/onedr0p/qbittorrent
-      tag: 4.6.0@sha256:cb6259df3be61a5108bc4f85b09a523fc4b250589ca9b315ef927cbdf779afb6
-    env:
-      TZ: ${TIMEZONE}
-      QBITTORRENT__PORT: &port 80
-      QBITTORRENT__BT_PORT: &port-bt 50413
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+          # configmap.reloader.stakater.com/reload: qbittorrent-scripts,qbittorrent-dnsdist
+          # secret.reloader.stakater.com/reload: qbittorrent-secret
+
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/qbittorrent
+              tag: 4.6.0@sha256:cb6259df3be61a5108bc4f85b09a523fc4b250589ca9b315ef927cbdf779afb6
+            env:
+              TZ: ${TIMEZONE}
+              UMASK: "022"
+              QBITTORRENT__PORT: &port "8080"
+              QBT_BitTorrent__Session__Interface: &iface wg0
+              QBT_BitTorrent__Session__InterfaceName: *iface
+            resources:
+              requests:
+                cpu: 10m
+                memory: 250Mi
+              limits:
+                memory: 2Gi
+            securityContext:
+              runAsUser: 568
+              runAsGroup: 568
+
+          gluetun:
+            image:
+              repository: ghcr.io/qdm12/gluetun
+              tag: latest@sha256:7769408234d50c07638c2d9962bb8d38b403d3c101c252d05ce421149fd2148b
+            env:
+              TZ: ${TIMEZONE}
+              VPN_SERVICE_PROVIDER: custom
+              VPN_TYPE: wireguard
+              VPN_INTERFACE: *iface
+              VPN_ENDPOINT_PORT: "51820"
+              VPN_PORT_FORWARDING: "on"
+              VPN_PORT_FORWARDING_PROVIDER: "protonvpn"
+              FIREWALL_INPUT_PORTS: *port
+              # Allow access to k8s subnets
+              FIREWALL_OUTBOUND_SUBNETS: "${CLUSTER_CIDR},${SERVICE_CIDR},${NODE_CIDR}"
+              SHADOWSOCKS: "on"
+              DOT: "off"
+              DNS_PLAINTEXT_ADDRESS: "127.0.0.2"
+            envFrom:
+              - secretRef:
+                  name: qbittorrent-secret
+            securityContext:
+              capabilities:
+                add:
+                  - NET_ADMIN
+
+          dnsdist:
+            image:
+              repository: docker.io/powerdns/dnsdist-18
+              tag: 1.8.2@sha256:06584eb44627c46b3718ee754c36a81acf66fdf423b162cae9ecfa69bb362c9e
+
+          port-forward:
+            image:
+              repository: docker.io/snoringdragon/gluetun-qbittorrent-port-manager
+              tag: 1.0@sha256:5394a74784cc6b1d1140ed9e313fe9c5ba62d3076693027bb6a855eb4117d1fe
+            env:
+              QBITTORRENT_SERVER: localhost
+              QBITTORRENT_PORT: *port
+              PORT_FORWARDED: /tmp/gluetun/forwarded_port
+
+        initContainers:
+          minio-init-bucket:
+            image:
+              repository: ghcr.io/qlonik/minio-init-bucket
+              tag: RELEASE.2023-04-12T02-21-51Z@sha256:4ce4b3e62f4a1922bbcb9cfbcac529d42ba1702a0914fbdcd79a3bb00425ee2c
+            env:
+              MINIO_HOST: http://minio.default.svc.cluster.local:9000
+              MINIO_SUPER_ACCESS_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: minio-secret
+                    key: MINIO_ROOT_USER
+              MINIO_SUPER_SECRET_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: minio-secret
+                    key: MINIO_ROOT_PASSWORD
+              MINIO_BUCKET_NAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: "qbittorrent-restic-secret"
+                    key: AWS_ACCESS_KEY_ID
+              MINIO_BUCKET_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: "qbittorrent-restic-secret"
+                    key: AWS_SECRET_ACCESS_KEY
+
+        pod:
+          podSecurityContext:
+            fsGroup: 568
+            fsGroupChangePolicy: "OnRootMismatch"
+            supplementalGroups: [10000]
+
     service:
       main:
         ports:
           http:
             port: *port
-      bittorrent:
-        enabled: true
-        type: LoadBalancer
-        annotations:
-          io.cilium/lb-ipam-ips: "${LB_QBITTORRENT_ADDR}"
-        ports:
-          bittorrent:
-            enabled: true
-            port: *port-bt
-            protocol: TCP
-            targetPort: *port-bt
-        externalTrafficPolicy: Local
+
     ingress:
       main:
         enabled: true
-        ingressClassName: internal
-        annotations:
-          nginx.ingress.kubernetes.io/configuration-snippet: |
-            proxy_hide_header "x-webkit-csp";
-            proxy_hide_header "content-security-policy";
-            proxy_hide_header "X-Frame-Options";
-            proxy_set_header Accept-Encoding "";
-            # sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_DOMAIN}/css/base/qbittorrent/nord.css"></head>';
-            # sub_filter_once on;
-          hajimari.io/icon: mdi:download
+        className: internal
+        # annotations:
+        #   nginx.ingress.kubernetes.io/configuration-snippet: |
+        #     sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_DOMAIN}/css/base/qbittorrent/nord.css"></head>';
+        #     sub_filter_once on;
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
               - path: "/"
                 pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-      supplementalGroups: [10000]
-    volumeClaimTemplates:
-      - name: config
-        mountPath: /config
-        accessMode: ReadWriteMany
-        size: 1Gi
-        storageClass: nfs-fast
+
     persistence:
+      config:
+        enabled: true
+        existingClaim: qbittorrent-config
+        advancedMounts:
+          main:
+            main:
+              - path: /config
       downloads:
         enabled: true
         type: nfs
         server: nova.home.arpa
         path: /downloads/qbittorrent
-        mountPath: /downloads/qbittorrent
+        advancedMounts:
+          main:
+            main:
+              - path: /downloads/qbittorrent
       incomplete:
         enabled: true
         type: emptyDir
-    resources:
-      requests:
-        cpu: 10m
-        memory: 250Mi
-      limits:
-        memory: 2Gi
+        advancedMounts:
+          main:
+            main:
+              - path: /incomplete
+      scripts:
+        type: configMap
+        name: qbittorrent-scripts
+        defaultMode: 0775
+        advancedMounts:
+          main:
+            main:
+              - path: /scripts
+                readOnly: true
+      dnsdist-config:
+        type: configMap
+        name: qbittorrent-dnsdist
+        advancedMounts:
+          main:
+            dnsdist:
+              - path: /etc/dnsdist/dnsdist.conf
+                subPath: dnsdist.conf
+                readOnly: true
+      gluetun-data:
+        type: emptyDir
+        advancedMounts:
+          main:
+            gluetun:
+              - path: /tmp/gluetun
+            port-forward:
+              - path: /tmp/gluetun
+                readOnly: true
