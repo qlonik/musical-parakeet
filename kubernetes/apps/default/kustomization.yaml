@@ -35,6 +35,7 @@ resources:
   - ./sabnzbd/ks.yaml
   - ./sonarr/ks.yaml
   - ./transmission/ks.yaml
+  - ./unpackerr/ks.yaml
   - ./vikunja/ks.yaml
   - ./youtube-dl-server/ks.yaml
   - ./youtubedl-material/ks.yaml
