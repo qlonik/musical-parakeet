@@ -35,6 +35,18 @@ spec:
   values:
     controllers:
       main:
+        type: statefulset
+
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteMany
+              size: 2Gi
+              storageClass: nfs-fast
+              advancedMounts:
+                main:
+                  - path: /config
+
         annotations:
           reloader.stakater.com/auto: "true"
           # configmap.reloader.stakater.com/reload: qbittorrent-scripts,qbittorrent-dnsdist
@@ -162,13 +174,6 @@ spec:
               - *host
 
     persistence:
-      config:
-        enabled: true
-        existingClaim: qbittorrent-config
-        advancedMounts:
-          main:
-            main:
-              - path: /config
       downloads:
         enabled: true
         type: nfs
