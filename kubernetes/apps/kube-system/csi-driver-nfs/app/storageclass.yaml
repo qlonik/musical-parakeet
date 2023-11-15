@@ -3,6 +3,9 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: nfs-slow
+  labels:
+    disk.home.arpa/fs: mergerfs
+    disk.home.arpa/type: hdd
 provisioner: nfs.csi.k8s.io
 parameters:
   server: nova.home.arpa
@@ -16,6 +19,9 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: nfs-fast
+  labels:
+    disk.home.arpa/fs: ext4
+    disk.home.arpa/type: ssd
 provisioner: nfs.csi.k8s.io
 parameters:
   server: nova.home.arpa
