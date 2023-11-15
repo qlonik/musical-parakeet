@@ -5,10 +5,11 @@ resources:
   - ./namespace.yaml
   - ./cilium/ks.yaml
   - ./coredns/ks.yaml
+  - ./csi-driver-nfs/ks.yaml
   - ./descheduler/ks.yaml
   - ./device-plugin-amd-gpu/ks.yaml
   - ./local-path-provisioner/ks.yaml
   - ./metrics-server/ks.yaml
   - ./node-feature-discovery/ks.yaml
   - ./reloader/ks.yaml
-  - ./csi-driver-nfs/ks.yaml
+  - ./snapshot-controller/ks.yaml

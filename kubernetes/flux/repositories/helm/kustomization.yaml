@@ -21,9 +21,10 @@ resources:
   - ./kubernetes-dashboard.yaml
   - ./kyverno.yaml
   - ./metrics-server.yaml
-  - ./prometheus-community.yaml
   - ./nextcloud.yaml
   - ./node-feature-discovery.yaml
   - ./openldap.yaml
+  - ./piraeus.yaml
+  - ./prometheus-community.yaml
   - ./stakater.yaml
   - ./weave-gitops.yaml
