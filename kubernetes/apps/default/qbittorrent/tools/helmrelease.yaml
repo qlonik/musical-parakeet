@@ -77,7 +77,7 @@ spec:
               - "manual"
               - "--include-tag"
               - "unregistered"
-              # - "--dry-run"
+              - "--dry-run"
               - "--server"
               - "qbittorrent.default.svc.cluster.local"
               - "--port"
@@ -96,7 +96,7 @@ spec:
               - "expired" # defined in config.yaml
               - "--include-tag"
               - "added:7d"
-              # - "--dry-run"
+              - "--dry-run"
               - "--server"
               - "qbittorrent.default.svc.cluster.local"
               - "--port"
