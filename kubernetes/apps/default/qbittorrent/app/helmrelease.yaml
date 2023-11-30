@@ -90,7 +90,7 @@ spec:
               FIREWALL_OUTBOUND_SUBNETS: "${CLUSTER_CIDR},${SERVICE_CIDR},${NODE_CIDR}"
               SHADOWSOCKS: "on"
               DOT: "off"
-              DNS_PLAINTEXT_ADDRESS: "127.0.0.2"
+              DNS_ADDRESS: "127.0.0.2"
             envFrom:
               - secretRef:
                   name: qbittorrent-secret
