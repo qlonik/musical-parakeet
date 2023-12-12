@@ -45,7 +45,7 @@ spec:
           tagging:
             image: &image
               repository: ghcr.io/buroa/qbtools
-              tag: v0.10.0@sha256:e700311562f88ca358c91e793494ce75ac5e355de45f3149ff03242170fd302c
+              tag: v0.11.0@sha256:b7b867a87257a5add56824d0a0c2f3c3bd2c77f9253859561be3eb7cdcb5bc1b
             args:
               - tagging
               - --added-on
@@ -73,8 +73,18 @@ spec:
             image: *image
             args:
               - "prune"
-              - "--exclude-category"
-              - "manual"
+              - "--include-category"
+              - "lidarr"
+              - "--include-category"
+              - "prowlarr"
+              - "--include-category"
+              - "radarr"
+              - "--include-category"
+              - "readarr/audio"
+              - "--include-category"
+              - "readarr/ebook"
+              - "--include-category"
+              - "sonarr"
               - "--include-tag"
               - "unregistered"
               - "--dry-run"
@@ -88,10 +98,18 @@ spec:
             image: *image
             args:
               - "prune"
-              - "--exclude-category"
-              - "manual"
-              - "--exclude-category"
-              - "overlord"
+              - "--include-category"
+              - "lidarr"
+              - "--include-category"
+              - "prowlarr"
+              - "--include-category"
+              - "radarr"
+              - "--include-category"
+              - "readarr/audio"
+              - "--include-category"
+              - "readarr/ebook"
+              - "--include-category"
+              - "sonarr"
               - "--include-tag"
               - "expired" # defined in config.yaml
               - "--include-tag"
