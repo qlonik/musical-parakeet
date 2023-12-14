@@ -182,7 +182,7 @@ spec:
         advancedMounts:
           main:
             main:
-              - path: /downloads/qbittorrent
+              - path: /media/downloads/qbittorrent
       incomplete:
         enabled: true
         type: emptyDir

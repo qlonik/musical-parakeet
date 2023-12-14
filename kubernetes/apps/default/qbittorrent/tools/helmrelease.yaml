@@ -192,4 +192,4 @@ spec:
         advancedMounts:
           orphaned:
             main:
-              - path: /downloads/qbittorrent
+              - path: /media/downloads/qbittorrent
