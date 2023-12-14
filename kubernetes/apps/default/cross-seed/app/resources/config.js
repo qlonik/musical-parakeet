@@ -26,6 +26,7 @@ module.exports = {
   linkDir: `${qbCompleteDir}/cross-seed`,
   dataDirs: [
     `${qbCompleteDir}/lidarr`,
+    `${qbCompleteDir}/manual`,
     `${qbCompleteDir}/prowlarr`,
     `${qbCompleteDir}/radarr`,
     `${qbCompleteDir}/readarr/audio`,
