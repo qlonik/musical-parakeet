@@ -10,6 +10,7 @@ resources:
   - ./calibre/ks.yaml
   - ./calibre-web/ks.yaml
   - ./cloudnative-pg/ks.yaml
+  - ./cross-seed/ks.yaml
   - ./firefly-iii/ks.yaml
   - ./glauth/ks.yaml
   - ./grocy/ks.yaml
