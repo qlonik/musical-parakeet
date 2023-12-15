@@ -6,6 +6,7 @@ resources:
   - ./attic/ks.yaml
   - ./audiobookshelf/ks.yaml
   - ./authelia/ks.yaml
+  - ./autobrr/ks.yaml
   - ./bazarr/ks.yaml
   - ./calibre/ks.yaml
   - ./calibre-web/ks.yaml
