@@ -28,7 +28,7 @@ spec:
   values:
     image:
       repository: fireflyiii/core
-      tag: version-6@sha256:d7c82269538463abf34495650b06a35fccdffc99dbd3fa2f7fb80e2909dc5445
+      tag: version-6@sha256:b8ff2fe81270dfff32ae9ef76504a51e9597c7a65efa6868c4ceceb1e192346f
     env:
       TZ: ${TIMEZONE}
       DB_CONNECTION: pgsql
