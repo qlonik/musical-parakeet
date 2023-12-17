@@ -36,6 +36,7 @@ resources:
   - ./romm/ks.yaml
   - ./sabnzbd/ks.yaml
   - ./sonarr/ks.yaml
+  - ./thelounge/ks.yaml
   - ./transmission/ks.yaml
   - ./unpackerr/ks.yaml
   - ./vikunja/ks.yaml
