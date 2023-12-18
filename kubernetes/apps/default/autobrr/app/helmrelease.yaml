@@ -133,3 +133,6 @@ spec:
         tls:
           - hosts:
               - *host
+    persistence:
+      tmp:
+        type: emptyDir
