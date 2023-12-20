@@ -148,10 +148,9 @@ spec:
             args:
               - "orphaned"
               - "--exclude-pattern"
-              - "*_unpackerred"
+              - "*_unpackerred*"
               - "--exclude-pattern"
               - "*/manual/*"
-              - "--dry-run"
               - "--server"
               - "qbittorrent.default.svc.cluster.local"
               - "--port"
