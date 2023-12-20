@@ -74,6 +74,10 @@ spec:
             args:
               - "prune"
               - "--include-category"
+              - "autobrr"
+              - "--include-category"
+              - "cross-seed-data"
+              - "--include-category"
               - "lidarr"
               - "--include-category"
               - "prowlarr"
@@ -98,6 +102,10 @@ spec:
             image: *image
             args:
               - "prune"
+              - "--include-category"
+              - "autobrr"
+              - "--include-category"
+              - "cross-seed-data"
               - "--include-category"
               - "lidarr"
               - "--include-category"
