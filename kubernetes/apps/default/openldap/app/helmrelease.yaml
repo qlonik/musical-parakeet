@@ -1,5 +1,5 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: openldap
@@ -64,21 +64,22 @@ spec:
   # See: https://github.com/osixia/docker-openldap/issues/638
   postRenderers:
     - kustomize:
-        patchesStrategicMerge:
-          - apiVersion: apps/v1
-            kind: StatefulSet
-            metadata:
-              name: openldap
-            spec:
-              template:
-                spec:
-                  containers:
-                    - name: openldap-stack-ha
-                      command:
-                        - sh
-                        - -c
-                        - >-
-                          sed -i
-                          "s/shutil.copytree(IMPORT_SERVICE_DIR, RUN_SERVICE_DIR)/shutil.copytree(IMPORT_SERVICE_DIR, RUN_SERVICE_DIR, ignore=shutil.ignore_patterns('.*'))/g"
-                          /container/tool/run &&
-                          /container/tool/run -l info --copy-service
+        patches:
+          - patch: |-
+              apiVersion: apps/v1
+              kind: StatefulSet
+              metadata:
+                name: openldap
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: openldap-stack-ha
+                        command:
+                          - sh
+                          - -c
+                          - >-
+                            sed -i
+                            "s/shutil.copytree(IMPORT_SERVICE_DIR, RUN_SERVICE_DIR)/shutil.copytree(IMPORT_SERVICE_DIR, RUN_SERVICE_DIR, ignore=shutil.ignore_patterns('.*'))/g"
+                            /container/tool/run &&
+                            /container/tool/run -l info --copy-service
