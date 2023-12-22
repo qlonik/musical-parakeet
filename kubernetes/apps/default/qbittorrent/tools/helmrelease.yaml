@@ -119,8 +119,6 @@ spec:
               - "sonarr"
               - "--include-tag"
               - "expired" # defined in config.yaml
-              - "--include-tag"
-              - "added:7d"
               - "--server"
               - "qbittorrent.default.svc.cluster.local"
               - "--port"
