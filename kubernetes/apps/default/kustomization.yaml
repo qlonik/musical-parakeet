@@ -17,6 +17,7 @@ resources:
   - ./grocy/ks.yaml
   - ./hajimari/ks.yaml
   - ./heimdall/ks.yaml
+  - ./immich/ks.yaml
   - ./jellyfin/ks.yaml
   - ./jellyseerr/ks.yaml
   - ./lidarr/ks.yaml
