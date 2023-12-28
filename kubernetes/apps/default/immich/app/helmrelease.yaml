@@ -27,13 +27,14 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    env:
-      REDIS_PORT: "6379"
     immich:
       persistence:
         library:
           existingClaim: immich
     server:
+      envFrom: &secret-envfrom
+        - secretRef:
+            name: immich-secret
       ingress:
         main:
           enabled: true
@@ -48,11 +49,11 @@ spec:
           tls:
             - hosts:
                 - *host
+    microservices:
+      envFrom: *secret-envfrom
+    machine-learning:
+      envFrom: *secret-envfrom
     postgresql:
-      enabled: true
-      global:
-        storageClass: local-path
-    redis:
       enabled: true
       global:
         storageClass: local-path
