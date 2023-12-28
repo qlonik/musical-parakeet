@@ -27,6 +27,8 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    env:
+      TZ: "${TIMEZONE}"
     immich:
       persistence:
         library:
