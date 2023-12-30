@@ -3,17 +3,17 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: immich
+  name: immich-app
   namespace: default
 spec:
   interval: 15m
   chart:
     spec:
-      chart: immich
-      version: 0.3.1
+      chart: app-template
+      version: 2.4.0
       sourceRef:
         kind: HelmRepository
-        name: immich
+        name: bjw-s
         namespace: flux-system
   maxHistory: 2
   install:
@@ -26,36 +26,200 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: redis
+      namespace: default
+    -
+      # need to be removed or renamed to db
+      name: immich
+      namespace: default
+
   values:
-    env:
-      TZ: "${TIMEZONE}"
-    immich:
-      persistence:
-        library:
-          existingClaim: immich
-    server:
-      envFrom: &secret-envfrom
-        - secretRef:
-            name: immich-secret
-      ingress:
-        main:
-          enabled: true
-          ingressClassName: external
-          annotations:
-            external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
-          hosts:
-            - host: &host "immich.${SECRET_DOMAIN}"
-              paths:
-                - path: /
-                  pathType: Prefix
-          tls:
-            - hosts:
-                - *host
-    microservices:
-      envFrom: *secret-envfrom
-    machine-learning:
-      envFrom: *secret-envfrom
-    postgresql:
-      enabled: true
-      global:
-        storageClass: local-path
+    global:
+      fullnameOverride: immich
+    controllers:
+      main:
+        nameOverride: server
+        containers:
+          main:
+            image:
+              repository: ghcr.io/immich-app/immich-server
+              tag: v1.91.4@sha256:f1dd777fd38f30fc17a3dbe6a9f7dc9c548c41f9688908bf79d4109733e09b54
+            envFrom: &envfrom
+              - configMapRef:
+                  name: &configmap immich-configmap
+              - secretRef:
+                  name: immich-secret
+            command: "/bin/sh"
+            args:
+              - "./start-server.sh"
+            resources:
+              requests:
+                cpu: 100m
+                memory: 250Mi
+              limits:
+                memory: 2Gi
+            probes:
+              liveness: &server-probe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /server-info/ping
+                    port: &server-port 3001
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *server-probe
+              startup:
+                enabled: false
+        initContainers:
+          init-db:
+            image: &init-image
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 14.8@sha256:dfddde81c0d49da09da1e893c95c32934333baba60edde707be5010dc3baa4c2
+            env: &init-env
+              - name: INIT_POSTGRES_SUPER_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: postgres-secret
+                    key: username
+              - name: INIT_POSTGRES_SUPER_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: postgres-secret
+                    key: password
+            envFrom: *envfrom
+          create-extensions:
+            dependsOn: init-db
+            image: *init-image
+            env: *init-env
+            envFrom: *envfrom
+            command: "/config/run-sql-scripts.sh"
+      microservices:
+        containers:
+          main:
+            image:
+              repository: ghcr.io/immich-app/immich-server
+              tag: v1.91.4@sha256:f1dd777fd38f30fc17a3dbe6a9f7dc9c548c41f9688908bf79d4109733e09b54
+            envFrom: *envfrom
+            command: "/bin/sh"
+            args:
+              - "./start-microservices.sh"
+            resources:
+              requests:
+                cpu: 100m
+                memory: 1Gi
+              limits:
+                memory: 4Gi
+      machine-learning:
+        containers:
+          main:
+            image:
+              repository: ghcr.io/immich-app/immich-machine-learning
+              tag: v1.91.4@sha256:634c4a66ea5c8a6e4679d7560d34abda67f88dc1d6adda18f56c00c58a07ac6d
+            envFrom:
+              - configMapRef:
+                  name: *configmap
+            probes:
+              liveness: &machine-learning-probe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: &machine-learning-port 3003
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *machine-learning-probe
+              startup:
+                enabled: false
+
+    defaultPodOptions:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      enableServiceLinks: false
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+        capabilities: { drop: ["ALL"] }
+
+    service:
+      main:
+        nameOverride: server
+        controller: main
+        primary: true
+        ports:
+          http:
+            port: *server-port
+      machine-learning:
+        nameOverride: machine-learning
+        controller: machine-learning
+        primary: true
+        ports:
+          http:
+            port: *machine-learning-port
+
+    ingress:
+      main:
+        enabled: true
+        className: external
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+          # proxy-body-size is set to 0 to remove the body limit on file uploads
+          nginx.ingress.kubernetes.io/proxy-body-size: "0"
+        hosts:
+          - host: &host "immich.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  name: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
+
+    persistence:
+      immich:
+        type: persistentVolumeClaim
+        existingClaim: immich
+        advancedMounts:
+          main:
+            main:
+              - path: /usr/src/app/upload
+          microservices:
+            main:
+              - path: /usr/src/app/upload
+      geocoding-dump:
+        type: emptyDir
+        advancedMouns:
+          microservices:
+            main:
+              - path: /usr/src/app/.reverse-geocoding-dump
+      machine-learning-cache:
+        enabled: true
+        type: persistentVolumeClaim
+        storageClass: nfs-fast
+        size: 10Gi
+        accessMode: ReadWriteMany
+        advancedMounts:
+          machine-learning:
+            main:
+              - path: /cache
+      postgresql-init-scripts:
+        type: configMap
+        name: immich-postgresql-init-scripts
+        defaultMode: 0775
+        advancedMounts:
+          main:
+            create-extensions:
+              - path: /config
+                readOnly: true

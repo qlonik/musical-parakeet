@@ -5,7 +5,18 @@ namespace: default
 resources:
   - ./helmrelease.yaml
   - ./pvc.yaml
+  - ./configmap.yaml
   - ./secret.sops.yaml
+
+configMapGenerator:
+  - name: immich-postgresql-init-scripts
+    files:
+      - ./resources/run-sql-scripts.sh
+      - ./resources/create-extensions.sql
+generatorOptions:
+  disableNameSuffixHash: true
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
 
 labels:
   - pairs:
