@@ -8,91 +8,91 @@ spec:
   values:
     initContainers:
       init-db-main:
-        image: ghcr.io/onedr0p/postgres-initdb:14.8
+        image: ghcr.io/onedr0p/postgres-init:14.8
         env:
-          - name: POSTGRES_HOST
+          - name: INIT_POSTGRES_HOST
             value: postgres-rw.default.svc.cluster.local
-          - name: POSTGRES_SUPER_USER
+          - name: INIT_POSTGRES_SUPER_USER
             valueFrom:
               secretKeyRef:
                 name: postgres-secret
                 key: username
-          - name: POSTGRES_SUPER_PASS
+          - name: INIT_POSTGRES_SUPER_PASS
             valueFrom:
               secretKeyRef:
                 name: postgres-secret
                 key: password
-          - name: POSTGRES_USER
+          - name: INIT_POSTGRES_USER
             valueFrom:
               secretKeyRef:
                 name: "{{ .Release.Name }}-secret"
                 key: READARR__POSTGRES_USER
-          - name: POSTGRES_PASS
+          - name: INIT_POSTGRES_PASS
             valueFrom:
               secretKeyRef:
                 name: "{{ .Release.Name }}-secret"
                 key: READARR__POSTGRES_PASSWORD
-          - name: POSTGRES_DB
+          - name: INIT_POSTGRES_DBNAME
             valueFrom:
               secretKeyRef:
                 name: "{{ .Release.Name }}-secret"
                 key: READARR__POSTGRES_MAIN_DB
       init-db-log:
-        image: ghcr.io/onedr0p/postgres-initdb:14.8
+        image: ghcr.io/onedr0p/postgres-init:14.8
         env:
-          - name: POSTGRES_HOST
+          - name: INIT_POSTGRES_HOST
             value: postgres-rw.default.svc.cluster.local
-          - name: POSTGRES_SUPER_USER
+          - name: INIT_POSTGRES_SUPER_USER
             valueFrom:
               secretKeyRef:
                 name: postgres-secret
                 key: username
-          - name: POSTGRES_SUPER_PASS
+          - name: INIT_POSTGRES_SUPER_PASS
             valueFrom:
               secretKeyRef:
                 name: postgres-secret
                 key: password
-          - name: POSTGRES_USER
+          - name: INIT_POSTGRES_USER
             valueFrom:
               secretKeyRef:
                 name: "{{ .Release.Name }}-secret"
                 key: READARR__POSTGRES_USER
-          - name: POSTGRES_PASS
+          - name: INIT_POSTGRES_PASS
             valueFrom:
               secretKeyRef:
                 name: "{{ .Release.Name }}-secret"
                 key: READARR__POSTGRES_PASSWORD
-          - name: POSTGRES_DB
+          - name: INIT_POSTGRES_DBNAME
             valueFrom:
               secretKeyRef:
                 name: "{{ .Release.Name }}-secret"
                 key: READARR__POSTGRES_LOG_DB
       init-db-cache:
-        image: ghcr.io/onedr0p/postgres-initdb:14.8
+        image: ghcr.io/onedr0p/postgres-init:14.8
         env:
-          - name: POSTGRES_HOST
+          - name: INIT_POSTGRES_HOST
             value: postgres-rw.default.svc.cluster.local
-          - name: POSTGRES_SUPER_USER
+          - name: INIT_POSTGRES_SUPER_USER
             valueFrom:
               secretKeyRef:
                 name: postgres-secret
                 key: username
-          - name: POSTGRES_SUPER_PASS
+          - name: INIT_POSTGRES_SUPER_PASS
             valueFrom:
               secretKeyRef:
                 name: postgres-secret
                 key: password
-          - name: POSTGRES_USER
+          - name: INIT_POSTGRES_USER
             valueFrom:
               secretKeyRef:
                 name: "{{ .Release.Name }}-secret"
                 key: READARR__POSTGRES_USER
-          - name: POSTGRES_PASS
+          - name: INIT_POSTGRES_PASS
             valueFrom:
               secretKeyRef:
                 name: "{{ .Release.Name }}-secret"
                 key: READARR__POSTGRES_PASSWORD
-          - name: POSTGRES_DB
+          - name: INIT_POSTGRES_DBNAME
             valueFrom:
               secretKeyRef:
                 name: "{{ .Release.Name }}-secret"
