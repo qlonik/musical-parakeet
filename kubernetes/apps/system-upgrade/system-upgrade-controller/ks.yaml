@@ -2,9 +2,27 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: cluster-apps-system-upgrade-controller-crd
+  namespace: flux-system
+spec:
+  path: ./kubernetes/apps/system-upgrade/system-upgrade-controller/crd
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: true
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: cluster-apps-system-upgrade-controller
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: cluster-apps-system-upgrade-controller-crd
   path: ./kubernetes/apps/system-upgrade/system-upgrade-controller/app
   prune: true
   sourceRef:
