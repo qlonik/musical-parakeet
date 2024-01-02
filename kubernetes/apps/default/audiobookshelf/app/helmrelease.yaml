@@ -68,6 +68,12 @@ spec:
         size: 5Gi
         storageClass: nfs-fast
     persistence:
+      ebooks:
+        enabled: true
+        type: nfs
+        server: nova.home.arpa
+        path: /books/ebooks
+        mountPath: /media/ebooks
       audiobooks:
         enabled: true
         type: nfs
