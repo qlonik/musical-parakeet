@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-mealie-api
+  name: cluster-apps-mealie
   namespace: flux-system
 spec:
   dependsOn:
@@ -11,25 +11,7 @@ spec:
     - name: cluster-apps-minio
     - name: cluster-apps-openldap
     - name: cluster-apps-volsync
-  path: ./kubernetes/apps/default/mealie/api
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-kubernetes
-  wait: true
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: cluster-apps-mealie-web
-  namespace: flux-system
-spec:
-  dependsOn:
-    - name: cluster-apps-mealie-api
-  path: ./kubernetes/apps/default/mealie/web
+  path: ./kubernetes/apps/default/mealie/app
   prune: true
   sourceRef:
     kind: GitRepository

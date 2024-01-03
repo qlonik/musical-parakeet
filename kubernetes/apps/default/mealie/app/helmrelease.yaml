@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: mealie-api
+  name: mealie
   namespace: default
 spec:
   interval: 15m
@@ -36,8 +36,8 @@ spec:
         containers:
           main:
             image:
-              repository: docker.io/hkotel/mealie
-              tag: api-nightly@sha256:0d80361802f1cde457d222a662c045ddf283d8e926558dbcd02d923d99d2cd92
+              repository: ghcr.io/mealie-recipes/mealie
+              tag: v1.0.0-RC2@sha256:9881b16dda92272c6eeeb132697ad2379be1c562f0f53f86f20ce2654b57f455
             env:
               TZ: "${TIMEZONE}"
               PUID: 568
@@ -102,6 +102,8 @@ spec:
               limits:
                 memory: 1000Mi
             securityContext:
+              runAsUser: 568
+              runAsGroup: 568
               fsGroup: 568
               fsGroupChangePolicy: "OnRootMismatch"
     service:
@@ -109,9 +111,30 @@ spec:
         ports:
           http:
             port: *port
+    ingress:
+      main:
+        enabled: true
+        className: external
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+          hajimari.io/appName: Recipes
+          hajimari.io/group: Home
+          hajimari.io/icon: mdi:food
+        hosts:
+          - host: &host "recipes.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  name: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
     persistence:
       data:
         enabled: true
+        nameOverride: api-data
         type: persistentVolumeClaim
         storageClass: nfs-fast
         accessMode: ReadWriteMany
@@ -121,6 +144,7 @@ spec:
           - path: /app/data
       backups:
         enabled: true
+        nameOverride: api-backups
         type: persistentVolumeClaim
         storageClass: nfs-slow
         accessMode: ReadWriteMany
