@@ -6,34 +6,38 @@ metadata:
   namespace: default
 spec:
   values:
-    initContainers:
-      init-db:
-        image: ghcr.io/onedr0p/postgres-init:14.8
-        env:
-          - name: INIT_POSTGRES_HOST
-            value: postgres-rw.default.svc.cluster.local
-          - name: INIT_POSTGRES_SUPER_USER
-            valueFrom:
-              secretKeyRef:
-                name: postgres-secret
-                key: username
-          - name: INIT_POSTGRES_SUPER_PASS
-            valueFrom:
-              secretKeyRef:
-                name: postgres-secret
-                key: password
-          - name: INIT_POSTGRES_USER
-            valueFrom:
-              secretKeyRef:
-                name: mealie-secret
-                key: POSTGRES_USER
-          - name: INIT_POSTGRES_PASS
-            valueFrom:
-              secretKeyRef:
-                name: mealie-secret
-                key: POSTGRES_PASSWORD
-          - name: INIT_POSTGRES_DBNAME
-            valueFrom:
-              secretKeyRef:
-                name: mealie-secret
-                key: POSTGRES_DB
+    controllers:
+      main:
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 14.8
+            env:
+              - name: INIT_POSTGRES_HOST
+                value: postgres-rw.default.svc.cluster.local
+              - name: INIT_POSTGRES_SUPER_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: postgres-secret
+                    key: username
+              - name: INIT_POSTGRES_SUPER_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: postgres-secret
+                    key: password
+              - name: INIT_POSTGRES_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: mealie-secret
+                    key: POSTGRES_USER
+              - name: INIT_POSTGRES_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: mealie-secret
+                    key: POSTGRES_PASSWORD
+              - name: INIT_POSTGRES_DBNAME
+                valueFrom:
+                  secretKeyRef:
+                    name: mealie-secret
+                    key: POSTGRES_DB
