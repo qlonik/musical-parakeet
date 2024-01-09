@@ -44,7 +44,7 @@ spec:
           main:
             image:
               repository: ghcr.io/zurdi15/romm
-              tag: 2.1.0@sha256:5403e58d0ec714a1aa45c5caf9c897b4eb7fecb403c3041468a707bce4f6bd3b
+              tag: 2.3.1@sha256:2db88fe44c89fad393c61cd75f28c5c03bce915292c98053bb36131b21177e64
             env:
               TZ: ${TIMEZONE}
               ROMM_DB_DRIVER: sqlite
