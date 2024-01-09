@@ -1,6 +1,7 @@
 ---
 ignore: |
   *.sops.*
+  .taskfiles/
 extends: default
 rules:
   truthy:

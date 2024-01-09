@@ -1,47 +1,26 @@
 ---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: "3"
 
 vars:
-  PYTHON_BIN: python3
   BOOTSTRAP_DIR: "{{.ROOT_DIR}}/bootstrap"
   ANSIBLE_DIR: "{{.ROOT_DIR}}/ansible"
   KUBERNETES_DIR: "{{.ROOT_DIR}}/kubernetes"
 
 env:
   KUBECONFIG: "{{.ROOT_DIR}}/kubeconfig"
-  SOPS_AGE_KEY_FILE: "{{.ROOT_DIR}}/age.key"
-  PATH: "{{.ROOT_DIR}}/.venv/bin:$PATH"
-  VIRTUAL_ENV: "{{.ROOT_DIR}}/.venv"
-  ANSIBLE_COLLECTIONS_PATH: "{{.ROOT_DIR}}/.venv/galaxy"
-  ANSIBLE_ROLES_PATH: "{{.ROOT_DIR}}/.venv/galaxy/ansible_roles"
-  ANSIBLE_VARS_ENABLED: "host_group_vars,community.sops.sops"
-  K8S_AUTH_KUBECONFIG: "{{.ROOT_DIR}}/kubeconfig"
 
 includes:
   ansible: .taskfiles/AnsibleTasks.yaml
-  cluster: .taskfiles/ClusterTasks.yaml
+  brew: .taskfiles/BrewTasks.yaml
+  kubernetes:
+    aliases: ["k8s"]
+    taskfile: .taskfiles/KubernetesTasks.yaml
+  flux: .taskfiles/FluxTasks.yaml
   vs: .taskfiles/VolSync/Tasks.yaml
 
 tasks:
   default: task -l
-
-  deps:
-    desc: Create a Python virtual env and install required packages
-    cmds:
-      - "{{.PYTHON_BIN}} -m venv {{.ROOT_DIR}}/.venv"
-      - .venv/bin/python3 -m pip install --upgrade pip setuptools wheel
-      - .venv/bin/python3 -m pip install --upgrade --requirement "{{.ROOT_DIR}}/requirements.txt"
-      - .venv/bin/ansible-galaxy install --role-file "{{.ROOT_DIR}}/requirements.yaml" --force
-    preconditions:
-      - sh: command -v nix
-        msg: |
-          Nix is not installed.
-          Head over to https://nixos.org to get up and running.
-          Make sure to also enable nix flakes.
-      - sh: command -v direnv
-        msg: |
-          Direnv is not installed.
-          Head over to https://direnv.net to get up and running.
 
   init:
     desc: Initialize configuration files
@@ -61,8 +40,11 @@ tasks:
       - test -f "{{.BOOTSTRAP_DIR}}/vars/addons.yaml"
       - test -f "{{.BOOTSTRAP_DIR}}/vars/config.yaml"
 
+  # TODO: Only prompt when generated directories exist
+  # https://github.com/go-task/task/issues/1330
   configure:
     desc: Configure repository from Ansible vars
+    prompt: Any conflicting config in the root kubernetes and ansible directories will be overwritten... continue?
     dir: "{{.BOOTSTRAP_DIR}}"
     cmd: ansible-playbook configure.yaml
     env:

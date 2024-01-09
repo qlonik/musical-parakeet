@@ -17,7 +17,7 @@ k3s_server:
   disable:
     - coredns                         # Disable coredns                 - replaced with Coredns Helm Chart
     - flannel                         # Disable flannel                 - replaced with Cilium Helm Chart
-    - local-storage                   # Disable local-path-provisioner  - installed with Flux
+    - local-storage                   # Disable local-path-provisioner  - replaced with democratic-csi
     - metrics-server                  # Disable metrics-server          - installed with Flux
     - servicelb                       # Disable servicelb               - replaced with Cilium Helm Chart
     - traefik                         # Disable traefik                 - replaced with ingress-nginx and installed with Flux
@@ -25,6 +25,8 @@ k3s_server:
   disable-cloud-controller: true
   disable-kube-proxy: true            # Cilium uses eBPF
   write-kubeconfig-mode: "644"
+  pause-image: registry.k8s.io/pause:3.9
+  secrets-encryption: true
 {% if bootstrap_ipv6_enabled | default(false) %}
   cluster-cidr: "{% raw %}{{ cluster_cidr }},{{ cluster_cidr_v6 }}{% endraw %}"
   service-cidr: "{% raw %}{{ service_cidr }},{{ service_cidr_v6 }}{% endraw %}"
@@ -39,3 +41,7 @@ k3s_server:
     - "bind-address=0.0.0.0"          # Required to monitor kube-scheduler with kube-prometheus-stack
   kube-apiserver-arg:
     - "anonymous-auth=true"           # Required for HAProxy health-checks
+  # TODO: Move these options to a kubelet config file
+  kubelet-arg:
+    - "image-gc-high-threshold=55"
+    - "image-gc-low-threshold=50"

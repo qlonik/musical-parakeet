@@ -11,6 +11,8 @@ kubeconfig
 *.key
 # Ansible
 .venv*
+# Taskfile
+.tasks
 # Nix
 /.direnv/
 /result
