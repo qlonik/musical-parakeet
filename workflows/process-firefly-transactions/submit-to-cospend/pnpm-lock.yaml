@@ -1,12 +1,16 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   '@actions/core':
     specifier: ^1.10.0
     version: 1.10.0
   '@effect/schema':
     specifier: ^0.45.6
-    version: 0.45.6(effect@2.0.0-next.50)(fast-check@3.13.2)
+    version: 0.45.6(effect@2.0.3)(fast-check@3.13.2)
   axios:
     specifier: ^1.4.0
     version: 1.4.0
@@ -14,8 +18,8 @@ dependencies:
     specifier: 1.8.1
     version: 1.8.1
   effect:
-    specifier: 2.0.0-next.50
-    version: 2.0.0-next.50
+    specifier: 2.0.3
+    version: 2.0.3
 
 devDependencies:
   '@tsconfig/node16':
@@ -52,13 +56,13 @@ packages:
       tunnel: 0.0.6
     dev: false
 
-  /@effect/schema@0.45.6(effect@2.0.0-next.50)(fast-check@3.13.2):
+  /@effect/schema@0.45.6(effect@2.0.3)(fast-check@3.13.2):
     resolution: {integrity: sha512-SmlZXxOlKUK4fwVvX9uegMAM5q2UL/PaNLagltMl0hM7EOihmj+Euq1dgGdxQmcwrYCrLgvpPGCFbAs/BAsvGA==}
     peerDependencies:
       effect: 2.0.0-next.50
       fast-check: ^3.13.1
     dependencies:
-      effect: 2.0.0-next.50
+      effect: 2.0.3
       fast-check: 3.13.2
     dev: false
 
@@ -332,8 +336,8 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: false
 
-  /effect@2.0.0-next.50:
-    resolution: {integrity: sha512-dlwI31Vza4ybFtNDstx3AnZkBBzaSMMNfZmwXNrzm1S3fE1IoQzoHCHelBH9gSZCRtE4gzZbplyWD/B6iePGxg==}
+  /effect@2.0.3:
+    resolution: {integrity: sha512-I/XvcbHypegNFWCr/arbfIR6pA+8JpSqv9wS4xOrgXypQMRj8H3wRorTcUiPmcQ0e6Ko67CdI2XZpjx7z0Ev/A==}
     dev: false
 
   /esbuild@0.17.19:
