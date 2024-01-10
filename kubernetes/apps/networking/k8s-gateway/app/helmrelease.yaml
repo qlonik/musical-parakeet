@@ -43,10 +43,6 @@ spec:
       - name: reload
       - name: loadbalance
       - name: errors
-      - name: forward
-        # Enabling TLS using `tls://` is required here to prevent AdGuard from
-        # intercepting and responding to plaintext DNS queries.
-        parameters: . tls://1.1.1.1 tls://1.0.0.1
       - # Serves a /health endpoint on :8080, required for livenessProbe
         name: health
         configBlock: |-
@@ -56,3 +52,7 @@ spec:
       - # Serves a /metrics endpoint on :9153, required for serviceMonitor
         name: prometheus
         parameters: 0.0.0.0:9153
+      - name: forward
+        # Enabling TLS using `tls://` is required here to prevent AdGuard from
+        # intercepting and responding to plaintext DNS queries.
+        parameters: . tls://1.1.1.1 tls://1.0.0.1
