@@ -44,7 +44,9 @@ spec:
       - name: loadbalance
       - name: errors
       - name: forward
-        parameters: . 1.1.1.1 1.0.0.1
+        # Enabling TLS using `tls://` is required here to prevent AdGuard from
+        # intercepting and responding to plaintext DNS queries.
+        parameters: . tls://1.1.1.1 tls://1.0.0.1
       - # Serves a /health endpoint on :8080, required for livenessProbe
         name: health
         configBlock: |-
