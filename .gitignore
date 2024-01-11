@@ -12,6 +12,7 @@ kubeconfig
 # Ansible
 .venv*
 # Taskfile
+.task
 .tasks
 # Nix
 /.direnv/
