@@ -22,6 +22,7 @@
             fluxcd
             go-task
             jq
+            k9s
             kubectl
             kubernetes-helm
             kustomize
