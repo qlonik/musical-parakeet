@@ -12,7 +12,7 @@ k3s_server:
   disable:
     - coredns                         # Disable coredns                 - replaced with Coredns Helm Chart
     - flannel                         # Disable flannel                 - replaced with Cilium Helm Chart
-    - local-storage                   # Disable local-path-provisioner  - installed with Flux
+    - local-storage                   # Disable local-path-provisioner  - installed with Flux and to be replaced with democratic-csi
     - metrics-server                  # Disable metrics-server          - installed with Flux
     - servicelb                       # Disable servicelb               - replaced with Cilium Helm Chart
     - traefik                         # Disable traefik                 - replaced with ingress-nginx and installed with Flux
@@ -20,6 +20,8 @@ k3s_server:
   disable-cloud-controller: true
   disable-kube-proxy: true            # Cilium uses eBPF
   write-kubeconfig-mode: "644"
+  pause-image: registry.k8s.io/pause:3.9
+  secrets-encryption: true
   cluster-cidr: "{{ cluster_cidr }}"
   service-cidr: "{{ service_cidr }}"
   etcd-expose-metrics: true           # Required to monitor etcd with kube-prometheus-stack
@@ -35,6 +37,9 @@ k3s_server:
     # https://github.com/k3s-io/k3s/issues/1264#issuecomment-1037316446
     - "default-not-ready-toleration-seconds=20"
     - "default-unreachable-toleration-seconds=20"
+  # TODO: Move these options to a kubelet config file
   kubelet-arg:
+    - "image-gc-high-threshold=55"
+    - "image-gc-low-threshold=50"
     # https://github.com/k3s-io/k3s/issues/1264#issuecomment-1037316446
     - "node-status-update-frequency=4s"
