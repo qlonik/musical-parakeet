@@ -8,7 +8,7 @@ resources:
 configMapGenerator:
   - name: qbtools-configmap
     files:
-      - config.yaml=https://raw.githubusercontent.com/buroa/qbtools/master/config.yaml
+      - ./resources/config.yaml
 generatorOptions:
   disableNameSuffixHash: true
   annotations:
