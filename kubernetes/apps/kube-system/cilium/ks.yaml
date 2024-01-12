@@ -2,10 +2,14 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-cilium
+  name: &app cilium
   namespace: flux-system
 spec:
   path: ./kubernetes/apps/kube-system/cilium/app
+  targetNamespace: kube-system
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   prune: false # never should be deleted
   sourceRef:
     kind: GitRepository

@@ -10,7 +10,7 @@ spec:
     - name: cluster-apps-maddy
     - name: cluster-apps-minio
     - name: cluster-apps-openldap
-    - name: cluster-apps-volsync
+    - name: volsync
   path: ./kubernetes/apps/default/mealie/app
   prune: true
   sourceRef:
