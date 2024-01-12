@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cluster-apps-local-path-provisioner
+    - name: rancher-local-path-provisioner
   path: ./kubernetes/apps/default/redis/app
   prune: true
   sourceRef:

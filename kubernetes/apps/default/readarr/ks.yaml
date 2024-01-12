@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: cluster-apps-cloudnative-pg-cluster
     - name: cluster-apps-minio
-    - name: cluster-apps-volsync
+    - name: volsync
   path: ./kubernetes/apps/default/readarr/ebook
   prune: true
   sourceRef:
@@ -27,7 +27,7 @@ metadata:
 spec:
   dependsOn:
     - name: cluster-apps-minio
-    - name: cluster-apps-volsync
+    - name: volsync
   path: ./kubernetes/apps/default/readarr/audio
   prune: true
   sourceRef:
