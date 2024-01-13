@@ -31,8 +31,8 @@ spec:
     controller:
       type: statefulset
     image:
-      repository: ghcr.io/onedr0p/jellyfin
-      tag: 10.8.11@sha256:926e2a9f6677a0c7b12feba29f36c954154869318d6a52df72f72ff9c74cf494
+      repository: docker.io/jellyfin/jellyfin
+      tag: 10.8.11@sha256:381e1b4cab1a197fde7ce2d029c0907a4307ef7d0d18695258609375defa22f9
     env:
       TZ: ${TIMEZONE}
       JELLYFIN_PublishedServerUrl: "https://{{ .Release.Name }}.${SECRET_DOMAIN}/"
@@ -105,7 +105,11 @@ spec:
       transcodes:
         enabled: true
         type: emptyDir
-        mountPath: /config/transcodes
+        mountPath: /transcodes
+      cache:
+        enabled: true
+        type: emptyDir
+        mountPath: /cache
     # affinity:
     #   nodeAffinity:
     #     requiredDuringSchedulingIgnoredDuringExecution:
