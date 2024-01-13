@@ -36,4 +36,5 @@ spec:
       spec:
         containers:
           - name: runner
-            image: ghcr.io/onedr0p/github-actions-runner:rolling@sha256:97b74a2c9ae3f573e5168a247d3e0a14bd18aaf1e7b1003192090f4a089a8c07
+            image: ghcr.io/onedr0p/actions-runner:rolling@sha256:627304509a8cdc2e5a89316a892850a52b101acd84647b2e895a6d7c65f7e5be
+            command: ["/home/runner/run.sh"]
