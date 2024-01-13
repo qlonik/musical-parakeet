@@ -3,7 +3,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: nzbget
-  namespace: default
 spec:
   sourcePVC: config-nzbget-0
   trigger:

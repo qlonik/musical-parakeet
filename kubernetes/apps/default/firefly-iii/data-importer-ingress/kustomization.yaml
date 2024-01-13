@@ -6,7 +6,6 @@ resources:
 
 configMapGenerator:
   - name: firefly-iii-data-importer-ingress-config
-    namespace: default
     files:
       - ./config/data-importer.conf
     options:

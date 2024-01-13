@@ -3,7 +3,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: calibre-web
-  namespace: default
 spec:
   sourcePVC: config-calibre-web-0
   trigger:

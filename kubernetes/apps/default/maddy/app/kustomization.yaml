@@ -7,7 +7,6 @@ resources:
 
 configMapGenerator:
   - name: maddy-configmap
-    namespace: default
     files:
       - ./maddy.conf
     options:

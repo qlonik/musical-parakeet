@@ -2,10 +2,14 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-kyverno
+  name: &app kyverno
   namespace: flux-system
 spec:
   path: ./kubernetes/apps/kyverno/kyverno/app
+  targetNamespace: kyverno
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -18,17 +22,21 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-cluster-policies
+  name: &app kyverno-cluster-policies
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cluster-apps-kyverno
+    - name: kyverno
   path: ./kubernetes/apps/kyverno/kyverno/policies
+  targetNamespace: kyverno
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
-  wait: true
+  wait: false
   interval: 30m
   retryInterval: 1m
   timeout: 5m

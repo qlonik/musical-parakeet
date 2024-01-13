@@ -2,13 +2,17 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-heimdall
+  name: &app cluster-apps-heimdall
   namespace: flux-system
 spec:
   dependsOn:
     - name: cluster-apps-minio
     - name: volsync
   path: ./kubernetes/apps/default/heimdall/app
+  targetNamespace: default
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   prune: true
   sourceRef:
     kind: GitRepository

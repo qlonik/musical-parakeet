@@ -3,7 +3,6 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: postgres
-  namespace: default
 spec:
   instances: 3
   imageName: ghcr.io/bo0tzz/cnpgvecto.rs:14.10@sha256:7d3e64018914a8a988d5ff0704831315644d75daf2d0745a93b7fb5b2274bed7

@@ -3,7 +3,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: readarr-audio
-  namespace: default
 spec:
   sourcePVC: config-readarr-audio-0
   trigger:

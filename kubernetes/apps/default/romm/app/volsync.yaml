@@ -3,7 +3,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: romm
-  namespace: default
 spec:
   sourcePVC: database-romm-0
   trigger:

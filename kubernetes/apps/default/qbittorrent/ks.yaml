@@ -2,13 +2,17 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-qbittorrent
+  name: &app cluster-apps-qbittorrent
   namespace: flux-system
 spec:
   dependsOn:
     - name: cluster-apps-minio
     - name: volsync
   path: ./kubernetes/apps/default/qbittorrent/app
+  targetNamespace: default
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -21,12 +25,16 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-qbtools
+  name: &app cluster-apps-qbtools
   namespace: flux-system
 spec:
   dependsOn:
     - name: cluster-apps-qbittorrent
   path: ./kubernetes/apps/default/qbittorrent/tools
+  targetNamespace: default
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   prune: true
   sourceRef:
     kind: GitRepository

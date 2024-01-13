@@ -3,9 +3,9 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: openldap
-  namespace: default
 spec:
-  interval: 15m
+  interval: 30m
+  timeout: 15m
   chart:
     spec:
       chart: openldap-stack-ha
@@ -14,9 +14,7 @@ spec:
         kind: HelmRepository
         name: openldap
         namespace: flux-system
-  timeout: 15m
   install:
-    createNamespace: true
     remediation:
       retries: 3
   upgrade:

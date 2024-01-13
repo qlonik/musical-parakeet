@@ -3,7 +3,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: readarr-ebook
-  namespace: default
 spec:
   sourcePVC: config-readarr-ebook-0
   trigger:

@@ -3,7 +3,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: bazarr
-  namespace: default
 spec:
   sourcePVC: config-bazarr-0
   trigger:

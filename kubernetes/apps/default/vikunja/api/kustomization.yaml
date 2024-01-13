@@ -12,7 +12,6 @@ patches:
 
 configMapGenerator:
   - name: vikunja-config
-    namespace: default
     files:
       - ./config/config.yml
     options:
