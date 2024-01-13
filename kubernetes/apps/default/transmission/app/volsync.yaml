@@ -3,7 +3,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: transmission
-  namespace: default
 spec:
   sourcePVC: config-transmission-0
   trigger:

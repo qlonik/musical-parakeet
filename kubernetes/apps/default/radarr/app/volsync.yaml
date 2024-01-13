@@ -3,7 +3,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: radarr
-  namespace: default
 spec:
   sourcePVC: config-radarr-0
   trigger:

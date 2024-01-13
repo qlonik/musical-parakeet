@@ -3,7 +3,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: grocy
-  namespace: default
 spec:
   sourcePVC: config-grocy-0
   trigger:

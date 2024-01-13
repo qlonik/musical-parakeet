@@ -2,13 +2,17 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-firefly-iii
+  name: &app cluster-apps-firefly-iii
   namespace: flux-system
 spec:
   dependsOn:
     - name: cluster-apps-authelia
     - name: cluster-apps-cloudnative-pg-cluster
   path: ./kubernetes/apps/default/firefly-iii/app
+  targetNamespace: default
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -21,7 +25,7 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-firefly-iii-data-importer-user-01
+  name: &app cluster-apps-firefly-iii-data-importer-user-01
   namespace: flux-system
 spec:
   dependsOn:
@@ -31,6 +35,10 @@ spec:
     substitute:
       user_id: user-01
   path: ./kubernetes/apps/default/firefly-iii/data-importer-template
+  targetNamespace: default
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -43,7 +51,7 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-firefly-iii-data-importer-user-02
+  name: &app cluster-apps-firefly-iii-data-importer-user-02
   namespace: flux-system
 spec:
   dependsOn:
@@ -53,6 +61,10 @@ spec:
     substitute:
       user_id: user-02
   path: ./kubernetes/apps/default/firefly-iii/data-importer-template
+  targetNamespace: default
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -65,7 +77,7 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-firefly-iii-data-importer-ingress
+  name: &app cluster-apps-firefly-iii-data-importer-ingress
   namespace: flux-system
   labels:
     substitution.flux.home.arpa/disabled: "true"
@@ -83,6 +95,10 @@ spec:
       - kind: Secret
         name: firefly-iii-data-importer-substitutions
   path: ./kubernetes/apps/default/firefly-iii/data-importer-ingress
+  targetNamespace: default
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   prune: true
   sourceRef:
     kind: GitRepository

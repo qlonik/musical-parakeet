@@ -3,7 +3,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: youtube-dl-server
-  namespace: default
 spec:
   sourcePVC: data-youtube-dl-server-0
   trigger:

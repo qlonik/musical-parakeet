@@ -3,7 +3,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: youtubedl-material
-  namespace: default
 spec:
   sourcePVC: config-youtubedl-material-0
   trigger:

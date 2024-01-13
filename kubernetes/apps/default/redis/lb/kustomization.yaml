@@ -6,7 +6,6 @@ resources:
 
 configMapGenerator:
   - name: redis-lb-configmap
-    namespace: default
     files:
       - haproxy.cfg
     options:

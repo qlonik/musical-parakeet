@@ -3,7 +3,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: mealie-data
-  namespace: default
 spec:
   sourcePVC: mealie-api-data
   trigger:
@@ -22,7 +21,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: mealie-backups
-  namespace: default
 spec:
   sourcePVC: mealie-api-backups
   trigger:

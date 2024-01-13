@@ -7,7 +7,6 @@ resources:
 
 secretGenerator:
   - name: bootstrap-ldif
-    namespace: default
     files:
       - ./bootstrap-ldif.sops.yaml
     options:

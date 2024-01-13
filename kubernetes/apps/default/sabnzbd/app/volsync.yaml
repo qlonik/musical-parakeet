@@ -3,7 +3,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: sabnzbd
-  namespace: default
 spec:
   sourcePVC: config-sabnzbd-0
   trigger:

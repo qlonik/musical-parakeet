@@ -3,7 +3,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: audiobookshelf
-  namespace: default
 spec:
   sourcePVC: config-audiobookshelf-0
   trigger:

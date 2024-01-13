@@ -11,7 +11,6 @@ patches:
 
 configMapGenerator:
   - name: authelia-config
-    namespace: default
     files:
       - ./config/configuration.yml
     options:

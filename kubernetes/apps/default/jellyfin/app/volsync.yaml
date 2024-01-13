@@ -3,7 +3,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: jellyfin
-  namespace: default
 spec:
   sourcePVC: config-jellyfin-0
   trigger:

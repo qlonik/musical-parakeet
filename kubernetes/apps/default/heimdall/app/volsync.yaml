@@ -3,7 +3,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: heimdall
-  namespace: default
 spec:
   sourcePVC: config-heimdall-0
   trigger:

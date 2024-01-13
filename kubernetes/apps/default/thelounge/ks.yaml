@@ -3,10 +3,14 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-thelounge
+  name: &app cluster-apps-thelounge
   namespace: flux-system
 spec:
   path: ./kubernetes/apps/default/thelounge/app
+  targetNamespace: default
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   prune: true
   sourceRef:
     kind: GitRepository

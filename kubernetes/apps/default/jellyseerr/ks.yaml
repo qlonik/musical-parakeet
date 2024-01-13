@@ -2,13 +2,17 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-jellyseerr
+  name: &app cluster-apps-jellyseerr
   namespace: flux-system
 spec:
   dependsOn:
     - name: cluster-apps-minio
     - name: volsync
   path: ./kubernetes/apps/default/jellyseerr/app
+  targetNamespace: default
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   prune: true
   sourceRef:
     kind: GitRepository

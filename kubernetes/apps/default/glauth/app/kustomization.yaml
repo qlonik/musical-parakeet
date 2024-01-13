@@ -6,7 +6,6 @@ resources:
 
 secretGenerator:
   - name: glauth-secret
-    namespace: default
     files:
       - server.toml=./config/server.sops.toml
       - groups.toml=./config/groups.sops.toml

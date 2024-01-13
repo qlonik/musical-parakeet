@@ -3,7 +3,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: paperless-ngx-data
-  namespace: default
 spec:
   sourcePVC: data-paperless-ngx-0
   trigger:
@@ -22,7 +21,6 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: paperless-ngx-media
-  namespace: default
 spec:
   sourcePVC: media-paperless-ngx-0
   trigger:
