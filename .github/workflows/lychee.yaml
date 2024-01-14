@@ -11,7 +11,7 @@ on:
 
 env:
   LYCHEE_OUTPUT: lychee/out.md
-  WORKFLOW_ISSUE_TITLE: "Broken links detected 🔗"
+  WORKFLOW_ISSUE_TITLE: "Link Checker Dashboard 🔗"
 
 jobs:
   lychee:
