@@ -13,3 +13,25 @@ metadata:
   name: amd-gpu-node-labeller
   annotations:
     kubernetes.io/service-account.name: amd-gpu-node-labeller
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: amd-gpu-node-labeller
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["watch", "get", "list", "update"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: amd-gpu-node-labeller-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: amd-gpu-node-labeller
+subjects:
+  - kind: ServiceAccount
+    name: amd-gpu-node-labeller
+    namespace: tools

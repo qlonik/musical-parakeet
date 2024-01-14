@@ -54,30 +54,36 @@ spec:
                   spec:
                     serviceAccountName: amd-gpu-node-labeller
             target:
-              apiVersion: apps/v1
+              group: apps
+              version: v1
               kind: DaemonSet
               name: amd-gpu-labeller-daemonset
 
-          # replace ServiceAccount in generated ClusterRoleBinding
+          # clean-up unneeded cluster roles and bindings
           - patch: |-
-              kind: not-used
+              $patch: delete
               apiVersion: not-used
+              kind: not-used
               metadata:
                 name: not-used
-              subjects:
-                - kind: ServiceAccount
-                  name: amd-gpu-node-labeller
-                  namespace: tools
             target:
               group: rbac.authorization.k8s.io
               kind: ClusterRoleBinding
-              name: crb-amd-gpu-labeller
+          - patch: |-
+              $patch: delete
+              apiVersion: not-used
+              kind: not-used
+              metadata:
+                name: not-used
+            target:
+              group: rbac.authorization.k8s.io
+              kind: ClusterRole
 
           # remove all nfd related resources
           - patch: |-
               $patch: delete
-              kind: not-used
               apiVersion: not-used
+              kind: not-used
               metadata:
                 name: not-used
             target:
