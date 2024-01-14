@@ -32,7 +32,7 @@ spec:
       type: statefulset
     image:
       repository: docker.io/jellyfin/jellyfin
-      tag: 10.8.11@sha256:381e1b4cab1a197fde7ce2d029c0907a4307ef7d0d18695258609375defa22f9
+      tag: 10.8.13@sha256:05a9734d7e83086b957c5b7a16cbb5a60b5bb8d113ffb953e57547359dd05140
     env:
       TZ: ${TIMEZONE}
       JELLYFIN_PublishedServerUrl: "https://{{ .Release.Name }}.${SECRET_DOMAIN}/"
