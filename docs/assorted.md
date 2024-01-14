@@ -51,3 +51,80 @@ See https://linuxconfig.org/how-to-resize-a-qcow2-disk-image-on-linux
 - `pvresize /dev/vda#`
 - `lvs`/`lvdisplay` to show LVs
 - `lvresize -l +100%FREE --resizefs VolGroup/logical-volume`
+
+## How to render Flux's `Kustomization`s and `HelmRelease`s to final resources
+
+### Using [flux-build](https://github.com/DoodleScheduling/flux-build) project
+
+keep in mind that `--output` flag for some reason appends to existing file, so
+the file should be removed before generating the output
+
+```sh
+rm -f __out__.yaml && \
+docker run -ti \
+  --rm \
+  --volume .:/workspace \
+  --workdir /workspace \
+  --user "$UID" \
+  ghcr.io/doodlescheduling/flux-build \
+    --output /workspace/__out__.yaml \
+    /workspace/kubernetes/flux \
+    /workspace/kubernetes/apps/<namespace>/<name>
+```
+
+### Manual method
+
+This is a copy of
+[the post](https://github.com/fluxcd/flux2/issues/2808#issuecomment-1529946044)
+made on flux issue to support this feature natively in flux.
+
+> @MrMarkW If It is not too late, here is the process:
+>
+> 1. Build Flux Kustomization:
+>
+>    ```
+>    flux build kustomization <kustomization_name> --path dev > out/kustomization_out.yaml
+>    ```
+>
+>    In my case `kustomization_out.yaml` contains 2 YAML manifests
+>    `HelmRepository` and `HelmRelease`.
+>
+> 2. Take Helm repository URL and name from `HelmRelease` and add the Helm repo:
+>
+>    ```
+>    helm repo add <helm_repo_name> <helm_repo_url>
+>    ```
+>
+> 3. Take the `values` section from `HelmRelease` and add it to `values.yaml`
+>    file. After that you will be able to render the chart locally:
+>
+>    ```
+>    helm template <name> <helm_repo_name>/<helm_chart_name> -f out/values.yaml > out/helm_out.yaml
+>    ```
+>
+> 4. If you have `postRenderers` section in `HelmRelease`, you can create
+>    `kustomization.yaml` file similar to this one:
+>
+>    ```yaml
+>    apiVersion: kustomize.config.k8s.io/v1beta1
+>    kind: Kustomization
+>    resources:
+>      - helm_out.yaml
+>    patches:
+>      - path: patch_1.yaml
+>      - path: patch_2.yaml
+>      - patch: |-
+>          inline-patch
+>    ```
+>
+> 5. After that move patches from the `postRenderers` section to the patch files
+>    and render the final result:
+>
+>    ```
+>    kustomize build out
+>    ```
+>
+> ---
+>
+> These steps can be scripted. But I don't see why Flux couldn't do the same.
+> Because it is what it already does.
