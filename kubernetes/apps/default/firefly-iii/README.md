@@ -18,7 +18,8 @@ instance.
    `app/data-importer-substitutions.sops.yaml`. These files are separate since
    these values go into different namespaces.
    1. In `resources` file add a Personal Access Token for a new user. You can
-      see https://docs.firefly-iii.org/firefly-iii/api/#personal-access-token
+      see
+      https://docs.firefly-iii.org/how-to/firefly-iii/features/api/#personal-access-tokens
       for details about generating PAT.
    2. In `substitutions` file set an authelia username corresponding to the new
       user. Note, flux substitutions require that the variable name does not
