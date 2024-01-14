@@ -2,16 +2,16 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: device-plugin-amd-gpu
+  name: amd-gpu
 spec:
   interval: 30m
   chart:
     spec:
-      chart: app-template
-      version: 1.5.1
+      chart: amd-gpu
+      version: 0.10.0
       sourceRef:
         kind: HelmRepository
-        name: bjw-s
+        name: amd-device-plugin
         namespace: flux-system
   install:
     remediation:
@@ -23,43 +23,62 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    controller:
-      type: daemonset
-    image:
-      repository: docker.io/rocm/k8s-device-plugin
-      tag: 1.18.0@sha256:4b2830e2c6e1d182a8e9cbf950f46d263896ba9050366a59665cd921902b6864
-      pullPolicy: Always
-    env:
-      TZ: ${TIMEZONE}
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop: ["ALL"]
-    priorityClassName: system-node-critical
-    service:
-      main:
-        enabled: false
-    persistence:
-      sys:
-        enabled: true
-        type: hostPath
-        hostPath: /sys
-      device-plugins:
-        enabled: true
-        type: hostPath
-        hostPath: /var/lib/kubelet/device-plugins
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: feature.node.kubernetes.io/pci-0300_1002.present
-                  operator: In
-                  values:
-                    - "true"
-    resources:
-      requests:
-        cpu: 10m
-        memory: 10Mi
-      limits:
-        memory: 100Mi
+    namespace: tools
+    dp:
+      resources: &resources
+        requests:
+          cpu: 10m
+          memory: 10Mi
+        limits:
+          memory: 100Mi
+    labeller:
+      enabled: true
+    lbl:
+      resources: *resources
+    # Need to enable this for template to apply node selectors.
+    # However, all nfd resources are deleted using a patch.
+    nfd:
+      enabled: true
+
+  postRenderers:
+    - kustomize:
+        patches:
+          # specify service account instead of default
+          - patch: |-
+              apiVersion: not-used
+              kind: not-used
+              metadata:
+                name: not-used
+              spec:
+                template:
+                  spec:
+                    serviceAccountName: amd-gpu-node-labeller
+            target:
+              apiVersion: apps/v1
+              kind: DaemonSet
+              name: amd-gpu-labeller-daemonset
+
+          # replace ServiceAccount in generated ClusterRoleBinding
+          - patch: |-
+              kind: not-used
+              apiVersion: not-used
+              metadata:
+                name: not-used
+              subjects:
+                - kind: ServiceAccount
+                  name: amd-gpu-node-labeller
+                  namespace: tools
+            target:
+              group: rbac.authorization.k8s.io
+              kind: ClusterRoleBinding
+              name: crb-amd-gpu-labeller
+
+          # remove all nfd related resources
+          - patch: |-
+              $patch: delete
+              kind: not-used
+              apiVersion: not-used
+              metadata:
+                name: not-used
+            target:
+              labelSelector: "app.kubernetes.io/instance=amd-gpu,app.kubernetes.io/name=node-feature-discovery"
