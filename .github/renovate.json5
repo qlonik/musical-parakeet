@@ -65,8 +65,7 @@
     {
       "description": "Flux Group",
       "groupName": "Flux",
-      "matchPackagePatterns": ["flux"],
-      "excludePackagePatterns": ["influxdb"],
+      "matchPackagePatterns": ["fluxcd"],
       "matchDatasources": ["docker", "github-tags"],
       "versioning": "semver",
       "group": {
@@ -77,7 +76,7 @@
     {
       "description": "System Upgrade Controller Group",
       "groupName": "System Upgrade Controller",
-      "matchPackagePatterns": ["rancher/system-upgrade-controller"],
+      "matchPackagePatterns": ["system-upgrade-controller"],
       "matchDatasources": ["docker", "github-releases"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
@@ -85,22 +84,45 @@
       "separateMinorPatch": true
     },
     {
-      "description": "Github Actions Runner",
-      "groupName": "Github Actions",
+      "description": "Actions Runner Controller Group",
+      "groupName": "Actions Runner Controller",
+      "matchPackageNames": [
+        "actions-runner-controller-charts/gha-runner-scale-set-controller",
+        "actions-runner-controller-charts/gha-runner-scale-set"
+      ],
       "matchPackagePatterns": ["gha-runner-scale-set"],
-      "matchDatasources": ["docker"],
-      "versioning": "semver",
+      "matchDatasources": ["helm", "docker"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
       },
       "separateMinorPatch": true
     },
     {
-      "description": "@effect TS library group",
+      "description": "Immich Group",
+      "groupName": "Immich",
+      "matchPackagePatterns": ["immich-app"],
+      "matchDatasources": ["docker"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "separateMinorPatch": true
+    },
+    {
+      "description": "Minio Group",
+      "groupName": "Minio",
+      "matchPackagePatterns": ["minio"],
+      "matchDatasources": ["docker"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "separateMinorPatch": true
+    },
+    {
+      "description": "effect-ts Group",
       "groupName": "effect-ts",
+      "matchPackageNames": ["effect"],
       "matchPackagePrefixes": ["@effect"],
       "matchDatasources": ["npm"],
-      "versioning": "semver",
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
       },
@@ -108,10 +130,22 @@
     },
     // custom versioning
     {
+      "description": "Use custom versioning for firefly-iii",
+      "matchDatasources": ["docker"],
+      "versioning": "regex:^version-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
+      "matchPackageNames": ["fireflyiii/core", "fireflyiii/data-importer"]
+    },
+    {
       "description": "Use custom versioning for k3s",
       "matchDatasources": ["github-releases"],
       "versioning": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?<compatibility>\\+k3s)(?<build>\\d+)$",
       "matchPackagePatterns": ["k3s"]
+    },
+    {
+      "description": "Use custom versioning for minio",
+      "matchDatasources": ["docker"],
+      "versioning": "regex:^RELEASE\\.(?<major>\\d+)-(?<minor>\\d+)-(?<patch>\\d+)T.*Z$",
+      "matchPackagePatterns": ["minio"]
     },
     // commit message topics
     {
