@@ -6,7 +6,6 @@ resources:
   - ./helmrelease.yaml
   - ./helmrelease-cronjob.yaml
   - ./data-importer-resources.sops.yaml
-  - ./data-importer-substitutions.sops.yaml
 
 patches:
   - path: ./patches/postgres-init.yaml
