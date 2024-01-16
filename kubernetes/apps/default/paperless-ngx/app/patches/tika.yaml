@@ -24,7 +24,14 @@ spec:
             memory: 250Mi
           limits:
             cpu: 1
-            memory: 1Gi
+            memory: 2Gi
 
       tika:
         image: ghcr.io/paperless-ngx/tika:2.9.0-minimal@sha256:e85662605324bd157731480928fd7cffae041320f64198a62b0afbeac62fe90d
+        resources:
+          requests:
+            cpu: 200m
+            memory: 250Mi
+          limits:
+            cpu: 1
+            memory: 2Gi
