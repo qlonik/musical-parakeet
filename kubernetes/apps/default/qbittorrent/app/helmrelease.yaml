@@ -114,7 +114,7 @@ spec:
           minio-init-bucket:
             image:
               repository: ghcr.io/qlonik/minio-init-bucket
-              tag: RELEASE.2023-04-12T02-21-51Z@sha256:4ce4b3e62f4a1922bbcb9cfbcac529d42ba1702a0914fbdcd79a3bb00425ee2c
+              tag: RELEASE.2024-01-18T07-03-39Z@sha256:edc25f683430b5c982bc7afffe81657817a8d8cbeb208582b7b61bb9843ccfd1
             env:
               MINIO_HOST: http://minio.default.svc.cluster.local:9000
               MINIO_SUPER_ACCESS_KEY:
