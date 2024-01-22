@@ -85,12 +85,30 @@ spec:
                   secretKeyRef:
                     name: postgres-secret
                     key: password
-            envFrom: *envfrom
+              - name: INIT_POSTGRES_HOST
+                valueFrom:
+                  secretKeyRef:
+                    name: immich-secret
+                    key: DB_HOSTNAME
+              - name: INIT_POSTGRES_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: immich-secret
+                    key: DB_USERNAME
+              - name: INIT_POSTGRES_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: immich-secret
+                    key: DB_PASSWORD
+              - name: INIT_POSTGRES_DBNAME
+                valueFrom:
+                  secretKeyRef:
+                    name: immich-secret
+                    key: DB_DATABASE_NAME
           create-extensions:
             dependsOn: init-db
             image: *init-image
             env: *init-env
-            envFrom: *envfrom
             args: ["/config/run-sql-scripts.sh"]
       microservices:
         containers:
