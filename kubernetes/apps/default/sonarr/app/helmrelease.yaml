@@ -35,6 +35,7 @@ spec:
       TZ: ${TIMEZONE}
       SONARR__INSTANCE_NAME: Sonarr
       SONARR__LOG_LEVEL: info
+      SONARR__AUTHENTICATION_METHOD: External
     envFrom:
       - secretRef:
           name: sonarr-secret
@@ -48,6 +49,7 @@ spec:
         enabled: true
         ingressClassName: internal
         annotations:
+          auth.home.arpa/enabled: "true"
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_set_header Accept-Encoding "";
             # sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_DOMAIN}/css/base/sonarr/nord.css"></head>';

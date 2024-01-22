@@ -32,6 +32,7 @@ spec:
       TZ: ${TIMEZONE}
       READARR__URL_BASE: /audio
       READARR__POSTGRES_HOST: postgres-rw.default.svc.cluster.local
+      READARR__AUTHENTICATION_METHOD: External
     envFrom:
       - secretRef:
           name: readarr-audio-secret
@@ -45,6 +46,7 @@ spec:
         enabled: true
         ingressClassName: internal
         annotations:
+          auth.home.arpa/enabled: "true"
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_set_header Accept-Encoding "";
             # sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_DOMAIN}/css/base/readarr/nord.css"></head>';
