@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/postgresql.cnpg.io/cluster_v1.json
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
@@ -21,6 +22,8 @@ spec:
   externalClusters:
     - name: &active-cluster postgres-v2
       barmanObjectStore: &barman-object-store
+        data:
+          compression: bzip2
         wal:
           compression: bzip2
           maxParallel: 8
