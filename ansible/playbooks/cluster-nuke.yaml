@@ -90,6 +90,11 @@
         state: absent
       loop: ["kubectl", "crictl", "ctr"]
 
+    - name: Remove local storage path
+      ansible.builtin.file:
+        path: "/var/openebs/local"
+        state: absent
+
     - name: Reboot
       ansible.builtin.reboot:
         msg: Rebooting nodes

@@ -7,10 +7,10 @@ metadata:
   namespace: kube-system
   creationTimestamp: "2022-10-14T04:31:55Z"
 spec:
-  # renovate: datasource=helm
   repo: https://helm.cilium.io/
   chart: cilium
-  version: 1.14.6
+  # renovate: datasource=helm depName=cilium repository=https://helm.cilium.io
+  version: "1.14.6"
   targetNamespace: kube-system
   bootstrap: true
   valuesContent: |-
@@ -20,7 +20,7 @@ spec:
     bgp:
       enabled: false
     cluster:
-      name: home-cluster
+      name: home-kubernetes
       id: 1
     containerRuntime:
       integration: containerd
@@ -31,9 +31,9 @@ spec:
       enabled: false
     ipam:
       mode: kubernetes
-    ipv4NativeRoutingCIDR: "{{ cluster_cidr }}"
-    k8sServiceHost: "{{ kube_vip_addr }}"
-    k8sServicePort: 6443
+    ipv4NativeRoutingCIDR: "10.42.0.0/16"
+    k8sServiceHost: 127.0.0.1
+    k8sServicePort: 6444
     kubeProxyReplacement: true
     kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
     l2announcements:
@@ -44,12 +44,12 @@ spec:
       leaseRetryPeriod: 1s
     loadBalancer:
       algorithm: maglev
-      mode: dsr
+      mode: "dsr"
     localRedirectPolicy: true
     operator:
       replicas: 1
       rollOutPods: true
     rollOutCiliumPods: true
+    routingMode: native
     securityContext:
       privileged: true
-    tunnel: disabled
