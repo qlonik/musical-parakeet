@@ -1,43 +1,36 @@
 ---
 # https://rancher.com/docs/k3s/latest/en/installation/install-options/server-config/
 # https://github.com/PyratLabs/ansible-role-k3s
-
 k3s_control_node: true
 k3s_server:
   node-ip: "{{ ansible_host }}"
   tls-san:
-    - "{{ kube_vip_addr }}"
+    - "192.168.0.79"
   docker: false
-  flannel-backend: "none"             # This needs to be in quotes
+  flannel-backend: "none" # quote
   disable:
-    - coredns                         # Disable coredns                 - replaced with Coredns Helm Chart
-    - flannel                         # Disable flannel                 - replaced with Cilium Helm Chart
-    - local-storage                   # Disable local-path-provisioner  - installed with Flux and to be replaced with democratic-csi
-    - metrics-server                  # Disable metrics-server          - installed with Flux
-    - servicelb                       # Disable servicelb               - replaced with Cilium Helm Chart
-    - traefik                         # Disable traefik                 - replaced with ingress-nginx and installed with Flux
+    ["flannel", "local-storage", "metrics-server", "servicelb", "traefik"]
   disable-network-policy: true
   disable-cloud-controller: true
-  disable-kube-proxy: true            # Cilium uses eBPF
+  disable-kube-proxy: true
   write-kubeconfig-mode: "644"
   pause-image: registry.k8s.io/pause:3.9
   secrets-encryption: true
-  cluster-cidr: "{{ cluster_cidr }}"
-  service-cidr: "{{ service_cidr }}"
-  etcd-expose-metrics: true           # Required to monitor etcd with kube-prometheus-stack
+  cluster-cidr: "10.42.0.0/16"
+  service-cidr: "10.43.0.0/16"
+  etcd-expose-metrics: true # Required to monitor etcd with kube-prometheus-stack
   kube-controller-manager-arg:
-    - "bind-address=0.0.0.0"          # Required to monitor kube-controller-manager with kube-prometheus-stack
+    - "bind-address=0.0.0.0" # Required to monitor kube-controller-manager with kube-prometheus-stack
     # https://github.com/k3s-io/k3s/issues/1264#issuecomment-1037316446
     - "node-monitor-period=4s"
     - "node-monitor-grace-period=16s"
   kube-scheduler-arg:
-    - "bind-address=0.0.0.0"          # Required to monitor kube-scheduler with kube-prometheus-stack
+    - "bind-address=0.0.0.0" # Required to monitor kube-scheduler with kube-prometheus-stack
   kube-apiserver-arg:
-    - "anonymous-auth=true"           # Required for HAProxy health-checks
+    - "anonymous-auth=true" # Required for external LB health-checks
     # https://github.com/k3s-io/k3s/issues/1264#issuecomment-1037316446
     - "default-not-ready-toleration-seconds=20"
     - "default-unreachable-toleration-seconds=20"
-  # TODO: Move these options to a kubelet config file
   kubelet-arg:
     - "image-gc-high-threshold=55"
     - "image-gc-low-threshold=50"
