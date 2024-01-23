@@ -23,6 +23,7 @@
             go-task
             jq
             k9s
+            kubeconform
             kubectl
             kubernetes-helm
             kustomize
