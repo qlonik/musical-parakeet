@@ -1,4 +1,3 @@
-#jinja2: trim_blocks: True, lstrip_blocks: True
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
@@ -6,6 +5,6 @@ resources:
   - ./namespace.yaml
   - ./descheduler/ks.yaml
   - ./reloader/ks.yaml
-  {% if system_upgrade_controller.enabled | default(false) %}
+  #% if bootstrap_distribution in ['k3s'] and addon_system_upgrade_controller.enabled %#
   - ./system-upgrade-controller/ks.yaml
-  {% endif %}
+  #% endif %#

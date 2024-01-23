@@ -1,12 +1,15 @@
-#jinja2: trim_blocks: True, lstrip_blocks: True
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./namespace.yaml
-  - ./local-path-provisioner/ks.yaml
-  - ./snapshot-controller/ks.yaml
-  - ./volsync/ks.yaml
-  {% if csi_driver_nfs.enabled | default(false) %}
+  #% if addon_csi_driver_nfs.enabled %#
   - ./csi-driver-nfs/ks.yaml
-  {% endif %}
+  #% endif %#
+  #% if addon_csi_driver_smb.enabled %#
+  - ./csi-driver-smb/ks.yaml
+  #% endif %#
+  - ./openebs/ks.yaml
+  #% if addon_volsync.enabled %#
+  - ./volsync/ks.yaml
+  #% endif %#

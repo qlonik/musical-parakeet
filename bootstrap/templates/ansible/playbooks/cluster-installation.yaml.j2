@@ -1,4 +1,4 @@
-#jinja2: trim_blocks: True, lstrip_blocks: True
+#% if bootstrap_distribution in ['k3s'] %#
 ---
 - name: Cluster Installation
   hosts: kubernetes
@@ -39,23 +39,14 @@
             or k3s_server_manifests_urls | length > 0)
       kubernetes.core.k8s_info:
         kubeconfig: /etc/rancher/k3s/k3s.yaml
-        kind: "{% raw %}{{ item.kind }}{% endraw %}"
-        name: "{% raw %}{{ item.name }}{% endraw %}"
-        namespace: "{% raw %}{{ item.namespace | default('') }}{% endraw %}"
+        kind: "{{ item.kind }}"
+        name: "{{ item.name }}"
+        namespace: "{{ item.namespace | default('') }}"
         wait: true
         wait_sleep: 10
         wait_timeout: 360
       loop:
         - { name: cilium, kind: HelmChart, namespace: kube-system }
-        - { name: coredns, kind: HelmChart, namespace: kube-system }
-        {% if not bootstrap_ipv6_enabled | default(false) %}
-        - { name: policy, kind: CiliumL2AnnouncementPolicy }
-        - { name: pool, kind: CiliumLoadBalancerIPPool }
-        {% endif %}
-
-    - name: Coredns
-      when: k3s_primary_control_node
-      ansible.builtin.include_tasks: tasks/coredns.yaml
 
     - name: Cilium
       when: k3s_primary_control_node
@@ -64,3 +55,4 @@
     - name: Cruft
       when: k3s_primary_control_node
       ansible.builtin.include_tasks: tasks/cruft.yaml
+#% endif %#

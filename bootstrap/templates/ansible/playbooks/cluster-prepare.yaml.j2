@@ -1,3 +1,4 @@
+#% if bootstrap_distribution in ['k3s'] %#
 ---
 - name: Prepare System
   hosts: kubernetes
@@ -15,7 +16,7 @@
       block:
         - name: Locale | Set timezone
           community.general.timezone:
-            name: "{% raw %}{{ timezone | default('Etc/UTC') }}{% endraw %}"
+            name: "#{ bootstrap_timezone }#"
 
     - name: Packages
       block:
@@ -31,14 +32,14 @@
       block:
         - name: User Configuration | SSH keys
           ansible.posix.authorized_key:
-            user: "{% raw %}{{ ansible_user }}{% endraw %}"
-            key: "https://github.com/{% raw %}{{ github_username }}{% endraw %}.keys"
+            user: "{{ ansible_user }}"
+            key: "https://github.com/#{ bootstrap_github_username }#.keys"
         - name: User Configuration | Silence login
           ansible.builtin.file:
-            dest: "{% raw %}{{ '/home/' + ansible_user if ansible_user != 'root' else '/root' }}{% endraw %}/.hushlogin"
+            dest: "{{ '/home/' + ansible_user if ansible_user != 'root' else '/root' }}/.hushlogin"
             state: touch
-            owner: "{% raw %}{{ ansible_user }}{% endraw %}"
-            group: "{% raw %}{{ ansible_user }}{% endraw %}"
+            owner: "{{ ansible_user }}"
+            group: "{{ ansible_user }}"
             mode: "0644"
             modification_time: preserve
             access_time: preserve
@@ -48,12 +49,12 @@
       block:
         - name: Network Configuration | Set hostname
           ansible.builtin.hostname:
-            name: "{% raw %}{{ inventory_hostname }}{% endraw %}"
+            name: "{{ inventory_hostname }}"
         - name: Network Configuration | Update hosts
           ansible.builtin.copy:
             content: |
               127.0.0.1 localhost
-              127.0.1.1 {% raw %}{{ inventory_hostname }}{% endraw %}
+              127.0.1.1 {{ inventory_hostname }}
 
               # The following lines are desirable for IPv6 capable hosts
               ::1     localhost ip6-localhost ip6-loopback
@@ -61,6 +62,7 @@
               ff02::2 ip6-allrouters
             dest: /etc/hosts
             mode: preserve
+        #% if bootstrap_advanced_flags.update_resolv_conf|default(true) %#
         # https://github.com/onedr0p/flux-cluster-template/discussions/635
         - name: Network Configuration | Remove immutable flag from /etc/resolv.conf
           ansible.builtin.file:
@@ -78,7 +80,8 @@
             dest: /etc/resolv.conf
             content: |
               search .
-              nameserver 1.1.1.1
+              nameserver #{ bootstrap_dns_server }#
+        #% endif %#
 
     - name: System Configuration
       notify: Reboot
@@ -96,15 +99,15 @@
             masked: true
         - name: System Configuration | Disable swap
           ansible.posix.mount:
-            name: "{% raw %}{{ item }}{% endraw %}"
+            name: "{{ item }}"
             fstype: swap
             state: absent
           loop: ["none", "swap"]
         - name: System Configuration | Create Kernel modules
           ansible.builtin.copy:
-            dest: "/etc/modules-load.d/{% raw %}{{ item }}{% endraw %}.conf"
+            dest: "/etc/modules-load.d/{{ item }}.conf"
             mode: "0644"
-            content: "{% raw %}{{ item }}{% endraw %}"
+            content: "{{ item }}"
           loop: ["br_netfilter", "ceph", "ip_vs", "ip_vs_rr", "nbd", "overlay", "rbd"]
           register: modules_status
         - name: System Configuration | Reload Kernel modules # noqa: no-changed-when no-handler
@@ -114,11 +117,11 @@
             state: restarted
         - name: System Configuration | Sysctl
           ansible.posix.sysctl:
-            name: "{% raw %}{{ item.key }}{% endraw %}"
-            value: "{% raw %}{{ item.value }}{% endraw %}"
+            name: "{{ item.key }}"
+            value: "{{ item.value }}"
             sysctl_file: /etc/sysctl.d/99-kubernetes.conf
             reload: true
-          with_dict: "{% raw %}{{ sysctl_config }}{% endraw %}"
+          with_dict: "{{ sysctl_config }}"
           vars:
             sysctl_config:
               fs.inotify.max_queued_events: 65536
@@ -130,3 +133,4 @@
       ansible.builtin.reboot:
         msg: Rebooting nodes
         reboot_timeout: 3600
+#% endif %#
