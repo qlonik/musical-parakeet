@@ -1,3 +1,7 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
 # Trash
 .DS_Store
 Thumbs.db
@@ -9,14 +13,19 @@ kubeconfig
 *.agekey
 *.pub
 *.key
+# Private
+.private
 # Ansible
 .venv*
 # Taskfile
 .task
-.tasks
+# Brew
+Brewfile.lock.json
+# intellij
+.idea
+# wiki
+wiki
 # Nix
 /.direnv/
 /result
 /result-*
-# Intellij
-/.idea
