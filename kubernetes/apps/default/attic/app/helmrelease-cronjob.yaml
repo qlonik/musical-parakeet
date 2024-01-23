@@ -29,7 +29,7 @@ spec:
     controller:
       type: cronjob
       cronjob:
-        schedule: "0 */24 * * *"
+        schedule: "@daily"
         concurrencyPolicy: Forbid
       annotations:
         reloader.stakater.com/auto: "true"
