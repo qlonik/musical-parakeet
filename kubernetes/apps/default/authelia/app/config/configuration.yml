@@ -45,6 +45,12 @@ access_control:
       policy: one_factor
       subject: ["group:admin"]
 
+    - domain: "bookmarks.${SECRET_DOMAIN}"
+      resources:
+        - "^/api"
+        - "^/feeds"
+      policy: bypass
+
 identity_providers:
   oidc:
     cors:
