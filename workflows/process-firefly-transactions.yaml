@@ -47,6 +47,8 @@
 # - Set `baseURL` in `on.script` to public firefly address.
 # - Set `nc_base_url` and `ff3_base_rul` in env of `Process a transaction` step
 #   to public nextcloud and firefly addresses.
+# - In the `./workflows/test-locally.sh` script, set `INCLUDE` variable to the
+#   name of this workflow file.
 # - Run the script `./workflows/test-locally.sh`.
 #
 # For reference:

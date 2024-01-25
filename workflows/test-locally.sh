@@ -5,6 +5,8 @@ set -euo pipefail
 git_dir=$(git rev-parse --show-toplevel)
 script_dir="$(realpath "$0" | xargs dirname)"
 
+INCLUDE=""
+
 __JSON_GITHUB='{
    "event_name": "schedule",
    "event": {
@@ -21,6 +23,7 @@ __JSON_SECRETS='{
 cd "$git_dir" \
 && pnpm dlx actionsflow \
    build \
+   $([[ -n "$INCLUDE" ]] && printf -- '-i %s' "$INCLUDE" || printf "") \
    --json-github "'" "$(echo "$__JSON_GITHUB" | jq -cM)" "'" \
    --json-secrets "'" "$(echo "$__JSON_SECRETS" | jq -cM)" "'" \
    --dest dist \
