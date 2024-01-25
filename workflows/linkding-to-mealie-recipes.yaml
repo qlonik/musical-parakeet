@@ -1,0 +1,78 @@
+### Linkding to mealie recipes
+#
+# This action finds all links in linkding with tag `#recipe` but without the
+# `#mealie` tag, imports all of those links into mealie, and adds `#mealie` tag
+# to imported links.
+#
+# This action expects the github secret `LINKDING_TO_MEALIE_RECIPES` in
+# the following format:
+# ```json
+# [
+#   {
+#     "linkding_api_token": "token",
+#     "mealie_bearer_token": "jwt-token"
+#   }
+# ]
+# ```
+# This format allows this script to pick up links from a user in linkding and
+# import it as a specified user in mealie. The current secret value is saved in
+# `workflows/linkding-to-mealie-recipes/secret.sops.yaml`.
+#
+# To test this workflow, perform the following steps:
+# - Set `baseURL` inside `on.script` object to public linkding address.
+# - Change `baseURL` for mealie and linkding to public addresses in both of the
+#   defined steps.
+# - In the `./workflows/test-locally.sh` script, set `INCLUDE` variable to the
+#   name of this workflow file.
+# - Run the script `./workflows/test-locally.sh`.
+#
+# For reference:
+# - The linkding API is documented here:
+#   `https://github.com/sissbruecker/linkding/blob/master/docs/API.md`.
+# - The mealie API is documented here:
+#   `https://nightly.mealie.io/documentation/getting-started/api-usage/`.
+
+on:
+  script:
+    path: ./workflows/linkding-to-mealie-recipes/load-entries.cjs
+    secrets: ${{ secrets.LINKDING_TO_MEALIE_RECIPES }}
+    deduplicationKey: link.id
+    config:
+      filter:
+        "link.tag_names":
+          $nin: ["mealie"]
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Import into mealie
+        env:
+          baseURL: http://mealie.default.svc.cluster.local:9000
+          mealie_bearer_token: ${{ on.script.outputs.info.mealie_bearer_token }}
+          link: ${{ on.script.outputs.link.url }}
+        run: |-
+          printf '{"url": "%s", "includeTags": true}' "$link" \
+          | curl \
+            --header "Authorization: Bearer $mealie_bearer_token" \
+            --header "Content-Type: application/json" \
+            --header "Accept: application/json" \
+            --data @- \
+            "$baseURL/api/recipes/create-url"
+
+      - name: Update link in linkding
+        env:
+          baseURL: http://linkding.default.svc.cluster.local:9090
+          linkding_api_token: ${{ on.script.outputs.info.linkding_api_token }}
+          id: ${{ on.script.outputs.link.id }}
+          tags: ${{ toJSON(on.script.outputs.link.tag_names) }}
+        run: |-
+          printf '%s' "$tags" \
+          | jq '{ "tag_names": (. + ["mealie"]) }' \
+          | curl \
+            -X PATCH \
+            --header "Authorization: Token $linkding_api_token" \
+            --header "Content-Type: application/json" \
+            --header "Accept: application/json" \
+            --data @- \
+            "$baseURL/api/bookmarks/$id/"
