@@ -15,7 +15,7 @@ __JSON_GITHUB='{
 }'
 
 __JSON_SECRETS='{
-   "PROCESS_FIREFLY_TRANSACTIONS": '$(sops -d "$script_dir/secret.sops.yaml" | yq -M '.data' | jq -cM | jq -cMR)'
+   "PROCESS_FIREFLY_TRANSACTIONS": '$(sops -d "$git_dir/workflows/process-firefly-transactions/secret.sops.yaml" | yq -M '.data' | jq -cM | jq -cMR)'
 }'
 
 cd "$git_dir" \

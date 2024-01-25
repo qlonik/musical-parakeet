@@ -47,8 +47,7 @@
 # - Set `baseURL` in `on.script` to public firefly address.
 # - Set `nc_base_url` and `ff3_base_rul` in env of `Process a transaction` step
 #   to public nextcloud and firefly addresses.
-# - Run the script `./workflows/process-firefly-transactions/test-locally.sh`
-#   from the root of the repository.
+# - Run the script `./workflows/test-locally.sh`.
 #
 # For reference:
 # - The Firefly III API is documented here:
