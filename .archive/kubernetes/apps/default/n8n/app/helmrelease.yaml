@@ -37,7 +37,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/n8n-io/n8n
-      tag: 1.26.0@sha256:6caf4a6cbcbc09736ccadc2c6081702c3650ab50692662a55662a8a86bdef651
+      tag: 1.11.1@sha256:16973032587e7fcbd0fc9a41fe9df3a391803681462b5d091afb5daf55ad955b
     command: ["n8n"]
     env:
       GENERIC_TIMEZONE: ${TIMEZONE}
