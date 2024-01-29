@@ -53,6 +53,19 @@
   "nix": {
     "enabled": true
   },
+  "ignorePaths": [
+    // default set
+    "**/node_modules/**",
+    "**/bower_components/**",
+    "**/vendor/**",
+    "**/examples/**",
+    "**/__tests__/**",
+    "**/test/**",
+    "**/tests/**",
+    "**/__fixtures__/**",
+    // custom extra
+    ".archive/**"
+  ],
   // commit message topics
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "to {{newVersion}}",
