@@ -38,12 +38,10 @@ export const GetCospendProjectDescriptionResolver = pipe(
         client.request({ method: "get", url: `/api-priv/projects/${project}` }),
       ),
       T.map((_) => _.data),
-      T.flatMap((_) =>
-        S.parse(CospendProjectDescriptionS)(_, { errors: "all" }),
-      ),
+      T.flatMap(S.decodeUnknown(CospendProjectDescriptionS, { errors: "all" })),
       T.mapError((error) => new GetCospendProjectDescriptionError({ error })),
     ),
-  RequestResolver.fromFunctionEffect,
+  RequestResolver.fromEffect,
   RequestResolver.contextFromServices(CospendApiService),
 );
 

@@ -46,14 +46,12 @@ export const ApplicationConfig = Config.all({
   input: Config.string("input").pipe(
     Config.mapOrFail((_) =>
       pipe(
-        S.parseEither(S.compose(S.ParseJson, fireflyTransactionInputS))(_, {
+        _,
+        S.decodeUnknownEither(S.parseJson(fireflyTransactionInputS), {
           errors: "all",
         }),
-        Either.mapLeft(({ errors }) =>
-          ConfigError.InvalidData(
-            ["input"],
-            TreeFormatter.formatErrors(errors),
-          ),
+        Either.mapLeft((error) =>
+          ConfigError.InvalidData(["input"], TreeFormatter.formatError(error)),
         ),
       ),
     ),
@@ -72,7 +70,7 @@ export const ApplicationConfigService = Context.Tag<ApplicationConfigService>(
 );
 
 export const ApplicationConfigFromEnvLive = pipe(
-  Effect.config(ApplicationConfig),
+  ApplicationConfig,
   Effect.map((config) => ApplicationConfigService.of(config)),
   Layer.effect(ApplicationConfigService),
 );

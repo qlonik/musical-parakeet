@@ -14,9 +14,9 @@ export type transactionConfigurationInputS = S.Schema.To<
 >;
 export const transactionConfigurationInputS = S.struct({
   project: ProjectId,
-  for: S.optional(S.union(S.literal("all"), MemberUserid)).withDefault(
-    () => "all",
-  ),
+  for: S.optional(S.union(S.literal("all"), MemberUserid), {
+    default: () => "all" as const,
+  }),
   category: S.optional(CategoryName),
   mode: S.optional(PaymentModeName),
 });

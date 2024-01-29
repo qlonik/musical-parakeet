@@ -14,7 +14,7 @@ import {
   getCospendProjectDescription,
   GetCospendProjectDescriptionError,
 } from "./queries/get-cospend-project-description.js";
-import { formatErrors } from "@effect/schema/TreeFormatter";
+import { TreeFormatter } from "@effect/schema";
 import { ReadonlyRecord } from "effect";
 import * as O from "effect/Option";
 import {
@@ -67,7 +67,7 @@ function getTransactionConfigurationInput(
             content.slice(i + field_separator.length, content.length),
           ] as const);
     }),
-    (data) => S.parse(transactionConfigurationInputS)(data, { errors: "all" }),
+    S.decodeUnknown(transactionConfigurationInputS, { errors: "all" }),
   );
 }
 
@@ -140,11 +140,11 @@ const processTransaction = (
       mode: transactionPaymentMode,
     } = yield* _(
       getTransactionConfigurationInput(tags, tag_prefix, field_separator).pipe(
-        T.catchTag("ParseError", ({ errors }) =>
+        T.catchTag("ParseError", (error) =>
           mkError(
             tid,
             "transaction configuration does not match schema:\n" +
-              formatErrors(errors),
+              TreeFormatter.formatError(error),
           ),
         ),
       ),
@@ -156,7 +156,7 @@ const processTransaction = (
 
     yield* _(T.logInfo("No matching bills found in cospend"));
 
-    const allUsersMap = ReadonlyRecord.fromIterable(members, (m) => [
+    const allUsersMap = ReadonlyRecord.fromIterableWith(members, (m) => [
       m.userid,
       m.id.toString(),
     ]);

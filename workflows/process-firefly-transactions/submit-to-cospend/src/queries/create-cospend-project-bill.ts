@@ -37,10 +37,10 @@ export const CreateCospendProjectBillResolver = pipe(
         }),
       ),
       T.map((_) => _.data),
-      T.flatMap((_) => S.parse(BillIdStr)(_, { errors: "all" })),
+      T.flatMap(S.decodeUnknown(BillIdStr, { errors: "all" })),
       T.mapError((error) => new CreateCospendProjectBillError({ error })),
     ),
-  RequestResolver.fromFunctionEffect,
+  RequestResolver.fromEffect,
   RequestResolver.contextFromServices(CospendApiService),
 );
 

@@ -29,11 +29,11 @@ export const convertErrorToMessage = (
     ),
     Match.tag(
       "ParseError",
-      ({ errors }) =>
+      (error) =>
         "invalid response from " +
         type +
         os.EOL +
-        TreeFormatter.formatErrors(errors),
+        TreeFormatter.formatError(error),
     ),
     Match.exhaustive,
   );

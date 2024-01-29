@@ -47,7 +47,7 @@ export const UpdateFireflyTransactionTagsResolver = pipe(
       T.asUnit,
       T.mapError((error) => new UpdateFireflyTransactionTagsError({ error })),
     ),
-  RequestResolver.fromFunctionEffect,
+  RequestResolver.fromEffect,
   RequestResolver.contextFromServices(FireflyApiService),
 );
 

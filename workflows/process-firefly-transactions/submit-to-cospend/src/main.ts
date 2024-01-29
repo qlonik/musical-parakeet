@@ -11,9 +11,8 @@ import { ApplicationConfigFromEnvLive } from "./config.js";
 import { ghaLogger } from "./github-actions-logger.js";
 
 const mainLayer = pipe(
-  ApplicationConfigFromEnvLive,
-  Layer.provideMerge(CospendApiServiceLive),
-  Layer.provideMerge(FireflyApiServiceLive),
+  Layer.mergeAll(CospendApiServiceLive, FireflyApiServiceLive),
+  Layer.provideMerge(ApplicationConfigFromEnvLive),
   Layer.orDie,
 );
 
