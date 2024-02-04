@@ -139,7 +139,7 @@ spec:
                     key: AWS_SECRET_ACCESS_KEY
 
         pod:
-          podSecurityContext:
+          securityContext:
             fsGroup: 568
             fsGroupChangePolicy: "OnRootMismatch"
             supplementalGroups: [10000]

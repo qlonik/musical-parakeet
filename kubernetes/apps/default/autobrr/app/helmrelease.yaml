@@ -103,7 +103,7 @@ spec:
                     name: autobrr-secret
                     key: AUTOBRR__POSTGRES_DATABASE
         pod:
-          podSecurityContext:
+          securityContext:
             runAsUser: 568
             runAsGroup: 568
             runAsNonRoot: true
