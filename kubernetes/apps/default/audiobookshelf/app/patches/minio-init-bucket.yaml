@@ -5,28 +5,32 @@ metadata:
   name: audiobookshelf
 spec:
   values:
-    initContainers:
-      minio-init-bucket:
-        image: ghcr.io/qlonik/minio-init-bucket:RELEASE.2024-01-31T08-59-40Z@sha256:2dff2934f73c5e4851bc9449e7a56b1370c9aea9c39871db49af9c650c5d6652
-        env:
-          MINIO_HOST: http://minio.default.svc.cluster.local:9000
-          MINIO_SUPER_ACCESS_KEY:
-            valueFrom:
-              secretKeyRef:
-                name: minio-secret
-                key: MINIO_ROOT_USER
-          MINIO_SUPER_SECRET_KEY:
-            valueFrom:
-              secretKeyRef:
-                name: minio-secret
-                key: MINIO_ROOT_PASSWORD
-          MINIO_BUCKET_NAME:
-            valueFrom:
-              secretKeyRef:
-                name: "{{ .Release.Name }}-restic-secret"
-                key: AWS_ACCESS_KEY_ID
-          MINIO_BUCKET_PASSWORD:
-            valueFrom:
-              secretKeyRef:
-                name: "{{ .Release.Name }}-restic-secret"
-                key: AWS_SECRET_ACCESS_KEY
+    controllers:
+      main:
+        initContainers:
+          minio-init-bucket:
+            image:
+              repository: ghcr.io/qlonik/minio-init-bucket
+              tag: RELEASE.2024-01-31T08-59-40Z@sha256:2dff2934f73c5e4851bc9449e7a56b1370c9aea9c39871db49af9c650c5d6652
+            env:
+              MINIO_HOST: http://minio.default.svc.cluster.local:9000
+              MINIO_SUPER_ACCESS_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: minio-secret
+                    key: MINIO_ROOT_USER
+              MINIO_SUPER_SECRET_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: minio-secret
+                    key: MINIO_ROOT_PASSWORD
+              MINIO_BUCKET_NAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: "{{ .Release.Name }}-restic-secret"
+                    key: AWS_ACCESS_KEY_ID
+              MINIO_BUCKET_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: "{{ .Release.Name }}-restic-secret"
+                    key: AWS_SECRET_ACCESS_KEY
