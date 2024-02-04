@@ -35,6 +35,7 @@ spec:
         type: cronjob
         cronjob:
           schedule: "@hourly"
+          timezone: "${TIMEZONE}"
         annotations:
           reloader.stakater.com/auto: "true"
 
@@ -135,6 +136,7 @@ spec:
         type: cronjob
         cronjob:
           schedule: "@daily"
+          timezone: "${TIMEZONE}"
         containers:
           main:
             image: *image
