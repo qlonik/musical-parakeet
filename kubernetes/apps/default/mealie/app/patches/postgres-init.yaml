@@ -11,7 +11,7 @@ spec:
           init-db:
             image:
               repository: ghcr.io/onedr0p/postgres-init
-              tag: 14.8
+              tag: 14.8@sha256:dfddde81c0d49da09da1e893c95c32934333baba60edde707be5010dc3baa4c2
             env:
               - name: INIT_POSTGRES_HOST
                 value: postgres-rw.default.svc.cluster.local
