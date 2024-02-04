@@ -2,13 +2,13 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: &app authelia
+  name: authelia
 spec:
   interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.5.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -28,30 +28,49 @@ spec:
     - name: redis
       namespace: default
   values:
-    controller:
-      replicas: 1
-      strategy: RollingUpdate
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: ghcr.io/authelia/authelia
-      tag: 4.37.5
-    envFrom:
-      - secretRef:
-          name: authelia-credentials
-    enableServiceLinks: false
+    controllers:
+      main:
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/authelia/authelia
+              tag: 4.37.5@sha256:25fc5423238b6f3a1fc967fda3f6a9212846aeb4a720327ef61c8ccff52dbbe2
+            envFrom:
+              - secretRef:
+                  name: authelia-credentials
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 5m
+                memory: 10Mi
+              limits:
+                memory: 100Mi
+    defaultPodOptions:
+      enableServiceLinks: false
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        runAsNonRoot: true
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
     service:
       main:
+        type: LoadBalancer
+        externalTrafficPolicy: Local
+        annotations:
+          io.cilium/lb-ipam-ips: "${LB_AUTHELIA_ADDR}"
         ports:
           http:
             port: 80
           metrics:
             enabled: true
             port: 8080
-        type: LoadBalancer
-        annotations:
-          io.cilium/lb-ipam-ips: "${LB_AUTHELIA_ADDR}"
-        externalTrafficPolicy: Local
     # serviceMonitor:
     #   main:
     #     enabled: true
@@ -64,8 +83,7 @@ spec:
     ingress:
       main:
         enabled: true
-        primary: true
-        ingressClassName: external
+        className: external
         annotations:
           cert-manager.io/cluster-issuer: "letsencrypt-production"
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
@@ -79,6 +97,9 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
@@ -86,8 +107,7 @@ spec:
       outdated:
         # Deprecated. Delete once other resources are migrated to main ingress
         enabled: true
-        primary: false
-        ingressClassName: internal
+        className: internal
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
           nginx.ingress.kubernetes.io/configuration-snippet: |
@@ -100,32 +120,18 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *old-host
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
     persistence:
       config:
         enabled: true
         type: configMap
         name: authelia-config
-        subPath: configuration.yml
-        mountPath: /config/configuration.yml
-        readOnly: false
-    topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: DoNotSchedule
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/name: *app
-    resources:
-      requests:
-        cpu: 5m
-        memory: 10Mi
-      limits:
-        memory: 100Mi
+        globalMounts:
+          - path: /config/configuration.yml
+            subPath: configuration.yml
+            readOnly: false
