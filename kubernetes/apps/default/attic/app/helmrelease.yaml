@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta2.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -8,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.5.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -26,21 +27,71 @@ spec:
     - name: minio
       namespace: default
   values:
-    controller:
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: ghcr.io/zhaofengli/attic
-      tag: latest@sha256:f2703867134f81f8b0d2b7ddcde14009a37aa7786c3c88056467f19c77f3a6fe
-    envFrom:
-      - secretRef:
-          name: attic-credentials
-    args:
-      - --config
-      - /config/server.toml
-      - --mode
-      - api-server
-    enableServiceLinks: false
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/zhaofengli/attic
+              tag: latest@sha256:f2703867134f81f8b0d2b7ddcde14009a37aa7786c3c88056467f19c77f3a6fe
+            args:
+              - --config
+              - /config/server.toml
+              - --mode
+              - api-server
+            envFrom:
+              - secretRef:
+                  name: attic-credentials
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 5m
+                memory: 10Mi
+              limits:
+                memory: 100Mi
+      gc-cronjob:
+        type: cronjob
+        cronjob:
+          schedule: "@daily"
+          timezone: "${TIMEZONE}"
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/zhaofengli/attic
+              tag: latest@sha256:f2703867134f81f8b0d2b7ddcde14009a37aa7786c3c88056467f19c77f3a6fe
+            args:
+              - --config
+              - /config/server.toml
+              - --mode
+              - garbage-collector-once
+            envFrom:
+              - secretRef:
+                  name: attic-credentials
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+                memory: 10Mi
+              limits:
+                memory: 50Mi
+    defaultPodOptions:
+      enableServiceLinks: false
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        runAsNonRoot: true
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
     service:
       main:
         ports:
@@ -49,31 +100,24 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: internal
+        className: internal
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
     persistence:
       config:
         enabled: true
         type: configMap
         name: attic-config
-        subPath: server.toml
-        mountPath: /config/server.toml
-        readOnly: true
-    resources:
-      requests:
-        cpu: 5m
-        memory: 10Mi
-      limits:
-        memory: 100Mi
+        globalMounts:
+          - path: /config/server.toml
+            subPath: server.toml
+            readOnly: true

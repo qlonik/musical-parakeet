@@ -5,19 +5,20 @@ metadata:
   name: attic
 spec:
   values:
-    initContainers:
-      03-db-migrations:
-        image: ghcr.io/zhaofengli/attic:latest@sha256:f2703867134f81f8b0d2b7ddcde14009a37aa7786c3c88056467f19c77f3a6fe
-        envFrom:
-          - secretRef:
-              name: attic-credentials
-        args:
-          - --config
-          - /config/server.toml
-          - --mode
-          - db-migrations
-        volumeMounts:
-          - name: config
-            subPath: server.toml
-            mountPath: /config/server.toml
-            readOnly: true
+    controllers:
+      main:
+        initContainers:
+          db-migrations:
+            dependsOn:
+              - init-db
+            image:
+              repository: ghcr.io/zhaofengli/attic
+              tag: latest@sha256:f2703867134f81f8b0d2b7ddcde14009a37aa7786c3c88056467f19c77f3a6fe
+            args:
+              - --config
+              - /config/server.toml
+              - --mode
+              - db-migrations
+            envFrom:
+              - secretRef:
+                  name: attic-credentials
