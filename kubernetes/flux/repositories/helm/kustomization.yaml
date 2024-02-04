@@ -10,6 +10,7 @@ resources:
   - ./cilium.yaml
   - ./cloudnative-pg.yaml
   - ./coredns.yaml
+  - ./crossplane.yaml
   - ./csi-driver-nfs.yaml
   - ./csi-driver-smb.yaml
   - ./democratic-csi.yaml
