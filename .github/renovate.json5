@@ -81,6 +81,19 @@
       "ignoreTests": true,
       "matchUpdateTypes": ["minor", "patch"]
     },
+    {
+      "description": "Auto-merge container digests updates for trusted containers",
+      "matchDatasources": ["docker"],
+      "automerge": true,
+      "automergeType": "branch",
+      "ignoreTests": true,
+      "matchUpdateTypes": ["digest"],
+      "matchPackagePatterns": [
+        "ghcr.io/nginxinc",
+        "ghcr.io/onedr0p",
+        "public.ecr.aws/docker/library"
+      ]
+    },
     // groups
     {
       "description": "Flux Group",
