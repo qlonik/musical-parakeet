@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.4.0
+      version: 2.5.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -202,7 +202,6 @@ spec:
             main:
               - path: /usr/src/app/.reverse-geocoding-dump
       machine-learning-cache:
-        enabled: true
         type: persistentVolumeClaim
         storageClass: nfs-fast
         size: 10Gi
