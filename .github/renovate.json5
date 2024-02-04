@@ -138,6 +138,16 @@
       "separateMinorPatch": true
     },
     {
+      "description": "Vikunja Group",
+      "groupName": "Vikunja",
+      "matchPackagePatterns": ["vikunja"],
+      "matchDatasources": ["docker"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "separateMinorPatch": true
+    },
+    {
       "description": "effect-ts Group",
       "groupName": "effect-ts",
       "matchPackageNames": ["effect"],
