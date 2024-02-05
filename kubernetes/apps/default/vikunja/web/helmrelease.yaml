@@ -33,7 +33,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: docker.io/vikunja/frontend
-      tag: 0.22.0
+      tag: 0.22.1
     env:
       VIKUNJA_API_URL: https://vikunja.${SECRET_DOMAIN}/api/v1
     service:
