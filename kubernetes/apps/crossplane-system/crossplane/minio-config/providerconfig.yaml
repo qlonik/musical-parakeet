@@ -1,0 +1,12 @@
+---
+apiVersion: minio.crossplane.io/v1
+kind: ProviderConfig
+metadata:
+  name: minio-config
+spec:
+  credentials:
+    apiSecretRef:
+      name: minio-credentials
+      namespace: crossplane-system
+    source: InjectedIdentity
+  minioURL: http://minio.default.svc.cluster.local:9000
