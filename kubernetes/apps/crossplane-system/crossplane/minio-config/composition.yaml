@@ -1,0 +1,91 @@
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: init-minio-bucket-policy-user
+spec:
+  compositeTypeRef:
+    apiVersion: minio.home.arpa/v1alpha1
+    kind: Bucket
+  writeConnectionSecretsToNamespace: crossplane-system
+  resources:
+    - name: bucket
+      base:
+        apiVersion: minio.crossplane.io/v1
+        kind: Bucket
+        spec:
+          forProvider:
+            bucketDeletionPolicy: DeleteIfEmpty
+          providerConfigRef:
+            name: minio-config
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: metadata.name
+          toFieldPath: spec.forProvider.bucketName
+        - type: ToCompositeFieldPath
+          fromFieldPath: status.atProvider.bucketName
+          toFieldPath: status.atProvider.bucketName
+    - name: bucket-private-policy
+      base:
+        apiVersion: minio.crossplane.io/v1
+        kind: Policy
+        spec:
+          forProvider:
+            allowBucket: ""
+          providerConfigRef:
+            name: minio-config
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: metadata.name
+          toFieldPath: metadata.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-private"
+        - type: FromCompositeFieldPath
+          fromFieldPath: metadata.name
+          toFieldPath: spec.forProvider.allowBucket
+        - type: ToCompositeFieldPath
+          fromFieldPath: metadata.name
+          toFieldPath: status.atProvider.policyName
+    - name: bucket-user
+      base:
+        apiVersion: minio.crossplane.io/v1
+        kind: User
+        spec:
+          forProvider:
+            policies:
+              - ""
+          providerConfigRef:
+            name: minio-config
+          writeConnectionSecretToRef:
+            namespace: crossplane-system
+            name: ""
+      connectionDetails:
+        - name: AWS_ACCESS_KEY_ID
+          fromConnectionSecretKey: AWS_ACCESS_KEY_ID
+        - name: AWS_SECRET_ACCESS_KEY
+          fromConnectionSecretKey: AWS_SECRET_ACCESS_KEY
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: metadata.name
+          toFieldPath: spec.forProvider.userName
+        - type: FromCompositeFieldPath
+          fromFieldPath: metadata.name
+          toFieldPath: spec.forProvider.policies[0]
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-private"
+        - type: CombineFromComposite
+          toFieldPath: spec.writeConnectionSecretToRef.name
+          combine:
+            variables:
+              - fromFieldPath: metadata.name
+              - fromFieldPath: metadata.uid
+            strategy: string
+            string:
+              fmt: "%s-%s-secret"
+        - type: ToCompositeFieldPath
+          fromFieldPath: status.atProvider.userName
+          toFieldPath: status.atProvider.userName
