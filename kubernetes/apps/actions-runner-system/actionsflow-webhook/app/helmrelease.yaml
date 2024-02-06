@@ -67,3 +67,7 @@ spec:
           - path: /app/.dev.vars
             subPath: github-vars
             readOnly: true
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
