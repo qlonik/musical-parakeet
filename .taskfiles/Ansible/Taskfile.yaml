@@ -40,14 +40,21 @@ tasks:
     desc: Run an Ansible playbook for configuring a cluster
     summary: |
       Args:
+        cluster: Cluster to run command against (required)
         playbook: Playbook to run (required)
-    prompt: Run Ansible playbook '{{.playbook}}'... continue?
+    prompt: Run Ansible playbook '{{.playbook}}' against the '{{.cluster}}' cluster... continue?
     deps: ["deps"]
-    cmd: .venv/bin/ansible-playbook --inventory {{.ANSIBLE_INVENTORY_FILE}} {{.ANSIBLE_DIR}}/playbooks/{{.playbook}}.yaml {{.CLI_ARGS}}
+    cmd: |
+      .venv/bin/ansible-playbook \
+        --inventory {{.ANSIBLE_DIR}}/{{.cluster}}/inventory/hosts.yaml \
+        {{.ANSIBLE_DIR}}/{{.cluster}}/playbooks/{{.playbook}}.yaml \
+        {{.CLI_ARGS}}
     requires:
-      vars: ["playbook"]
+      vars: ["cluster", "playbook"]
     preconditions:
-      - { msg: "Missing Ansible inventory file", sh: "test -f {{.ANSIBLE_INVENTORY_FILE}}" }
+      - { msg: "Venv not found", sh: "test -d {{.ROOT_DIR}}/.venv" }
+      - { msg: "Inventory not found", sh: "test -f {{.ANSIBLE_DIR}}/{{.cluster}}/inventory/hosts.yaml" }
+      - { msg: "Playbook not found", sh: "test -f {{.ANSIBLE_DIR}}/{{.cluster}}/playbooks/{{.playbook}}.yaml" }
 
   poweroff:
     desc: Shutdown all the k8s nodes

@@ -1,0 +1,22 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app device-plugin-amd-gpu
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: node-feature-discovery
+  path: ./kubernetes/main/apps/tools/device-plugin-amd-gpu/app
+  targetNamespace: tools
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: true
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
