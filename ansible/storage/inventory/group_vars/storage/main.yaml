@@ -1,0 +1,38 @@
+# combination of general kubernetes settings and controller settings
+---
+# general kubernetes cluster settings
+k3s_become: true
+k3s_etcd_datastore: true
+k3s_install_hard_links: true
+k3s_registration_address: "{{ ansible_host }}"
+# renovate: datasource=github-releases depName=k3s-io/k3s
+k3s_release_version: "v1.29.1+k3s2"
+# /var/lib/rancher/k3s/server/manifests
+k3s_server_manifests_templates:
+  - custom-cilium-helmchart.yaml.j2
+k3s_use_unsupported_config: true
+
+# settings specific for kubernetes controllers
+k3s_control_node: true
+k3s_server:
+  cluster-cidr: 10.132.0.0/16
+  disable: ["flannel", "local-storage", "metrics-server", "servicelb", "traefik"]
+  disable-cloud-controller: true
+  disable-helm-controller: false
+  disable-kube-proxy: true
+  disable-network-policy: true
+  docker: false
+  embedded-registry: false
+  etcd-disable-snapshots: true
+  etcd-expose-metrics: true
+  flannel-backend: "none" # quote
+  kube-apiserver-arg: ["anonymous-auth=true"]
+  kube-controller-manager-arg: ["bind-address=0.0.0.0"]
+  kube-scheduler-arg: ["bind-address=0.0.0.0"]
+  kubelet-arg: ["image-gc-low-threshold=50", "image-gc-high-threshold=55"]
+  node-ip: "{{ ansible_host }}"
+  pause-image: registry.k8s.io/pause:3.9
+  secrets-encryption: true
+  service-cidr: 10.133.0.0/16
+  tls-san: ["{{ k3s_registration_address }}", "nova.home.arpa", "nova"]
+  write-kubeconfig-mode: "0644" # quote
