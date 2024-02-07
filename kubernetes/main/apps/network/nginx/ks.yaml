@@ -7,7 +7,7 @@ metadata:
 spec:
   dependsOn:
     - name: cert-manager-issuers
-  path: ./kubernetes/apps/network/nginx/certificates
+  path: ./kubernetes/main/apps/network/nginx/certificates
   targetNamespace: network
   commonMetadata:
     labels:
@@ -29,7 +29,7 @@ metadata:
 spec:
   dependsOn:
     - name: nginx-certificates
-  path: ./kubernetes/apps/network/nginx/external
+  path: ./kubernetes/main/apps/network/nginx/external
   targetNamespace: network
   commonMetadata:
     labels:
@@ -51,7 +51,7 @@ metadata:
 spec:
   dependsOn:
     - name: nginx-certificates
-  path: ./kubernetes/apps/network/nginx/internal
+  path: ./kubernetes/main/apps/network/nginx/internal
   targetNamespace: network
   commonMetadata:
     labels:

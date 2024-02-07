@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: cluster-apps-cloudnative-pg-cluster
     - name: cluster-apps-minio
-  path: ./kubernetes/apps/default/attic/app
+  path: ./kubernetes/main/apps/default/attic/app
   targetNamespace: default
   commonMetadata:
     labels:

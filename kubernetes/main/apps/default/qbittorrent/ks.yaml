@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: cluster-apps-minio
     - name: volsync
-  path: ./kubernetes/apps/default/qbittorrent/app
+  path: ./kubernetes/main/apps/default/qbittorrent/app
   targetNamespace: default
   commonMetadata:
     labels:
@@ -30,7 +30,7 @@ metadata:
 spec:
   dependsOn:
     - name: cluster-apps-qbittorrent
-  path: ./kubernetes/apps/default/qbittorrent/tools
+  path: ./kubernetes/main/apps/default/qbittorrent/tools
   targetNamespace: default
   commonMetadata:
     labels:

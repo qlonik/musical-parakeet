@@ -5,7 +5,7 @@ metadata:
   name: &app cilium
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps/kube-system/cilium/app
+  path: ./kubernetes/main/apps/kube-system/cilium/app
   targetNamespace: kube-system
   commonMetadata:
     labels:

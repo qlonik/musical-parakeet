@@ -5,7 +5,7 @@ metadata:
   name: &app system-upgrade-controller
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps/tools/system-upgrade-controller/app
+  path: ./kubernetes/main/apps/tools/system-upgrade-controller/app
   targetNamespace: tools
   commonMetadata:
     labels:
@@ -27,7 +27,7 @@ metadata:
 spec:
   dependsOn:
     - name: system-upgrade-controller
-  path: ./kubernetes/apps/tools/system-upgrade-controller/plans
+  path: ./kubernetes/main/apps/tools/system-upgrade-controller/plans
   targetNamespace: tools
   commonMetadata:
     labels:

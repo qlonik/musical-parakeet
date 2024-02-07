@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: cluster-apps-minio
     - name: volsync
-  path: ./kubernetes/apps/default/sabnzbd/app
+  path: ./kubernetes/main/apps/default/sabnzbd/app
   targetNamespace: default
   commonMetadata:
     labels:

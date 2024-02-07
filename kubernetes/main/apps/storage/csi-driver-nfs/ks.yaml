@@ -5,7 +5,7 @@ metadata:
   name: &app csi-driver-nfs
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps/storage/csi-driver-nfs/app
+  path: ./kubernetes/main/apps/storage/csi-driver-nfs/app
   targetNamespace: storage
   commonMetadata:
     labels:

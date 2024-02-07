@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: cluster-apps-minio
     - name: volsync
-  path: ./kubernetes/apps/default/transmission/app
+  path: ./kubernetes/main/apps/default/transmission/app
   targetNamespace: default
   commonMetadata:
     labels:

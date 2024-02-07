@@ -9,7 +9,7 @@ spec:
     - name: cluster-apps-cloudnative-pg-cluster
     - name: cluster-apps-minio
     - name: volsync
-  path: ./kubernetes/apps/default/readarr/ebook
+  path: ./kubernetes/main/apps/default/readarr/ebook
   targetNamespace: default
   commonMetadata:
     labels:
@@ -32,7 +32,7 @@ spec:
   dependsOn:
     - name: cluster-apps-minio
     - name: volsync
-  path: ./kubernetes/apps/default/readarr/audio
+  path: ./kubernetes/main/apps/default/readarr/audio
   targetNamespace: default
   commonMetadata:
     labels:

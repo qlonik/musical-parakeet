@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: cluster-apps-authelia
     - name: cluster-apps-cloudnative-pg-cluster
-  path: ./kubernetes/apps/default/firefly-iii/app
+  path: ./kubernetes/main/apps/default/firefly-iii/app
   targetNamespace: default
   commonMetadata:
     labels:
@@ -34,7 +34,7 @@ spec:
   postBuild:
     substitute:
       user_id: user-01
-  path: ./kubernetes/apps/default/firefly-iii/data-importer-template
+  path: ./kubernetes/main/apps/default/firefly-iii/data-importer-template
   targetNamespace: default
   commonMetadata:
     labels:
@@ -60,7 +60,7 @@ spec:
   postBuild:
     substitute:
       user_id: user-02
-  path: ./kubernetes/apps/default/firefly-iii/data-importer-template
+  path: ./kubernetes/main/apps/default/firefly-iii/data-importer-template
   targetNamespace: default
   commonMetadata:
     labels:
@@ -80,7 +80,7 @@ metadata:
   name: &app cluster-apps-firefly-iii-data-importer-substitutions
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps/default/firefly-iii/data-importer-substitutions
+  path: ./kubernetes/main/apps/default/firefly-iii/data-importer-substitutions
   targetNamespace: flux-system
   commonMetadata:
     labels:
@@ -119,7 +119,7 @@ spec:
         name: cluster-secrets-user
       - kind: Secret
         name: firefly-iii-data-importer-substitutions
-  path: ./kubernetes/apps/default/firefly-iii/data-importer-ingress
+  path: ./kubernetes/main/apps/default/firefly-iii/data-importer-ingress
   targetNamespace: default
   commonMetadata:
     labels:

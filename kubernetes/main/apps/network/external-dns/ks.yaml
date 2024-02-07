@@ -5,7 +5,7 @@ metadata:
   name: &app external-dns
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps/network/external-dns/app
+  path: ./kubernetes/main/apps/network/external-dns/app
   targetNamespace: network
   commonMetadata:
     labels:

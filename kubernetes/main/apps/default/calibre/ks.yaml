@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: cluster-apps-minio
     - name: volsync
-  path: ./kubernetes/apps/default/calibre/app
+  path: ./kubernetes/main/apps/default/calibre/app
   targetNamespace: default
   commonMetadata:
     labels:

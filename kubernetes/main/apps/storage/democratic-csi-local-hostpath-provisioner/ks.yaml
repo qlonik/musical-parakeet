@@ -6,7 +6,7 @@ metadata:
   name: &app democratic-csi-local-hostpath-provisioner
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps/storage/democratic-csi-local-hostpath-provisioner/app
+  path: ./kubernetes/main/apps/storage/democratic-csi-local-hostpath-provisioner/app
   targetNamespace: storage
   commonMetadata:
     labels:

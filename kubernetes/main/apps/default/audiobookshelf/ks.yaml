@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: cluster-apps-minio
     - name: volsync
-  path: ./kubernetes/apps/default/audiobookshelf/app
+  path: ./kubernetes/main/apps/default/audiobookshelf/app
   targetNamespace: default
   commonMetadata:
     labels:

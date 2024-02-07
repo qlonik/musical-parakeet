@@ -7,7 +7,7 @@ metadata:
 spec:
   dependsOn:
     - name: cluster-apps-cloudnative-pg-cluster
-  path: ./kubernetes/apps/default/autobrr/app
+  path: ./kubernetes/main/apps/default/autobrr/app
   targetNamespace: default
   commonMetadata:
     labels:

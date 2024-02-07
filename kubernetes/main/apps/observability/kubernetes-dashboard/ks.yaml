@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: cert-manager
     - name: metrics-server
-  path: ./kubernetes/apps/observability/kubernetes-dashboard/app
+  path: ./kubernetes/main/apps/observability/kubernetes-dashboard/app
   targetNamespace: observability
   commonMetadata:
     labels:

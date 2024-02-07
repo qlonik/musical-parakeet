@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: cluster-apps-authelia
     - name: cluster-apps-cloudnative-pg-cluster
-  path: ./kubernetes/apps/default/linkding/app
+  path: ./kubernetes/main/apps/default/linkding/app
   targetNamespace: default
   commonMetadata:
     labels:

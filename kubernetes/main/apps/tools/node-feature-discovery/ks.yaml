@@ -5,7 +5,7 @@ metadata:
   name: &app node-feature-discovery
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps/tools/node-feature-discovery/app
+  path: ./kubernetes/main/apps/tools/node-feature-discovery/app
   targetNamespace: tools
   commonMetadata:
     labels:

@@ -5,7 +5,7 @@ metadata:
   name: &app actionsflow-webhook
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps/actions-runner-system/actionsflow-webhook/app
+  path: ./kubernetes/main/apps/actions-runner-system/actionsflow-webhook/app
   targetNamespace: actions-runner-system
   commonMetadata:
     labels:

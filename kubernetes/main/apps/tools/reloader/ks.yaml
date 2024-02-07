@@ -5,7 +5,7 @@ metadata:
   name: &app reloader
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps/tools/reloader/app
+  path: ./kubernetes/main/apps/tools/reloader/app
   targetNamespace: tools
   commonMetadata:
     labels:

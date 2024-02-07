@@ -5,7 +5,7 @@ metadata:
   name: &app scrutiny
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps/monitoring/scrutiny/app
+  path: ./kubernetes/main/apps/monitoring/scrutiny/app
   targetNamespace: monitoring
   commonMetadata:
     labels:

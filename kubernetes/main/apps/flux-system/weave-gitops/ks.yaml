@@ -5,7 +5,7 @@ metadata:
   name: &app weave-gitops
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps/flux-system/weave-gitops/app
+  path: ./kubernetes/main/apps/flux-system/weave-gitops/app
   targetNamespace: flux-system
   commonMetadata:
     labels:

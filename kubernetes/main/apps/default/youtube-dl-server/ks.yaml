@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: cluster-apps-minio
     - name: volsync
-  path: ./kubernetes/apps/default/youtube-dl-server/app
+  path: ./kubernetes/main/apps/default/youtube-dl-server/app
   targetNamespace: default
   commonMetadata:
     labels:

@@ -5,7 +5,7 @@ metadata:
   name: &app echo-server
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps/network/echo-server/app
+  path: ./kubernetes/main/apps/network/echo-server/app
   targetNamespace: network
   commonMetadata:
     labels:

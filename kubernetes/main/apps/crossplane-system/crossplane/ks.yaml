@@ -5,7 +5,7 @@ metadata:
   name: &app crossplane
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps/crossplane-system/crossplane/app
+  path: ./kubernetes/main/apps/crossplane-system/crossplane/app
   targetNamespace: crossplane-system
   commonMetadata:
     labels:
@@ -27,7 +27,7 @@ metadata:
 spec:
   dependsOn:
     - name: crossplane
-  path: ./kubernetes/apps/crossplane-system/crossplane/minio-config
+  path: ./kubernetes/main/apps/crossplane-system/crossplane/minio-config
   targetNamespace: crossplane-system
   commonMetadata:
     labels:

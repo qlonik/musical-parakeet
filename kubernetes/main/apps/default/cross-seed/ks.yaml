@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: cluster-apps-prowlarr
     - name: cluster-apps-qbittorrent
-  path: ./kubernetes/apps/default/cross-seed/app
+  path: ./kubernetes/main/apps/default/cross-seed/app
   targetNamespace: default
   commonMetadata:
     labels:

@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: cluster-apps-minio
     - name: volsync
-  path: ./kubernetes/apps/default/romm/app
+  path: ./kubernetes/main/apps/default/romm/app
   targetNamespace: default
   commonMetadata:
     labels:

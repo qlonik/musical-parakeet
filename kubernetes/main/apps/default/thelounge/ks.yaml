@@ -6,7 +6,7 @@ metadata:
   name: &app cluster-apps-thelounge
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps/default/thelounge/app
+  path: ./kubernetes/main/apps/default/thelounge/app
   targetNamespace: default
   commonMetadata:
     labels:
