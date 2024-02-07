@@ -1,0 +1,33 @@
+#ENC[AES256_GCM,data:wfR0E6GiifivatFUetMc6xFSAzvQG7sFa6gIhts/sLMksclg+cQ+EIZnSLL8UYa1Rt6ccEKc,iv:sCsHciyj72TqKjMBWfvK0j6t6ojpQllD3RdULo+JY04=,tag:ZqSDxCy/ogJSAMN7coYrlQ==,type:comment]
+ansible_become_pass: ENC[AES256_GCM,data:apr/Y34=,iv:PQrGbSteLro6UZQ9nHIi28vzT+32ZyVy9YLBjs657mg=,tag:VgHNGmUwBLmjMGsX0FwsXQ==,type:str]
+create_users:
+    - name: ENC[AES256_GCM,data:uNkgyxDX,iv:NDUxSI21ork7a/z9m8v06zEpw7zfDtHHVFqdfSlTmBY=,tag:avMwI3mdFASMQ3y7tuiV3g==,type:str]
+      password: ENC[AES256_GCM,data:rcgbigsx+30=,iv:2vLY45TlHNP7NO/Pz0peU2NlB5rAIP06faSbMrEgPqc=,tag:RI+N56aZJeeUlm3Q6kB4vg==,type:str]
+      ssh_authorized_keys:
+        - ENC[AES256_GCM,data:A5E0PMYvDU+GfMCv72EWcN5WKItfBHzOaIly2RkodV5upwfQHx4mJE83gS91uWnMo1uafP0qrtY1izLkLno3KyS/6vazCsrytkYz5VmFXymZcnrvbrvsDlnNmyFsbxWQU/AS/ITwoS8gx1QIVlJ4Xb56lEFlKI7XQxy5bRM2EPcBnqJ7v2BR3vvcsT0KsQSfj4KDimfjc8ZGXxeR4VC2yKXnPSH8QGt1gvnFlz/FYKgfrCFn7l0qobbudHbQOEzpSbiYnmjso1oZl5/lKhODUFq8X09Sf4UE7R6c/xiOVZAO5f/CmUcRjpMxZMOzGYc9QCWq/rcV6+rKcViUESNmWwSAsLeMDGlvakgtr0+rGNje31djf71jLh1DbxsbVuJ7r3+hLM0ArDyCmzLFOEpP14IDRh/25MZcEJe3XPGkreOgFmYzJih2+3fTFsy8VY9Nzdk89GP/fANuZqxf00wctplb7CoP1iz0AI2YxHKiqzBmyvqz2XbadC5L/VTHdMRCsJYRPo9SryGNXjnoha6SKxovbAhJ5yb25j2ZpmncUuGJJHzXpIDCWcU0VgwgwqV4O+aEW3qbLf3owEjR5wrYFCVY0qC3/2mEm+iyTmiDo0t93yval9ZLXVxhKfhIwb78KCxkKEAmvpijGHaZp7Ca44HeCvnTGtyP8BNR1XZF2uB+Z4KCdJ3rbV0dqI4ul20JgnYbfl2FvCdoqAlcSoPNxFi5vYJ4zzRl6OfNWqttrXN/0tdf7pABPUGEeWi9NI8O6pQE97WMreSXQ5EUW/70oQ1slpAjyGwZ5dgElx4XlT+teaLeDUPJf1pusJHZL9zJ6sxY4eZ5e+wWHeIygYKqzaZVvt3bUxTOy9jiL0KiRgg13EaPASrGCSGMYvN62wSwNIrGri6DQQFYKBSOBcfJtUpY6W+k77eDks9Q2xmxarToIWE0A4xbMan+s/UXOeWzzWEKsU/k6qAcVBaOMDPqi4xxVvJCXWrD8Xo=,iv:yt8HjK5pYeDR+YjkYSeWAVY8xmCnvQ+WfIlFVkxy9bw=,tag:uAsDJ9eWot0JH3g03REc3w==,type:str]
+      sudo_commands:
+        - ENC[AES256_GCM,data:PX0K,iv:BUomqhWxp6JFYM69i45e7iqxaCSiNqwFzhXImLATf2Y=,tag:zU6HPI15ovJoFrKujZfHnA==,type:str]
+    - name: ENC[AES256_GCM,data:Q/heaDN93hE=,iv:MMH7RfxfwMO8QLkTo4BCd83MPVw5u1NtezZJYcSa5gk=,tag:PklT3A1wHr/5tVwCjr9fmQ==,type:str]
+      password: ENC[AES256_GCM,data:rcgbigsx+30=,iv:2vLY45TlHNP7NO/Pz0peU2NlB5rAIP06faSbMrEgPqc=,tag:RI+N56aZJeeUlm3Q6kB4vg==,type:str]
+      sudo_commands:
+        - ENC[AES256_GCM,data:PX0K,iv:BUomqhWxp6JFYM69i45e7iqxaCSiNqwFzhXImLATf2Y=,tag:zU6HPI15ovJoFrKujZfHnA==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1w68rvrv30t2xfm42ctr02vurav5222065pl03ys6ps5aklraq42s4jeyjl
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA4YUxBSXByQm9HUG1BcUdG
+            LzRjdVVnK3pvWWErTXNyNHpNeGIvbVNuYkJ3Cm5BRUZTaUlsZEt1QndtYWpCdW9G
+            MVNibFB0VWlJRnM2NHlHSm1MNndxWDQKLS0tIHBrVnZiUTNpdVBPVUxST1A3ZUdQ
+            K1k0c0NjYitBWDZLWktSbWVIeHZBNmMKYsUc85w8nFGeU0DL1Ttu79WUuF/D98mh
+            0EFrJnMzElRr8UdzzVbMYEoovREGWM4TqqLmZ2K9Rhep6a5aIHiu+Q==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-02-07T04:36:24Z"
+    mac: ENC[AES256_GCM,data:xMWlAd7fy45UsLofMLsJu7DpSIaHwKlQgK9iGb+qbGnQdQ/FoLr8u0sCD8Jc1BXjgjIl+uRH7D1/d7msuRHaif/QfYXDrtq2/F31uM1slYl4uLSY50VIyxzeJFOdYcYauySEodiUo596XOY5t6oDBim9Jc8wE9BeVjvztOkAc54=,iv:2xDYJtYtp+1BgSFJludw2c3zE/8mZvI5s/Q8Uu2cmOk=,tag:T6gcQSVT3TtYm7d/NZ2VIg==,type:str]
+    pgp: []
+    unencrypted_regex: ^(kind)$
+    version: 3.8.1

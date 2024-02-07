@@ -1,0 +1,218 @@
+---
+- name: Storage server configuration
+  hosts: storage
+  environment:
+    middleware_method: client
+  become: true
+  gather_facts: true
+  any_errors_fatal: true
+  pre_tasks:
+    - name: Pausing for 5 seconds...
+      ansible.builtin.pause:
+        seconds: 5
+    - name: Gather TrueNAS-specific facts
+      arensb.truenas.truenas_facts:
+  tasks:
+    - name: Ensure main pool name is set
+      ansible.builtin.fail:
+        msg: Aborted setting up storage server
+      when: tn_main_pool is not defined
+
+    - name: Network Configuration
+      notify: Reboot
+      block:
+        - name: Network Configuration | Set hostname
+          ansible.builtin.command:
+            cmd: >-
+              cli --mode csv --command '
+                network configuration update
+                hostname="{{ inventory_hostname }}"
+                domain="home.arpa"
+              '
+
+    - name: Locale
+      block:
+        - name: Locale | Set timezone
+          ansible.builtin.command:
+            cmd: >-
+              cli --mode csv --command '
+                system general update
+                timezone="America/Toronto"
+              '
+
+    - name: Load details of the main pool
+      check_mode: true
+      arensb.truenas.filesystem:
+        name: "{{ tn_main_pool }}"
+      register: main_pool
+
+    - name: Create extra filesystems
+      arensb.truenas.filesystem:
+        name: "{{ tn_main_pool }}/{{ item }}"
+      loop: ["appdata", "appdata/minio"]
+
+    - name: Setup users
+      vars:
+        homes_name: "{{ tn_main_pool }}/homes"
+        homes_mountpoint: "{{ main_pool.info.mountpoint }}/homes"
+      block:
+        - name: Create homes dataset
+          arensb.truenas.filesystem:
+            name: "{{ homes_name }}"
+
+        - name: Create homes for all users
+          arensb.truenas.filesystem:
+            name: "{{ homes_name }}/{{ item.name }}"
+          no_log: true
+          loop: "{{ create_users | default([]) }}"
+
+        - name: Create extra users
+          arensb.truenas.user:
+            name: "{{ item.name }}"
+            password: "{{ item.password | default('') | password_hash('sha512') }}"
+            password_disabled: "{{ item.password | ternary(false, true) }}"
+            ssh_authorized_keys: "{{ item.ssh_authorized_keys | default([]) }}"
+            sudo_commands: "{{ item.sudo_commands | default([]) }}"
+            home: "{{ homes_mountpoint }}/{{ item.name }}"
+            shell: /usr/bin/zsh
+            groups:
+              - users
+          no_log: true
+          loop: "{{ create_users | default([]) }}"
+
+    - name: Create and configure "media" filesystem
+      vars:
+        media_name: "{{ tn_main_pool }}/media"
+      block:
+        - arensb.truenas.filesystem:
+            name: "{{ media_name }}"
+          register: media_dataset
+
+        - name: Set SMB/NFSv4 ACL Type when this dataset is newly created
+          ansible.builtin.command:
+            cmd: >-
+              cli --mode csv --command '
+                storage dataset update
+                id="{{ media_name }}"
+                acltype="NFSV4"
+              '
+          # `.filesystem` is defined when fs was created
+          # `.info` is defined when fs was updated
+          when: media_dataset.filesystem is defined
+
+        - name: Set permissions on "media" filesystem
+          ansible.builtin.command:
+            cmd: >-
+              cli --mode csv --command '
+                storage dataset permission
+                id="{{ media_name }}"
+                pool_dataset_permission={ "mode": "755" }
+              '
+
+        - name: Create media subfolders
+          arensb.truenas.filesystem:
+            name: "{{ media_name }}/{{ item }}"
+          loop: &media-subfolders
+            - audiobooks
+            - downloads
+            - ebooks
+            - movies
+            - music
+            - podcasts
+            - series
+
+        - name: Configure media subfolders
+          ansible.builtin.command:
+            cmd: >-
+              cli --mode csv --command '
+                storage dataset permission
+                id="{{ media_name }}/{{ item }}"
+                pool_dataset_permission={
+                  "user": "apps",
+                  "group": "apps",
+                  "options": { "recursive": true }
+                }
+              '
+          loop: *media-subfolders
+
+    - name: Configure nfs service
+      ansible.builtin.command:
+        cmd: >-
+          cli --mode csv --command '
+            service nfs update protocols=["NFSV4"]
+          '
+
+    - name: Share folders for kubernetes cluster via NFS
+      arensb.truenas.sharing_nfs:
+        name: "for k8s: {{ item }}"
+        path: "{{ main_pool.info.mountpoint }}/{{ item }}"
+        hosts: ["192.168.0.37"]
+        networks: ["192.168.0.48/28"]
+      loop: ["appdata", "media"]
+
+    - # this has an issue where `nobody` home folder of `nobody` user shows up
+      name: Share users home folders via SMB
+      arensb.truenas.sharing_smb:
+        name: "home"
+        path: "{{ main_pool.info.mountpoint }}/homes"
+        purpose: MULTI_PROTOCOL_NFS
+        home: true
+        browsable: false
+        guestok: false
+
+    - name: Share media folders for the rest of the network
+      vars:
+        media: "media"
+        media_mountpoint: "{{ main_pool.info.mountpoint }}/{{ media }}"
+      block:
+        - # not sharing the entire media folder to match current share layout
+          name: Share via SMB
+          arensb.truenas.sharing_smb:
+            name: "{{ item }}"
+            path: "{{ media_mountpoint }}/{{ item }}"
+            purpose: MULTI_PROTOCOL_NFS
+            guestok: true
+            ro: true
+          loop: &media-shares
+            - downloads
+            - movies
+            - series
+
+        - # cannot share entire media folder because networks overlap
+          # https://ixsystems.atlassian.net/browse/NAS-102229
+          name: Share via NFS
+          arensb.truenas.sharing_nfs:
+            name: "for LAN: {{ media }}/{{ item }}"
+            path: "{{ media_mountpoint }}/{{ item }}"
+            networks: ["192.168.0.0/24"]
+          loop: *media-shares
+          register: media_nfs_shares
+
+        - # Attempt to set NFS shares as readonly. Only possible if the shares
+          # were just created, since `.resource_id` is only present after
+          # creation. If these shares already exist, we assume that they were
+          # created properly. Need to do it like this, because `readonly`
+          # property of `arensb.truenas.sharing_nfs` is broken.
+          name: Set all NFS shares as readonly
+          ansible.builtin.command:
+            cmd: >-
+              cli --mode csv --command '
+                sharing nfs update
+                id={{ item.resource_id.id }}
+                ro=true
+              '
+          when: item.resource_id is defined
+          loop: "{{ media_nfs_shares.results }}"
+
+    - name: Enable and start services
+      arensb.truenas.service:
+        name: "{{ item }}"
+        enabled: true
+        state: started
+      loop: ["nfs", "cifs"]
+
+  handlers:
+    - name: Reboot
+      ansible.builtin.reboot:
+        msg: Rebooting nodes
+        reboot_timeout: 3600
