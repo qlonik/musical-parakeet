@@ -65,15 +65,15 @@ spec:
               readiness: *probes
               startup:
                 enabled: false
+            securityContext:
+              fsGroup: 568
+              fsGroupChangePolicy: "OnRootMismatch"
             resources:
               requests:
                 cpu: 10m
                 memory: 100Mi
               limits:
                 memory: 750Mi
-            securityContext:
-              fsGroup: 568
-              fsGroupChangePolicy: "OnRootMismatch"
     service:
       main:
         ports:

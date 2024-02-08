@@ -50,17 +50,17 @@ spec:
             envFrom:
               - secretRef:
                   name: audiobookshelf-secret
+            securityContext:
+              runAsUser: 568
+              runAsGroup: 568
+              fsGroup: 568
+              fsGroupChangePolicy: "OnRootMismatch"
             resources:
               requests:
                 cpu: 50m
                 memory: 100Mi
               limits:
                 memory: 500Mi
-            securityContext:
-              runAsUser: 568
-              runAsGroup: 568
-              fsGroup: 568
-              fsGroupChangePolicy: "OnRootMismatch"
     service:
       main:
         ports:

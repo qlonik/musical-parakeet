@@ -60,15 +60,15 @@ spec:
               QBITTORRENT__PORT: &port "8080"
               QBT_BitTorrent__Session__Interface: &iface wg0
               QBT_BitTorrent__Session__InterfaceName: *iface
+            securityContext:
+              runAsUser: 568
+              runAsGroup: 568
             resources:
               requests:
                 cpu: 10m
                 memory: 250Mi
               limits:
                 memory: 2Gi
-            securityContext:
-              runAsUser: 568
-              runAsGroup: 568
 
           gluetun:
             image:
