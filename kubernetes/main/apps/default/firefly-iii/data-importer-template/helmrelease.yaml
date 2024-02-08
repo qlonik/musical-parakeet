@@ -71,12 +71,20 @@ spec:
               readiness: *probes
               startup:
                 enabled: false
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 10m
                 memory: 250Mi
               limits:
                 memory: 500Mi
+    defaultPodOptions:
+      enableServiceLinks: false
+      securityContext:
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
     service:
       main:
         ports:
