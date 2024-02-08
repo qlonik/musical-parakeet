@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.5.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,15 +23,29 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    controller:
-      replicas: 1
-      strategy: RollingUpdate
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: docker.io/glauth/glauth
-      tag: v2.2.0-RC1
-    command: ["/app/glauth", "-c", "/config"]
+    controllers:
+      main:
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: docker.io/glauth/glauth
+              tag: v2.2.0-RC1
+            command: ["/app/glauth", "-c", "/config"]
+            resources:
+              requests:
+                cpu: 5m
+                memory: 10Mi
+              limits:
+                memory: 50Mi
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
     service:
       main:
         ports:
@@ -49,33 +63,10 @@ spec:
             path: /metrics
             interval: 1m
             scrapeTimeout: 10s
-    podSecurityContext:
-      runAsUser: 1000
-      runAsGroup: 1000
-      fsGroup: 1000
-      fsGroupChangePolicy: "OnRootMismatch"
     persistence:
       config:
         enabled: true
         type: secret
         name: glauth-secret
-        items:
-          - key: server.toml
-            path: server.toml
-          - key: groups.toml
-            path: groups.toml
-          - key: users.toml
-            path: users.toml
-    topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: DoNotSchedule
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/name: *app
-    resources:
-      requests:
-        cpu: 5m
-        memory: 10Mi
-      limits:
-        memory: 50Mi
+        globalMounts:
+          - path: /config
