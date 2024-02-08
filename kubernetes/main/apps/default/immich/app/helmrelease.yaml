@@ -75,7 +75,7 @@ spec:
           init-db:
             image: &init-image
               repository: ghcr.io/onedr0p/postgres-init
-              tag: 14.8@sha256:dfddde81c0d49da09da1e893c95c32934333baba60edde707be5010dc3baa4c2
+              tag: 14.10@sha256:71ddc70edccf201d6a521fe6216bc58d8c7c856a1ef96c4d4fbe9f548818ea4d
             env: &init-env
               - name: INIT_POSTGRES_SUPER_USER
                 valueFrom:
