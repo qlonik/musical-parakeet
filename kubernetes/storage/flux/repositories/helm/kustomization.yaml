@@ -1,0 +1,38 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./actions-runner-controller.yaml
+  - ./amd-device-plugin.yaml
+  - ./backube.yaml
+  - ./bitnami.yaml
+  - ./bjw-s.yaml
+  - ./cilium.yaml
+  - ./cloudnative-pg.yaml
+  - ./coredns.yaml
+  - ./crossplane.yaml
+  - ./csi-driver-nfs.yaml
+  - ./csi-driver-smb.yaml
+  - ./democratic-csi.yaml
+  - ./descheduler.yaml
+  - ./external-dns.yaml
+  - ./grafana.yaml
+  - ./hajimari.yaml
+  - ./immich.yaml
+  - ./ingress-nginx.yaml
+  - ./jetstack.yaml
+  - ./k8s-gateway.yaml
+  - ./kubernetes-dashboard.yaml
+  - ./kyverno.yaml
+  - ./longhorn.yaml
+  - ./metrics-server.yaml
+  - ./nextcloud.yaml
+  - ./node-feature-discovery.yaml
+  - ./openebs.yaml
+  - ./openldap.yaml
+  - ./piraeus.yaml
+  - ./postfinance.yaml
+  - ./prometheus-community.yaml
+  - ./stakater.yaml
+  - ./weave-gitops.yaml
+  - ./xenitab.yaml
