@@ -99,7 +99,7 @@ spec:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /books/ebooks
+        path: /mnt/main/media/ebooks
         readOnly: true
         mountPath: /books/ebooks
     probes:

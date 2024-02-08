@@ -88,6 +88,6 @@ spec:
       media:
         type: nfs
         server: nova.home.arpa
-        path: /downloads/qbittorrent
+        path: /mnt/main/media/downloads/qbittorrent
         globalMounts:
           - path: /media/downloads/qbittorrent

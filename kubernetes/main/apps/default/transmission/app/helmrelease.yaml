@@ -123,7 +123,7 @@ spec:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /downloads/transmission
+        path: /mnt/main/media/downloads/transmission
         mountPath: /downloads/transmission
       incomplete:
         enabled: true

@@ -76,7 +76,7 @@ spec:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /downloads/nzbget
+        path: /mnt/main/media/downloads/nzbget
         mountPath: /downloads/nzbget
       incomplete:
         enabled: true

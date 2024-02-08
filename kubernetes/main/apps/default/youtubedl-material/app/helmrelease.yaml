@@ -74,25 +74,25 @@ spec:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /downloads/youtube/audio
+        path: /mnt/main/media/downloads/youtube/audio
         mountPath: /app/audio
       video:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /downloads/youtube/video
+        path: /mnt/main/media/downloads/youtube/video
         mountPath: /app/video
       subscriptions:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /downloads/youtube/subscriptions
+        path: /mnt/main/media/downloads/youtube/subscriptions
         mountPath: /app/subscriptions
       users:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /downloads/youtube/users
+        path: /mnt/main/media/downloads/youtube/users
         mountPath: /app/users
     resources:
       requests:

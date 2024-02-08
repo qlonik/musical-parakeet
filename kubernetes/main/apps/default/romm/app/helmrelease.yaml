@@ -104,13 +104,13 @@ spec:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /downloads/romm/library
+        path: /mnt/main/media/downloads/romm/library
         globalMounts:
           - path: /romm/library
       resources:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /downloads/romm/resources
+        path: /mnt/main/media/downloads/romm/resources
         globalMounts:
           - path: /romm/resources

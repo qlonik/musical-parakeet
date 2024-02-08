@@ -78,4 +78,4 @@ spec:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /downloads
+        path: /mnt/main/media/downloads

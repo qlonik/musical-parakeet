@@ -83,21 +83,21 @@ spec:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /movies
+        path: /mnt/main/media/movies
         mountPath: /data/movies
         readOnly: true
       music:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /music
+        path: /mnt/main/media/music
         mountPath: /data/music
         readOnly: true
       series:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /series
+        path: /mnt/main/media/series
         mountPath: /data/tvshows
         readOnly: true
       transcodes:

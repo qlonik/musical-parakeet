@@ -75,13 +75,13 @@ spec:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /series
+        path: /mnt/main/media/series
         mountPath: /media/series
       downloads:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /downloads
+        path: /mnt/main/media/downloads
         mountPath: /media/downloads
     resources:
       requests:

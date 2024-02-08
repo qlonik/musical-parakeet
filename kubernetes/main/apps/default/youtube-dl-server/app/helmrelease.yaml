@@ -75,13 +75,13 @@ spec:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /downloads/youtube/downloads
+        path: /mnt/main/media/downloads/youtube/downloads
         mountPath: /youtube-dl/downloads
       playlists:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /downloads/youtube/playlists
+        path: /mnt/main/media/downloads/youtube/playlists
         mountPath: /youtube-dl/playlists
       cache-dir:
         enabled: true

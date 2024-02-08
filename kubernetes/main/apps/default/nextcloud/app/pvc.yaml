@@ -25,7 +25,7 @@ spec:
     storage: 1T
   nfs:
     server: nova.home.arpa
-    path: "/appdata/nextcloud"
+    path: "/mnt/main/appdata/nextcloud"
   mountOptions: ["nfsvers=4.2", "nconnect=8", "hard", "noatime"]
   claimRef:
     name: nextcloud-data

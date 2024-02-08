@@ -11,7 +11,7 @@ spec:
     storage: 1Mi
   nfs:
     server: nova.home.arpa
-    path: /appdata/minio
+    path: /mnt/main/appdata/minio
   mountOptions: ["nfsvers=4.2", "nconnect=8", "hard", "noatime"]
   claimRef:
     name: minio-nfs

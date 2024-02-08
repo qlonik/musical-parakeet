@@ -121,13 +121,20 @@ spec:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /books
+        path: /mnt/main/media/ebooks
         globalMounts:
-          - path: /media/books
+          - path: /media/books/ebooks
+      audiobooks:
+        enabled: true
+        type: nfs
+        server: nova.home.arpa
+        path: /mnt/main/media/audiobooks
+        globalMounts:
+          - path: /media/books/audio
       books-to-import:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /downloads/books-to-import
+        path: /mnt/main/media/downloads/books-to-import
         globalMounts:
           - path: /media/downloads/books-to-import

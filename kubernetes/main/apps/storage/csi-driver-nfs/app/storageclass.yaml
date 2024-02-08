@@ -4,7 +4,7 @@ kind: StorageClass
 metadata:
   name: "nfs-slow"
   labels:
-    disk.home.arpa/fs: mergerfs
+    disk.home.arpa/fs: zfs
     disk.home.arpa/type: hdd
 provisioner: nfs.csi.k8s.io
 parameters:
@@ -20,8 +20,8 @@ kind: StorageClass
 metadata:
   name: "nfs-fast"
   labels:
-    disk.home.arpa/fs: ext4
-    disk.home.arpa/type: ssd
+    disk.home.arpa/fs: zfs
+    disk.home.arpa/type: hdd
 provisioner: nfs.csi.k8s.io
 parameters:
   server: "nova.home.arpa"

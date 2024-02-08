@@ -84,7 +84,7 @@ spec:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /downloads/sabnzbd
+        path: /mnt/main/media/downloads/sabnzbd
         mountPath: /downloads/sabnzbd
       incomplete:
         enabled: true

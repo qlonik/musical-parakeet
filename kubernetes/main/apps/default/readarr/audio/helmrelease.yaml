@@ -73,13 +73,13 @@ spec:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /books/audio
+        path: /mnt/main/media/audiobooks
         mountPath: /media/books/audio
       downloads:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /downloads
+        path: /mnt/main/media/downloads
         mountPath: /media/downloads
     resources:
       requests:

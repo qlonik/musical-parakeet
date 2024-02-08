@@ -192,7 +192,7 @@ spec:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /downloads/qbittorrent
+        path: /mnt/main/media/downloads/qbittorrent
         advancedMounts:
           orphaned:
             main:

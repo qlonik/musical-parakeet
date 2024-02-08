@@ -89,21 +89,21 @@ spec:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /books/ebooks
+        path: /mnt/main/media/ebooks
         globalMounts:
           - path: /media/ebooks
       audiobooks:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /books/audio
+        path: /mnt/main/media/audiobooks
         globalMounts:
           - path: /media/audiobooks
       podcasts:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /podcasts
+        path: /mnt/main/media/podcasts
         globalMounts:
           - path: /media/podcasts
       cache:
