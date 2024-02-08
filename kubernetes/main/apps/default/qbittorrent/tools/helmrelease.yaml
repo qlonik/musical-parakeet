@@ -89,6 +89,7 @@ spec:
               - "sonarr"
               - "--include-tag"
               - "unregistered"
+              - "--dry-run"
               - "--server"
               - "qbittorrent.default.svc.cluster.local"
               - "--port"
@@ -117,6 +118,7 @@ spec:
               - "sonarr"
               - "--include-tag"
               - "expired" # defined in config.yaml
+              - "--dry-run"
               - "--server"
               - "qbittorrent.default.svc.cluster.local"
               - "--port"
