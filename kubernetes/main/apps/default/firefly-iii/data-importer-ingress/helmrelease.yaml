@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.5.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -28,21 +28,55 @@ spec:
     - name: firefly-iii-data-importer-user-02
       namespace: default
   values:
-    controller:
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: ghcr.io/nginxinc/nginx-unprivileged
-      tag: stable-alpine@sha256:6e08da1ff1b2fbdb191e8b64919823718471e24deed458002e290114ced4ad3c
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/nginxinc/nginx-unprivileged
+              tag: stable-alpine@sha256:6e08da1ff1b2fbdb191e8b64919823718471e24deed458002e290114ced4ad3c
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec: &probes-spec
+                  httpGet:
+                    path: /health
+                    port: &port 8080
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  <<: *probes-spec
+                  failureThreshold: 30
+            resources:
+              requests:
+                cpu: 10m
+                memory: 10Mi
+              limits:
+                memory: 50Mi
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
     service:
       main:
         ports:
           http:
-            port: &port 8080
+            port: *port
     ingress:
       main:
         enabled: true
-        ingressClassName: internal
+        className: internal
         annotations:
           auth.home.arpa/enabled: "true"
         hosts:
@@ -50,44 +84,18 @@ spec:
             paths:
               - path: "/"
                 pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
     persistence:
       config:
         enabled: true
         type: configMap
         name: firefly-iii-data-importer-ingress-config
-        subPath: data-importer.conf
-        mountPath: /etc/nginx/conf.d/data-importer.conf
-        readOnly: true
-    probes:
-      liveness: &probes
-        enabled: true
-        custom: true
-        spec: &probes-spec
-          httpGet:
-            path: /health
-            port: *port
-          initialDelaySeconds: 0
-          periodSeconds: 10
-          timeoutSeconds: 1
-          failureThreshold: 3
-      readiness: *probes
-      startup:
-        enabled: true
-        custom: true
-        spec:
-          <<: *probes-spec
-          failureThreshold: 30
-    resources:
-      requests:
-        cpu: 10m
-        memory: 10Mi
-      limits:
-        memory: 50Mi
+        globalMounts:
+          - path: /etc/nginx/conf.d/data-importer.conf
+            subPath: data-importer.conf
+            readOnly: true

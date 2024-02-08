@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.5.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -26,61 +26,68 @@ spec:
     - name: firefly-iii
       namespace: default
   values:
-    image:
-      repository: fireflyiii/data-importer
-      tag: version-1.4.3@sha256:d553669b13ae70a547fc44c72050ee65c2b1f37a287d185920d591fb4fbc15fe
-    env:
-      TZ: ${TIMEZONE}
-      FIREFLY_III_URL: http://firefly-iii.default.svc.cluster.local:8080
-      VANITY_URL: "https://firefly-iii.${SECRET_DOMAIN}"
-      FIREFLY_III_ACCESS_TOKEN:
-        valueFrom:
-          secretKeyRef:
-            name: firefly-iii-data-importer-resources
-            key: "${user_id}-pat"
-      TRUSTED_PROXIES: "**"
-      EXPECT_SECURE_URL: "true"
-      REDIS_HOST: http://redis-lb.default.svc.cluster.local
-      REDIS_PORT: 6379
-      REDIS_PASSWORD:
-        valueFrom:
-          secretKeyRef:
-            name: redis-credentials
-            key: redis-password
-      REDIS_DB: 15
-      REDIS_CACHE_DB: 16
+    controllers:
+      main:
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: fireflyiii/data-importer
+              tag: version-1.4.3@sha256:d553669b13ae70a547fc44c72050ee65c2b1f37a287d185920d591fb4fbc15fe
+            env:
+              TZ: ${TIMEZONE}
+              FIREFLY_III_URL: http://firefly-iii.default.svc.cluster.local:8080
+              VANITY_URL: "https://firefly-iii.${SECRET_DOMAIN}"
+              FIREFLY_III_ACCESS_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: firefly-iii-data-importer-resources
+                    key: "${user_id}-pat"
+              TRUSTED_PROXIES: "**"
+              EXPECT_SECURE_URL: "true"
+              REDIS_HOST: http://redis-lb.default.svc.cluster.local
+              REDIS_PORT: 6379
+              REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: redis-credentials
+                    key: redis-password
+              REDIS_DB: 15
+              REDIS_CACHE_DB: 16
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: &port 8080
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
+            resources:
+              requests:
+                cpu: 10m
+                memory: 250Mi
+              limits:
+                memory: 500Mi
     service:
       main:
         ports:
           http:
-            port: &port 8080
+            port: *port
     persistence:
       upload:
-        enabled: true
-        type: pvc
+        type: persistentVolumeClaim
         storageClass: nfs-slow
         accessMode: ReadWriteOnce
         size: 2Gi
         retain: true
-        mountPath: /var/www/html/storage/upload
-    probes:
-      liveness: &probes
-        enabled: true
-        custom: true
-        spec:
-          httpGet:
-            path: /health
-            port: *port
-          initialDelaySeconds: 0
-          periodSeconds: 10
-          timeoutSeconds: 1
-          failureThreshold: 3
-      readiness: *probes
-      startup:
-        enabled: false
-    resources:
-      requests:
-        cpu: 10m
-        memory: 250Mi
-      limits:
-        memory: 500Mi
+        globalMounts:
+          - path: /var/www/html/storage/upload

@@ -5,34 +5,38 @@ metadata:
   name: firefly-iii
 spec:
   values:
-    initContainers:
-      init-db:
-        image: ghcr.io/onedr0p/postgres-init:14.8@sha256:dfddde81c0d49da09da1e893c95c32934333baba60edde707be5010dc3baa4c2
-        env:
-          - name: INIT_POSTGRES_HOST
-            value: postgres-rw.default.svc.cluster.local
-          - name: INIT_POSTGRES_SUPER_USER
-            valueFrom:
-              secretKeyRef:
-                name: postgres-secret
-                key: username
-          - name: INIT_POSTGRES_SUPER_PASS
-            valueFrom:
-              secretKeyRef:
-                name: postgres-secret
-                key: password
-          - name: INIT_POSTGRES_USER
-            valueFrom:
-              secretKeyRef:
-                name: firefly-iii-credentials
-                key: DB_USERNAME
-          - name: INIT_POSTGRES_PASS
-            valueFrom:
-              secretKeyRef:
-                name: firefly-iii-credentials
-                key: DB_PASSWORD
-          - name: INIT_POSTGRES_DBNAME
-            valueFrom:
-              secretKeyRef:
-                name: firefly-iii-credentials
-                key: DB_DATABASE
+    controllers:
+      main:
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 14.8@sha256:dfddde81c0d49da09da1e893c95c32934333baba60edde707be5010dc3baa4c2
+            env:
+              - name: INIT_POSTGRES_HOST
+                value: postgres-rw.default.svc.cluster.local
+              - name: INIT_POSTGRES_SUPER_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: postgres-secret
+                    key: username
+              - name: INIT_POSTGRES_SUPER_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: postgres-secret
+                    key: password
+              - name: INIT_POSTGRES_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: firefly-iii-credentials
+                    key: DB_USERNAME
+              - name: INIT_POSTGRES_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: firefly-iii-credentials
+                    key: DB_PASSWORD
+              - name: INIT_POSTGRES_DBNAME
+                valueFrom:
+                  secretKeyRef:
+                    name: firefly-iii-credentials
+                    key: DB_DATABASE
