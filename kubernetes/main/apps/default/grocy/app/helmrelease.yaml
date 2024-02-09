@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.5.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -26,23 +26,44 @@ spec:
     - name: minio
       namespace: default
   values:
-    controller:
-      type: statefulset
-    image:
-      repository: ghcr.io/linuxserver/grocy
-      tag: v3.3.2-ls188@sha256:0997ba590b45ce2cebfe69b609c3392f152f71c62e2923b4425234093a87e4eb
-    env:
-      # env vars don't work with linuxserver container
-      # GROCY_CALENDAR_FIRST_DAY_OF_WEEK: 1
-      # GROCY_CURRENCY: CAD
-      # GROCY_AUTH_CLASS: "Grocy\\\\Middleware\\\\ReverseProxyAuthMiddleware"
-      TZ: ${TIMEZONE}
-      PUID: 568
-      PGID: 568
-      MAX_UPLOAD: 50M
-      PHP_MAX_FILE_UPLOAD: 200
-      PHP_MAX_POST: 100M
-      PHP_MEMORY_LIMIT: 512M
+    controllers:
+      main:
+        type: statefulset
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              mountPath: /config
+              accessMode: ReadWriteMany
+              retain: true
+              size: 8Gi
+              storageClass: nfs-fast
+        containers:
+          main:
+            image:
+              repository: ghcr.io/linuxserver/grocy
+              tag: v3.3.2-ls188@sha256:0997ba590b45ce2cebfe69b609c3392f152f71c62e2923b4425234093a87e4eb
+            env:
+              # env vars don't work with linuxserver container
+              # GROCY_CALENDAR_FIRST_DAY_OF_WEEK: 1
+              # GROCY_CURRENCY: CAD
+              # GROCY_AUTH_CLASS: "Grocy\\\\Middleware\\\\ReverseProxyAuthMiddleware"
+              TZ: ${TIMEZONE}
+              PUID: 568
+              PGID: 568
+              MAX_UPLOAD: 50M
+              PHP_MAX_FILE_UPLOAD: 200
+              PHP_MAX_POST: 100M
+              PHP_MEMORY_LIMIT: 512M
+            resources:
+              requests:
+                cpu: 10m
+                memory: 100Mi
+              limits:
+                memory: 600Mi
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
     service:
       main:
         ports:
@@ -51,7 +72,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: external
+        className: external
         annotations:
           auth.home.arpa/enabled: "true"
           nginx.ingress.kubernetes.io/configuration-snippet: |
@@ -66,26 +87,15 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-    volumeClaimTemplates:
-      - name: config
-        mountPath: /config
-        accessMode: ReadWriteMany
-        size: 8Gi
-        storageClass: nfs-fast
     persistence:
       viewcache:
         enabled: true
         type: emptyDir
-        mountPath: /config/data/viewcache
-    resources:
-      requests:
-        cpu: 10m
-        memory: 100Mi
-      limits:
-        memory: 600Mi
+        globalMounts:
+          - path: /config/data/viewcache
