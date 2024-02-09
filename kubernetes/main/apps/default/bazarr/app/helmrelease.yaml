@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.5.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -26,13 +26,48 @@ spec:
     - name: minio
       namespace: default
   values:
-    controller:
-      type: statefulset
-    image:
-      repository: ghcr.io/onedr0p/bazarr
-      tag: 1.4.1@sha256:4a9584435db5881306fa477115363db0ff79a3c70c7f67b5fe0c2e62978252a5
-    env:
-      TZ: ${TIMEZONE}
+    controllers:
+      main:
+        type: statefulset
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteMany
+              retain: true
+              size: 1Gi
+              storageClass: nfs-fast
+              advancedMounts:
+                main:
+                  - path: /config
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/bazarr
+              tag: 1.4.1@sha256:4a9584435db5881306fa477115363db0ff79a3c70c7f67b5fe0c2e62978252a5
+            env:
+              TZ: ${TIMEZONE}
+            resources:
+              requests:
+                cpu: 10m
+                memory: 250Mi
+              limits:
+                memory: 2Gi
+          subcleaner:
+            image:
+              repository: registry.k8s.io/git-sync/git-sync
+              tag: v4.2.0@sha256:d277810f72bc30bf0e276db609c0b606a83b5698606d92b6b14f50ea5f54de5f
+            args:
+              - --repo=https://github.com/KBlixt/subcleaner.git
+              - --ref=master
+              - --period=6h
+              - --root=/add-ons/subcleaner
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
+        supplementalGroups: [10000]
     service:
       main:
         ports:
@@ -41,7 +76,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: internal
+        className: internal
         annotations:
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_set_header Accept-Encoding "";
@@ -53,53 +88,33 @@ spec:
             paths:
               - path: "/"
                 pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-      supplementalGroups: [10000]
-    volumeClaimTemplates:
-      - name: config
-        mountPath: /config
-        accessMode: ReadWriteMany
-        size: 1Gi
-        storageClass: nfs-fast
     persistence:
       media-movies:
         enabled: true
         type: nfs
         server: nova.home.arpa
         path: /movies
-        mountPath: /media/movies
+        advancedMounts:
+          main:
+            main:
+              - path: /media/movies
       media-series:
         enabled: true
         type: nfs
         server: nova.home.arpa
         path: /series
-        mountPath: /media/series
+        advancedMounts:
+          main:
+            main:
+              - path: /media/series
       add-ons:
         enabled: true
         type: emptyDir
-        mountPath: /add-ons
-    resources:
-      requests:
-        cpu: 10m
-        memory: 250Mi
-      limits:
-        memory: 2Gi
-    sidecars:
-      subcleaner:
-        name: subcleaner
-        image: registry.k8s.io/git-sync/git-sync:v4.2.0@sha256:d277810f72bc30bf0e276db609c0b606a83b5698606d92b6b14f50ea5f54de5f
-        args:
-          - --repo=https://github.com/KBlixt/subcleaner.git
-          - --ref=master
-          - --period=6h
-          - --root=/add-ons/subcleaner
-        volumeMounts:
-          - name: add-ons
-            mountPath: /add-ons
+        globalMounts:
+          - path: /add-ons
