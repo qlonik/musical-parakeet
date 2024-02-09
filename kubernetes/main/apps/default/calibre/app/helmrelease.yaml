@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.5.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -26,15 +26,41 @@ spec:
     - name: minio
       namespace: default
   values:
-    controller:
-      type: statefulset
-    image:
-      repository: ghcr.io/linuxserver/calibre
-      tag: v6.11.0-ls200@sha256:a57e4b02b7c33ad27f5af7d2356b5f95c4edcee28d3345760111321d4f05e171
-    env:
-      TZ: ${TIMEZONE}
-      PUID: 568
-      PGID: 568
+    controllers:
+      main:
+        type: statefulset
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteMany
+              retain: true
+              size: 1Gi
+              storageClass: nfs-fast
+              globalMounts:
+                - path: /config
+        containers:
+          main:
+            image:
+              repository: ghcr.io/linuxserver/calibre
+              tag: v6.11.0-ls200@sha256:a57e4b02b7c33ad27f5af7d2356b5f95c4edcee28d3345760111321d4f05e171
+            env:
+              TZ: ${TIMEZONE}
+              PUID: 568
+              PGID: 568
+            resources:
+              requests:
+                cpu: 10m
+                memory: 250Mi
+              limits:
+                memory: 2Gi
+    defaultPodOptions:
+      podSecurityContext:
+        # disabled for linuxserver.io image
+        # runAsUser: 568
+        # runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
+        supplementalGroups: [10000]
     service:
       main:
         ports:
@@ -42,7 +68,7 @@ spec:
             port: 8080
       content-server:
         enabled: true
-        primary: false
+        controller: main
         type: LoadBalancer
         annotations:
           io.cilium/lb-ipam-ips: "${LB_CALIBRE_SERVER_ADDR}"
@@ -50,12 +76,10 @@ spec:
         ports:
           content-server:
             port: 8081
-            primary: false
     ingress:
       main:
         enabled: true
-        primary: true
-        ingressClassName: internal
+        className: internal
         annotations:
           auth.home.arpa/enabled: "true"
           nginx.ingress.kubernetes.io/configuration-snippet: |
@@ -68,13 +92,14 @@ spec:
             paths:
               - path: "/"
                 pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
       content-server:
-        enabled: true
-        primary: false
-        ingressClassName: internal
+        className: internal
         annotations:
           nginx.ingress.kubernetes.io/configuration-snippet: |
             rewrite ^/opds$ /opds/ permanent;
@@ -86,40 +111,23 @@ spec:
               - path: "/opds"
                 pathType: Prefix
                 service:
-                  name: calibre-content-server
-                  port: 8081
+                  name: content-server
+                  port: content-server
         tls:
           - hosts:
               - *host
-    # disable for linuxserver.io image
-    podSecurityContext:
-      # runAsUser: 568
-      # runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-      supplementalGroups: [10000]
-    volumeClaimTemplates:
-      - name: config
-        mountPath: /config
-        accessMode: ReadWriteMany
-        size: 1Gi
-        storageClass: nfs-fast
     persistence:
       books:
         enabled: true
         type: nfs
         server: nova.home.arpa
         path: /books
-        mountPath: /media/books
+        globalMounts:
+          - path: /media/books
       books-to-import:
         enabled: true
         type: nfs
         server: nova.home.arpa
         path: /downloads/books-to-import
-        mountPath: /media/downloads/books-to-import
-    resources:
-      requests:
-        cpu: 10m
-        memory: 250Mi
-      limits:
-        memory: 2Gi
+        globalMounts:
+          - path: /media/downloads/books-to-import
