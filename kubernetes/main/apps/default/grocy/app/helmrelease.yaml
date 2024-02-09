@@ -32,11 +32,12 @@ spec:
         statefulset:
           volumeClaimTemplates:
             - name: config
-              mountPath: /config
               accessMode: ReadWriteMany
               retain: true
               size: 8Gi
               storageClass: nfs-fast
+              globalMounts:
+                - path: /config
         containers:
           main:
             image:
