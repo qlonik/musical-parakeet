@@ -46,10 +46,12 @@
         name: "{{ tn_main_pool }}"
       register: main_pool
 
-    - name: Create extra filesystems
-      arensb.truenas.filesystem:
-        name: "{{ tn_main_pool }}/{{ item }}"
-      loop: ["appdata", "appdata/minio"]
+    - name: Configure nfs service
+      ansible.builtin.command:
+        cmd: >-
+          cli --mode csv --command '
+            service nfs update protocols=["NFSV4"]
+          '
 
     - name: Setup users
       vars:
@@ -80,11 +82,76 @@
           no_log: true
           loop: "{{ create_users | default([]) }}"
 
+        - # this has an issue where `nobody` home folder of `nobody` user shows up
+          name: Share users home folders via SMB
+          arensb.truenas.sharing_smb:
+            name: "home"
+            path: "{{ main_pool.info.mountpoint }}/homes"
+            purpose: MULTI_PROTOCOL_NFS
+            home: true
+            browsable: false
+            guestok: false
+
+    - name: Create and configure "appdata" filesystem
+      vars:
+        appdata: appdata
+        appdata_name: "{{ tn_main_pool }}/{{ appdata }}"
+        appdata_mountpoint: "{{ main_pool.info.mountpoint }}/{{ appdata }}"
+      block:
+        - name: Create appdata dataset
+          arensb.truenas.filesystem:
+            name: "{{ appdata_name }}"
+
+        - name: Create children of appdata dataset
+          arensb.truenas.filesystem:
+            name: "{{ appdata_name }}/{{ item }}"
+          loop: &appdata-subfolders
+            - immich
+            - minio
+            - nextcloud
+            - paperless-ngx
+            - pvcs
+            - vikunja
+
+        - name: Change ownership of some datasets within appdata
+          ansible.builtin.command:
+            cmd: >-
+              cli --mode csv --command '
+                storage dataset permission
+                id="{{ appdata_name }}/{{ item[0] }}"
+                pool_dataset_permission={{ item[1] | to_json }}
+              '
+          loop:
+            - [immich, { user: apps, group: apps }]
+            - [minio, { user: apps, group: apps }]
+            - [nextcloud, { user: www-data, group: www-data }]
+            - [paperless-ngx, { user: apps, group: apps }]
+            - [pvcs, { mode: "777" }]
+            - [vikunja, { user: apps, group: apps }]
+
+        - name: Share appdata over NFS for k8s
+          arensb.truenas.sharing_nfs:
+            name: "for k8s: {{ appdata_name }}"
+            path: "{{ appdata_mountpoint }}"
+            hosts: ["192.168.0.37"]
+            networks: ["192.168.0.48/28"]
+
+        - name: Share datasets within appdata over NFS for kubernetes cluster
+          arensb.truenas.sharing_nfs:
+            name: "for k8s: {{ appdata_name }}/{{ item }}"
+            path: "{{ appdata_mountpoint }}/{{ item }}"
+            hosts: ["192.168.0.37"]
+            networks: ["192.168.0.48/28"]
+          loop: *appdata-subfolders
+
     - name: Create and configure "media" filesystem
       vars:
-        media_name: "{{ tn_main_pool }}/media"
+        media: "media"
+        media_name: "{{ tn_main_pool }}/{{ media }}"
+        media_mountpoint: "{{ main_pool.info.mountpoint }}/{{ media }}"
       block:
-        - arensb.truenas.filesystem:
+        - name: Create media dataset
+          arensb.truenas.filesystem:
             name: "{{ media_name }}"
           register: media_dataset
 
@@ -129,42 +196,19 @@
                 id="{{ media_name }}/{{ item }}"
                 pool_dataset_permission={
                   "user": "apps",
-                  "group": "apps",
-                  "options": { "recursive": true }
+                  "group": "apps"
                 }
               '
           loop: *media-subfolders
 
-    - name: Configure nfs service
-      ansible.builtin.command:
-        cmd: >-
-          cli --mode csv --command '
-            service nfs update protocols=["NFSV4"]
-          '
+        - name: Share datasets within media over NFS for kubernetes cluster
+          arensb.truenas.sharing_nfs:
+            name: "for k8s: {{ item }}"
+            path: "{{ media_mountpoint }}/{{ item }}"
+            hosts: ["192.168.0.37"]
+            networks: ["192.168.0.48/28"]
+          loop: *media-subfolders
 
-    - name: Share folders for kubernetes cluster via NFS
-      arensb.truenas.sharing_nfs:
-        name: "for k8s: {{ item }}"
-        path: "{{ main_pool.info.mountpoint }}/{{ item }}"
-        hosts: ["192.168.0.37"]
-        networks: ["192.168.0.48/28"]
-      loop: ["appdata", "media"]
-
-    - # this has an issue where `nobody` home folder of `nobody` user shows up
-      name: Share users home folders via SMB
-      arensb.truenas.sharing_smb:
-        name: "home"
-        path: "{{ main_pool.info.mountpoint }}/homes"
-        purpose: MULTI_PROTOCOL_NFS
-        home: true
-        browsable: false
-        guestok: false
-
-    - name: Share media folders for the rest of the network
-      vars:
-        media: "media"
-        media_mountpoint: "{{ main_pool.info.mountpoint }}/{{ media }}"
-      block:
         - # not sharing the entire media folder to match current share layout
           name: Share via SMB
           arensb.truenas.sharing_smb:
@@ -178,31 +222,33 @@
             - movies
             - series
 
-        - # cannot share entire media folder because networks overlap
-          # https://ixsystems.atlassian.net/browse/NAS-102229
-          name: Share via NFS
-          arensb.truenas.sharing_nfs:
-            name: "for LAN: {{ media }}/{{ item }}"
-            path: "{{ media_mountpoint }}/{{ item }}"
-            networks: ["192.168.0.0/24"]
-          loop: *media-shares
-          register: media_nfs_shares
+        # - # cannot share each media dataset because networks overlap
+        #   # https://ixsystems.atlassian.net/browse/NAS-102229,
+        #   # and cannot share the entire media dataset because then each
+        #   # dataset will appear empty on clients
+        #   name: Share via NFS
+        #   arensb.truenas.sharing_nfs:
+        #     name: "for LAN: {{ media }}/{{ item }}"
+        #     path: "{{ media_mountpoint }}/{{ item }}"
+        #     networks: ["192.168.0.0/24"]
+        #   loop: *media-shares
+        #   register: media_nfs_shares
 
-        - # Attempt to set NFS shares as readonly. Only possible if the shares
-          # were just created, since `.resource_id` is only present after
-          # creation. If these shares already exist, we assume that they were
-          # created properly. Need to do it like this, because `readonly`
-          # property of `arensb.truenas.sharing_nfs` is broken.
-          name: Set all NFS shares as readonly
-          ansible.builtin.command:
-            cmd: >-
-              cli --mode csv --command '
-                sharing nfs update
-                id={{ item.resource_id.id }}
-                ro=true
-              '
-          when: item.resource_id is defined
-          loop: "{{ media_nfs_shares.results }}"
+        # - # Attempt to set NFS shares as readonly. Only possible if the shares
+        #   # were just created, since `.resource_id` is only present after
+        #   # creation. If these shares already exist, we assume that they were
+        #   # created properly. Need to do it like this, because `readonly`
+        #   # property of `arensb.truenas.sharing_nfs` is broken.
+        #   name: Set all NFS shares as readonly
+        #   ansible.builtin.command:
+        #     cmd: >-
+        #       cli --mode csv --command '
+        #         sharing nfs update
+        #         id={{ item.resource_id.id }}
+        #         ro=true
+        #       '
+        #   when: item.resource_id is defined
+        #   loop: "{{ media_nfs_shares.results }}"
 
     - name: Enable and start services
       arensb.truenas.service:
@@ -210,6 +256,11 @@
         enabled: true
         state: started
       loop: ["nfs", "cifs"]
+
+    - name: Create extra datavols
+      arensb.truenas.filesystem:
+        name: "{{ tn_main_pool }}/{{ item }}"
+      loop: ["dump", "vm-images"]
 
   handlers:
     - name: Reboot
