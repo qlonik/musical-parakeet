@@ -91,13 +91,13 @@ spec:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /mnt/main/media/appdata/paperless-ngx/export
+        path: /mnt/main/appdata/paperless-ngx/export
         mountPath: /usr/src/paperless/export
       consume:
         enabled: true
         type: nfs
         server: nova.home.arpa
-        path: /mnt/main/media/appdata/paperless-ngx/consume
+        path: /mnt/main/appdata/paperless-ngx/consume
         mountPath: /usr/src/paperless/consume
     resources:
       requests:
