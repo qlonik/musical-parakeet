@@ -141,7 +141,7 @@ spec:
       upload:
         enabled: true
         type: persistentVolumeClaim
-        storageClass: nfs-slow
+        storageClass: nfs-zfs-main
         accessMode: ReadWriteOnce
         size: 2Gi
         retain: true
