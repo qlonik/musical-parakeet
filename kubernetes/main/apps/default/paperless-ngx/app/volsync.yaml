@@ -12,7 +12,7 @@ spec:
     pruneIntervalDays: 10
     repository: paperless-ngx-data-restic-secret
     cacheCapacity: 5Gi
-    storageClassName: nfs-fast
+    storageClassName: nfs-zfs-main
     retain:
       daily: 10
       within: 3d
@@ -30,7 +30,7 @@ spec:
     pruneIntervalDays: 10
     repository: paperless-ngx-media-restic-secret
     cacheCapacity: 5Gi
-    storageClassName: nfs-fast
+    storageClassName: nfs-zfs-main
     retain:
       daily: 10
       within: 3d

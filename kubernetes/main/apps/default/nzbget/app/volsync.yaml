@@ -12,7 +12,7 @@ spec:
     pruneIntervalDays: 10
     repository: nzbget-restic-secret
     cacheCapacity: 2Gi
-    storageClassName: nfs-fast
+    storageClassName: nfs-zfs-main
     retain:
       daily: 10
       within: 3d

@@ -14,7 +14,7 @@ spec:
     cacheCapacity: 2Gi
     cacheStorageClassName: local-path
     cacheAccessModes: ["ReadWriteOnce"]
-    storageClassName: nfs-fast
+    storageClassName: nfs-zfs-main
     moverSecurityContext:
       runAsUser: 568
       runAsGroup: 568
