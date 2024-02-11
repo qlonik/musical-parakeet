@@ -138,3 +138,17 @@ spec:
         path: /mnt/main/media/downloads/books-to-import
         globalMounts:
           - path: /media/downloads/books-to-import
+
+      patches:
+        enabled: true
+        type: configMap
+        name: calibre-remove-chown-patch
+        globalMounts:
+          - path: /etc/s6-overlay/s6-rc.d/patch-calibre-config
+            readOnly: true
+          - path: /etc/s6-overlay/s6-rc.d/init-calibre-config/dependencies.d/patch-calibre-config
+            subPath: dep
+            readOnly: true
+          - path: /etc/s6-overlay/s6-rc.d/init-autostart-config/dependencies.d/patch-calibre-config
+            subPath: dep
+            readOnly: true
