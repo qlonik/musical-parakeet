@@ -29,7 +29,7 @@ spec:
     controllers:
       main:
         type: statefulset
-        statefuset:
+        statefulset:
           volumeClaimTemplates:
             - name: config
               accessMode: ReadWriteMany
