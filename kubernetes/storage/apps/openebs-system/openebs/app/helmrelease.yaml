@@ -30,3 +30,7 @@ spec:
         name: openebs-hostpath
         isDefaultClass: false
         basePath: /var/openebs/local
+    ndm:
+      enabled: false
+    ndmOperator:
+      enabled: false
