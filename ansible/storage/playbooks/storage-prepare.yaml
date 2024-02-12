@@ -271,6 +271,19 @@
             cmd: >-
               mkdir -p /appdata/pvc /appdata-fast/pvc
 
+        - name: Mount and export compat /appdata pvcs
+          ansible.builtin.command:
+            cmd: >-
+              grep -qs 'on /appdata/pvc' <(mount) || mount -F -t zfs main/appdata/pvc-previously-slow /appdata/pvc
+              grep -qs 'on /appdata-fast/pvc' <(mount) || mount -F -t zfs main/appdata/pvc-previously-fast /appdata-fast/pvc
+
+              grep -qs '/appdata-fast/pvc' /etc/exports || cat >>/etc/exports << EOF
+              "/appdata/pvc" 192.168.0.48/28(sec=sys,rw,no_subtree_check,no_root_squash)
+              "/appdata-fast/pvc" 192.168.0.48/28(sec=sys,rw,no_subtree_check,no_root_squash)
+              EOF
+
+              exportfs -rv
+
         - name: Startup script
           ansible.builtin.copy:
             dest: "{{ startup_script_path }}"
