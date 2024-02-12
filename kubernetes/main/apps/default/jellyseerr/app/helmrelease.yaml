@@ -46,12 +46,24 @@ spec:
             env:
               TZ: ${TIMEZONE}
               LOG_LEVEL: debug
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 10m
                 memory: 250Mi
               limits:
                 memory: 2Gi
+    defaultPodOptions:
+      enableServiceLinks: false
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        runAsNonRoot: true
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
     service:
       main:
         ports:
@@ -78,3 +90,8 @@ spec:
         tls:
           - hosts:
               - *host
+    persistence:
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
