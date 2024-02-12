@@ -34,3 +34,12 @@ spec:
                   secretKeyRef:
                     name: "{{ .Release.Name }}-restic-secret"
                     key: AWS_SECRET_ACCESS_KEY
+            securityContext:
+              runAsUser: 568
+              runAsGroup: 568
+              runAsNonRoot: true
+              fsGroup: 568
+              fsGroupChangePolicy: OnRootMismatch
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
