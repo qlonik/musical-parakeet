@@ -13,6 +13,10 @@ spec:
     repository: readarr-audio-restic-secret
     cacheCapacity: 2Gi
     storageClassName: nfs-zfs-main
+    moverSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
     retain:
       daily: 10
       within: 3d
