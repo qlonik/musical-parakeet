@@ -7,4 +7,5 @@ resources:
   - ./democratic-csi-local-hostpath-provisioner/ks.yaml
   - ./openebs/ks.yaml
   - ./rancher-local-path-provisioner/ks.yaml
+  - ./snapshot-controller/ks.yaml
   - ./volsync/ks.yaml
