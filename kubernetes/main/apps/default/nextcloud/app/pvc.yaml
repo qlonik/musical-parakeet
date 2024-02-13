@@ -6,23 +6,23 @@ metadata:
   labels:
     app.kubernetes.io/name: nextcloud
 spec:
-  storageClassName: nfs-fast
+  storageClassName: truenas-nfs-main
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 8Gi
+      storage: 5Gi
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: nextcloud-data
 spec:
-  storageClassName: nfs-slow
+  storageClassName: nfs-nextcloud-data
   accessModes: ["ReadWriteMany"]
   persistentVolumeReclaimPolicy: Retain
   capacity:
-    storage: 1T
+    storage: 1Mi
   nfs:
     server: nova.home.arpa
     path: "/mnt/main/appdata/nextcloud"
@@ -38,9 +38,9 @@ metadata:
   labels:
     app.kubernetes.io/name: nextcloud
 spec:
-  storageClassName: nfs-slow
+  storageClassName: nfs-nextcloud-data
   accessModes: ["ReadWriteMany"]
   resources:
     requests:
-      storage: 100Gi
+      storage: 1Mi
   volumeName: nextcloud-data

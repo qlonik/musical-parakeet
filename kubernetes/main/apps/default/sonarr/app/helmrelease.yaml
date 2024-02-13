@@ -68,8 +68,8 @@ spec:
       - name: config
         mountPath: /config
         accessMode: ReadWriteMany
-        size: 5Gi
-        storageClass: nfs-fast
+        size: 1Gi
+        storageClass: truenas-nfs-main
     persistence:
       series:
         enabled: true

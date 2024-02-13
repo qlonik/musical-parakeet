@@ -68,7 +68,7 @@ spec:
         mountPath: /app/appdata
         accessMode: ReadWriteMany
         size: 1Gi
-        storageClass: nfs-fast
+        storageClass: truenas-nfs-main
     persistence:
       audio:
         enabled: true

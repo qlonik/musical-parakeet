@@ -62,7 +62,7 @@ spec:
         mountPath: /youtube-dl/
         accessMode: ReadWriteMany
         size: 1Gi
-        storageClass: nfs-fast
+        storageClass: truenas-nfs-main
     persistence:
       config:
         enabled: true

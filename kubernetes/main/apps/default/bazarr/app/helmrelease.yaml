@@ -33,9 +33,8 @@ spec:
           volumeClaimTemplates:
             - name: config
               accessMode: ReadWriteMany
-              retain: true
               size: 1Gi
-              storageClass: nfs-fast
+              storageClass: truenas-nfs-main
               advancedMounts:
                 main:
                   - path: /config

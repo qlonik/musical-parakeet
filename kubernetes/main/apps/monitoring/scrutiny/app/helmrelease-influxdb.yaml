@@ -61,8 +61,8 @@ spec:
       - name: data
         mountPath: /var/lib/influxdb2
         accessMode: ReadWriteMany
-        size: 8Gi
-        storageClass: nfs-fast
+        size: 1Gi
+        storageClass: truenas-nfs-main
     resources:
       requests:
         cpu: 100m

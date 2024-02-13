@@ -75,9 +75,9 @@ spec:
     volumeClaimTemplates:
       - name: config
         mountPath: /config
-        accessMode: ReadWriteOnce
+        accessMode: ReadWriteMany
         size: 10Gi
-        storageClass: nfs-fast
+        storageClass: truenas-nfs-main
     persistence:
       movies:
         enabled: true

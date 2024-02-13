@@ -4,11 +4,11 @@ kind: PersistentVolume
 metadata:
   name: immich
 spec:
-  storageClassName: nfs-slow
+  storageClassName: nfs-immich
   accessModes: ["ReadWriteMany"]
   persistentVolumeReclaimPolicy: Retain
   capacity:
-    storage: 1T
+    storage: 1Mi
   nfs:
     server: nova.home.arpa
     path: "/mnt/main/appdata/immich"
@@ -22,9 +22,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: immich
 spec:
-  storageClassName: nfs-slow
+  storageClassName: nfs-immich
   accessModes: ["ReadWriteMany"]
   resources:
     requests:
-      storage: 100Gi
+      storage: 1Mi
   volumeName: immich

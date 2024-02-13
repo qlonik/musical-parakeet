@@ -78,7 +78,7 @@ spec:
         mountPath: /config
         accessMode: ReadWriteMany
         size: 1Gi
-        storageClass: nfs-fast
+        storageClass: truenas-nfs-main
     persistence:
       downloads:
         enabled: true

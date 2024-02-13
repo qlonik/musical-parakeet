@@ -203,7 +203,7 @@ spec:
               - path: /usr/src/app/.reverse-geocoding-dump
       machine-learning-cache:
         type: persistentVolumeClaim
-        storageClass: nfs-fast
+        storageClass: truenas-nfs-main
         size: 10Gi
         accessMode: ReadWriteMany
         advancedMounts:

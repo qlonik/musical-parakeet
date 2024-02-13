@@ -79,13 +79,13 @@ spec:
       - name: data
         mountPath: /usr/src/paperless/data
         accessMode: ReadWriteMany
-        size: 5Gi
-        storageClass: nfs-fast
+        size: 1Gi
+        storageClass: truenas-nfs-main
       - name: media
         mountPath: /usr/src/paperless/media
         accessMode: ReadWriteMany
-        size: 5Gi
-        storageClass: nfs-fast
+        size: 1Gi
+        storageClass: truenas-nfs-main
     persistence:
       export:
         enabled: true

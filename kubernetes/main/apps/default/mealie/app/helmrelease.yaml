@@ -133,18 +133,16 @@ spec:
       data:
         nameOverride: api-data
         type: persistentVolumeClaim
-        storageClass: nfs-fast
+        storageClass: truenas-nfs-main
         accessMode: ReadWriteMany
-        size: 2Gi
-        retain: true
+        size: 1Gi
         globalMounts:
           - path: /app/data
       backups:
         nameOverride: api-backups
         type: persistentVolumeClaim
-        storageClass: nfs-slow
+        storageClass: truenas-nfs-main
         accessMode: ReadWriteMany
-        size: 10Gi
-        retain: true
+        size: 1Gi
         globalMounts:
           - path: /app/data/backups

@@ -33,9 +33,8 @@ spec:
           volumeClaimTemplates:
             - name: config
               accessMode: ReadWriteMany
-              retain: true
-              size: 8Gi
-              storageClass: nfs-fast
+              size: 1Gi
+              storageClass: truenas-nfs-main
               globalMounts:
                 - path: /config
         containers:

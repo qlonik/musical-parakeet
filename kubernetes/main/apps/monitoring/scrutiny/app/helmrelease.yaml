@@ -85,7 +85,7 @@ spec:
         mountPath: /opt/scrutiny/config
         accessMode: ReadWriteMany
         size: 1Gi
-        storageClass: nfs-fast
+        storageClass: truenas-nfs-main
     resources:
       requests:
         cpu: 100m
