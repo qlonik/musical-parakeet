@@ -171,6 +171,16 @@
       },
       "separateMinorPatch": true
     },
+    {
+      "description": "K8s CSI Group",
+      "groupName": "sig-storage",
+      "matchPackagePatterns": ["registry.k8s.io/sig-storage/csi-"],
+      "matchDatasources": ["docker"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "separateMinorPatch": true
+    },
     // custom versioning
     {
       "description": "Use custom versioning for firefly-iii",

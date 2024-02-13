@@ -1,0 +1,64 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: democratic-csi-freenas-api-nfs-provisioner
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: democratic-csi
+      version: 0.14.5
+      sourceRef:
+        name: democratic-csi
+        kind: HelmRepository
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    csiDriver:
+      name: freenas-api-nfs.cluster.local
+    storageClasses:
+      - name: freenas-api-nfs
+        defaultClass: false
+        reclaimPolicy: Delete
+        volumeBindingMode: Immediate
+        allowVolumeExpansion: true
+        parameters:
+          fsType: nfs
+          detachedVolumesFromSnapshots: "false"
+          detachedVolumesFromVolumes: "false"
+        mountOptions:
+          - "nfsvers=4.2"
+          - "nconnect=8"
+          - "hard"
+          - "noatime"
+    volumeSnapshotClasses:
+      - name: freenas-api-nfs
+        parameters:
+          detachedSnapshots: "false"
+    driver:
+      existingConfigSecret: democratic-csi-freenas-api-nfs-provisioner-driver-config
+      config:
+        driver: freenas-api-nfs
+    controller:
+      externalAttacher:
+        image: registry.k8s.io/sig-storage/csi-attacher:v4.4.0
+      externalProvisioner:
+        image: registry.k8s.io/sig-storage/csi-provisioner:v3.6.0
+      externalResizer:
+        image: registry.k8s.io/sig-storage/csi-resizer:v1.9.0
+      externalSnapshotter:
+        image: registry.k8s.io/sig-storage/csi-snapshotter:v6.3.0
+      driver:
+        image: ghcr.io/democratic-csi/democratic-csi:v1.8.4
+    node:
+      driver:
+        image: ghcr.io/democratic-csi/democratic-csi:v1.8.4

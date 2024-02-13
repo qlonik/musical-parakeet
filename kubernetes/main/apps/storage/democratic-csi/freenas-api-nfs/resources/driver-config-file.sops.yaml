@@ -1,0 +1,43 @@
+driver: freenas-api-nfs
+httpConnection:
+    protocol: ENC[AES256_GCM,data:8M/MqQ==,iv:Irf3tsao3GGxcGRMrdofNLSCgPwHLKXLMQ8vg98p6JE=,tag:phdYKA3+RpD+mL4bc+vxlA==,type:str]
+    host: ENC[AES256_GCM,data:TJ+joRLr5PpzxyIES84=,iv:NBjrf1issBUc5Qm0XhHhERsYcyPle6mvB78EDT0tiOQ=,tag:2BWTOCv6045GLaBCe6xyvw==,type:str]
+    port: ENC[AES256_GCM,data:kSs=,iv:8VbfWb7nPc6+GLBmFqzYDTio0u6LwUs28vwq2iVl+Ao=,tag:Tlf+NDuxq8kEwAURhjRvzQ==,type:int]
+    apiKey: ENC[AES256_GCM,data:JeiCA1THxbGSaRXnZY365jhQhCXJyJ/bxFxegHBo5XOteM25fhSUzCgn2KSTnGFawTe+9EhyfvihMWUZ5gu57cgP,iv:tLbDOB2dsxTiQS3C7TCM96ZdqGqU61QzC/5YsBlpkIM=,tag:r1tdZMLcCGWCThQd9KPmwg==,type:str]
+zfs:
+    datasetParentName: main/appdata/pvc/vols
+    detachedSnapshotsDatasetParentName: tank/appdata/pvc/snaps
+    datasetEnableQuotas: true
+    datasetEnableReservation: false
+    datasetPermissionsMode: "0777"
+    datasetPermissionsUser: 0
+    datasetPermissionsGroup: 0
+nfs:
+    shareHost: nova.home.arpa
+    shareAlldirs: false
+    shareAllowedHosts: []
+    shareAllowedNetworks: []
+    shareMaprootUser: root
+    shareMaprootGroup: root
+    shareMapallUser: ""
+    shareMapallGroup: ""
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1w68rvrv30t2xfm42ctr02vurav5222065pl03ys6ps5aklraq42s4jeyjl
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAveHphM3FJY3Vra3lWNy81
+            N2ZLQnJ3Zmp2ZTlwQlEyMHl4anB1bDU0VDNnCkFYMzRiZTNZdG4wdWxZSVE4cVVX
+            M1N5ZlV2cmpTVDhnUVhKQjBya3FUKzAKLS0tIFZKaEdYMlNHMmxKa2NzdkV3NUpD
+            QTdUQVNtMjlLYndrUkIyN2gyUlZWTTgKa7gaAEmfUILROlWGjkjgKga8jTb09xTd
+            NjFjmoTfpYNNJeBedjbPu1gU+V6dJer91Y+37ZFE552TmH7c9LaSsg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-02-13T02:43:46Z"
+    mac: ENC[AES256_GCM,data:FMQkUFv92S2+dmUvWTGs7+X82rJlTwR/r0R0Wpor2sF7hPD7t6MlvhDeirv8AKC+xCtWjcJC7rCZ4A9a51ZPWCiVXvUpSrSZ75L/d8R/4Xf+6byNp85JP9eCzzrwPj/tpLYi6rI03ClHnbAnu85HlAyCiGKjo5jwrKgxNDjLC7E=,iv:7/AQfVkxlqkErYECaSI15sOQarFVIaI3aP8BOXLy3fg=,tag:kkGAORqnYgqU+KT2tXp7Iw==,type:str]
+    pgp: []
+    encrypted_regex: ^httpConnection$
+    version: 3.8.1
