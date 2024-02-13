@@ -19,3 +19,25 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app democratic-csi-freenas-api-nfs-provisioner
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: snapshot-controller
+  path: ./kubernetes/main/apps/storage/democratic-csi/freenas-api-nfs
+  targetNamespace: storage
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: false
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m

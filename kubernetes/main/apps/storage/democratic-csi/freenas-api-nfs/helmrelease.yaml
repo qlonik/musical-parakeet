@@ -1,0 +1,70 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: democratic-csi-freenas-api-nfs-provisioner
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: democratic-csi
+      version: 0.14.5
+      sourceRef:
+        name: democratic-csi
+        kind: HelmRepository
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    csiDriver:
+      name: freenas-api-nfs.cluster.local
+    storageClasses:
+      - name: truenas-nfs-main
+        defaultClass: false
+        reclaimPolicy: Delete
+        volumeBindingMode: Immediate
+        allowVolumeExpansion: true
+        parameters:
+          fsType: nfs
+          detachedVolumesFromSnapshots: "false"
+          detachedVolumesFromVolumes: "false"
+        mountOptions:
+          - "nfsvers=4.2"
+          - "nconnect=8"
+          - "hard"
+          - "noatime"
+    volumeSnapshotClasses:
+      - name: truenas-nfs-main
+        parameters:
+          detachedSnapshots: "false"
+    driver:
+      existingConfigSecret: democratic-csi-freenas-api-nfs-provisioner-driver-config
+      config:
+        driver: freenas-api-nfs
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      externalAttacher:
+        image: registry.k8s.io/sig-storage/csi-attacher:v4.5.0
+      externalProvisioner:
+        image: registry.k8s.io/sig-storage/csi-provisioner:v4.0.0
+      externalResizer:
+        image: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
+      externalSnapshotter:
+        image: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.0
+      driver:
+        image: ghcr.io/democratic-csi/democratic-csi:v1.8.4
+    node:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      driver:
+        image: ghcr.io/democratic-csi/democratic-csi:v1.8.4
+      driverRegistrar:
+        image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
