@@ -14,35 +14,3 @@ reclaimPolicy: Delete
 volumeBindingMode: Immediate
 # Note: The first two options are strictly for NFSv4.2
 mountOptions: ["nfsvers=4.2", "nconnect=8", "hard", "noatime"]
----
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: "nfs-slow"
-  labels:
-    disk.home.arpa/fs: zfs
-    disk.home.arpa/type: hdd
-provisioner: nfs.csi.k8s.io
-parameters:
-  server: "nova.home.arpa"
-  share: "/appdata/pvc"
-reclaimPolicy: Delete
-volumeBindingMode: Immediate
-# Note: The first two options are strictly for NFSv4.2
-mountOptions: ["nfsvers=4.2", "nconnect=8", "hard", "noatime"]
----
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: "nfs-fast"
-  labels:
-    disk.home.arpa/fs: zfs
-    disk.home.arpa/type: hdd
-provisioner: nfs.csi.k8s.io
-parameters:
-  server: "nova.home.arpa"
-  share: "/appdata-fast/pvc"
-reclaimPolicy: Delete
-volumeBindingMode: Immediate
-# Note: The first two options are strictly for NFSv4.2
-mountOptions: ["nfsvers=4.2", "nconnect=8", "hard", "noatime"]
