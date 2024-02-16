@@ -18,18 +18,6 @@
         msg: Aborted setting up storage server
       when: tn_main_pool is not defined
 
-    - name: Network Configuration
-      notify: Reboot
-      block:
-        - name: Network Configuration | Set hostname
-          ansible.builtin.command:
-            cmd: >-
-              cli --mode csv --command '
-                network configuration update
-                hostname="{{ inventory_hostname }}"
-                domain="home.arpa"
-              '
-
     - name: Locale
       block:
         - name: Locale | Set timezone
@@ -261,9 +249,3 @@
       arensb.truenas.filesystem:
         name: "{{ tn_main_pool }}/{{ item }}"
       loop: ["dump", "vm-images"]
-
-  handlers:
-    - name: Reboot
-      ansible.builtin.reboot:
-        msg: Rebooting nodes
-        reboot_timeout: 3600
