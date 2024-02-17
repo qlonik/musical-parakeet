@@ -6,17 +6,22 @@ metadata:
 spec:
   sourcePVC: config-prowlarr-0
   trigger:
-    schedule: "0 */24 * * *"
+    schedule: "0 * * * *"
   restic:
-    copyMethod: Direct
-    pruneIntervalDays: 10
     repository: prowlarr-restic-secret
-    cacheCapacity: 2Gi
-    storageClassName: nfs-zfs-main
+    copyMethod: Snapshot
+    pruneIntervalDays: 7
+    volumeSnapshotClassName: truenas-nfs-main
+    cacheStorageClassName: local-path # truenas-nfs-main
+    cacheAccessModes: ["ReadWriteOnce"] # ["ReadWriteMany"]
+    cacheCapacity: 4Gi
+    storageClassName: truenas-nfs-main
+    accessModes: ["ReadWriteMany"]
     moverSecurityContext:
       runAsUser: 568
       runAsGroup: 568
       fsGroup: 568
     retain:
-      daily: 10
-      within: 3d
+      hourly: 24
+      daily: 7
+      weekly: 5
