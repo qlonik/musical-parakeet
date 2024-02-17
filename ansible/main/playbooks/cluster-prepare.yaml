@@ -19,6 +19,11 @@
 
     - name: Packages
       block:
+        - name: Packages | Add non-free repository
+          ansible.builtin.apt_repository:
+            repo: deb http://deb.debian.org/debian/ stable main contrib non-free
+            filename: non-free
+            update_cache: true
         - name: Packages | Install
           ansible.builtin.apt:
             name:
@@ -31,6 +36,10 @@
               - gnupg
               - hdparm
               - htop
+              - i965-va-driver-shaders
+              - intel-gpu-tools
+              - intel-media-va-driver-non-free
+              - iperf3
               - iptables
               - iputils-ping
               - ipvsadm
@@ -46,6 +55,7 @@
               - python3
               - python3-apt
               - python3-kubernetes
+              - python3-openshift
               - python3-yaml
               - smartmontools
               - socat
