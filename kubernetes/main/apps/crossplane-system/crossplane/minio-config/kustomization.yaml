@@ -4,3 +4,5 @@ kind: Kustomization
 resources:
   - ./providerconfig.yaml
   - ./secret.sops.yaml
+  - ./xrd-bucket.yaml
+  - ./composition.yaml
