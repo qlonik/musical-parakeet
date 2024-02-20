@@ -190,7 +190,7 @@
     {
       "description": "Use custom versioning for linuxserver.io containers",
       "matchDatasources": ["docker"],
-      "versioning": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?(?<vendor>-ls)(?<build>\\d+)$",
+      "versioning": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?-ls(?<build>\\d+)$",
       "matchPackageNames": ["ghcr.io/linuxserver"]
     },
     {
