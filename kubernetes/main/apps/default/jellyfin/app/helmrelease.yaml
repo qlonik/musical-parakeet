@@ -103,11 +103,11 @@ spec:
       transcodes:
         enabled: true
         type: emptyDir
-        mountPath: /transcodes
+        mountPath: /config/transcodes
       cache:
         enabled: true
         type: emptyDir
-        mountPath: /cache
+        mountPath: /config/cache
     nodeSelector:
       intel.feature.node.kubernetes.io/gpu: "true"
     resources:
