@@ -30,7 +30,7 @@ spec:
       type: statefulset
     image:
       repository: ghcr.io/linuxserver/nzbget
-      tag: v21.1-ls138@sha256:ed58a6471591126adee01e704d35264979640bede1fca7ffa13a21d6643c5a18
+      tag: 21.1.20230119@sha256:ed58a6471591126adee01e704d35264979640bede1fca7ffa13a21d6643c5a18
     env:
       TZ: ${TIMEZONE}
       PUID: 568
