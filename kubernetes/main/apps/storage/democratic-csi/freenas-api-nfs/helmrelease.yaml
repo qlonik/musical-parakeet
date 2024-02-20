@@ -58,7 +58,7 @@ spec:
       externalResizer:
         image: registry.k8s.io/sig-storage/csi-resizer:v1.10.0
       externalSnapshotter:
-        image: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.0
+        image: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
       driver:
         image: ghcr.io/democratic-csi/democratic-csi:v1.8.4
     node:
