@@ -82,18 +82,6 @@ spec:
         enabled: true
         type: emptyDir
         mountPath: /config/intermediate
-      patches:
-        enabled: true
-        type: configMap
-        name: nzbget-remove-chown-patch
-        mountPath: /etc/s6-overlay/s6-rc.d/patch-nzbget-config/
-        readOnly: true
-      patch-dep:
-        enabled: true
-        type: configMap
-        name: nzbget-remove-chown-patch
-        subPath: dep
-        mountPath: /etc/s6-overlay/s6-rc.d/init-nzbget-config/dependencies.d/patch-nzbget-config
     resources:
       requests:
         cpu: 10m

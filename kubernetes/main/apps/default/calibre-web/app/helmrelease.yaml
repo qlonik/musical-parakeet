@@ -102,18 +102,6 @@ spec:
         path: /mnt/main/media/ebooks
         readOnly: true
         mountPath: /books/ebooks
-      patches:
-        enabled: true
-        type: configMap
-        name: calibre-web-remove-chown-patch
-        mountPath: /etc/s6-overlay/s6-rc.d/patch-calibre-web-config/
-        readOnly: true
-      patch-dep:
-        enabled: true
-        type: configMap
-        name: calibre-web-remove-chown-patch
-        subPath: dep
-        mountPath: /etc/s6-overlay/s6-rc.d/init-calibre-web-config/dependencies.d/patch-calibre-web-config
     probes:
       startup:
         spec:
