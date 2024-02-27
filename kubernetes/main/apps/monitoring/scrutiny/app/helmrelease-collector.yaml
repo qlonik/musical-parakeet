@@ -83,7 +83,7 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: spec.nodeName
-        command: # double "$$" escape flux substitutions
+        args: # double "$$" escape flux substitutions
           - /bin/bash
           - -c
           - |

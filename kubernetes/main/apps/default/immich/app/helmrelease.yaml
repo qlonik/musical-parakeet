@@ -91,7 +91,7 @@ spec:
             image: *init-image
             env: *init-env
             envFrom: *envfrom
-            command: "/config/run-sql-scripts.sh"
+            args: ["/config/run-sql-scripts.sh"]
       microservices:
         containers:
           main:
