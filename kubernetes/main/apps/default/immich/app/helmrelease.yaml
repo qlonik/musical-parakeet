@@ -41,7 +41,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v1.94.1@sha256:c7b80752d48464dea1c4495ff810365a0809d89c2ac219547d3c1aed81c6411f
+              tag: v1.96.0@sha256:bd1558f9bb6a107eb924393e77a96d39a917d63a7f2d3b3055544e2f05444d13
             envFrom: &envfrom
               - configMapRef:
                   name: &configmap immich-configmap
@@ -99,7 +99,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v1.94.1@sha256:c7b80752d48464dea1c4495ff810365a0809d89c2ac219547d3c1aed81c6411f
+              tag: v1.96.0@sha256:bd1558f9bb6a107eb924393e77a96d39a917d63a7f2d3b3055544e2f05444d13
             envFrom: *envfrom
             command: "/bin/sh"
             args:
@@ -115,7 +115,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-machine-learning
-              tag: v1.94.1@sha256:a3c612c548d5f547a31d001d97f661d7acd4a0ae354de76a70e45162d2b81014
+              tag: v1.96.0@sha256:5368a24201ce4ad4b2f81b892a69fb46006b3217e5961d5ee709176f4714e075
             envFrom:
               - configMapRef:
                   name: *configmap
