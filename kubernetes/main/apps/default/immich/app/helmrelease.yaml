@@ -47,9 +47,7 @@ spec:
                   name: &configmap immich-configmap
               - secretRef:
                   name: immich-secret
-            command: "/bin/sh"
-            args:
-              - "./start-server.sh"
+            args: ["./start.sh", "immich"]
             resources:
               requests:
                 cpu: 100m
@@ -101,9 +99,7 @@ spec:
               repository: ghcr.io/immich-app/immich-server
               tag: v1.96.0@sha256:bd1558f9bb6a107eb924393e77a96d39a917d63a7f2d3b3055544e2f05444d13
             envFrom: *envfrom
-            command: "/bin/sh"
-            args:
-              - "./start-microservices.sh"
+            args: ["./start.sh", "microservices"]
             resources:
               requests:
                 cpu: 100m
