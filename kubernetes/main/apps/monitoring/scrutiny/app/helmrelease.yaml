@@ -31,7 +31,7 @@ spec:
       type: statefulset
     image:
       repository: ghcr.io/analogj/scrutiny
-      tag: v0.7.2-web@sha256:9c3d1b51bfcad55f7046b2ec15e3c34bc913e711354c2011c17cf3353910b796
+      tag: v0.7.3-web@sha256:b157092f343890e3566f4ced5401ad5a438054b837e970fd498fcd9c7c6b5b25
     env:
       TZ: "${TIMEZONE}"
       SCRUTINY_WEB_INFLUXDB_HOST: scrutiny-influxdb.monitoring.svc.cluster.local
