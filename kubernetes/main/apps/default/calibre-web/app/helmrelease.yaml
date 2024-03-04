@@ -35,7 +35,7 @@ spec:
       TZ: ${TIMEZONE}
       PUID: 568
       PGID: 568
-      DOCKER_MODS: ghcr.io/linuxserver/mods:universal-calibre-v6.14.1@sha256:640eeee828f4b0022cb4c7dccca9e4273f64c66fa1cc39aff096f38d164d175c
+      DOCKER_MODS: ghcr.io/linuxserver/mods:universal-calibre-v7.6.0@sha256:de94b471087f9daf96f39920f4e51c5189e5e4bf9436bfd9dd98d585eaa8d48f
     service:
       main:
         ports:
