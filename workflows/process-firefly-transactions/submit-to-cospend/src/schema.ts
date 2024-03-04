@@ -160,15 +160,15 @@ export const { Project: CospendProjectDescriptionS, ProjectId } = addBrandedKey(
   ["id", IdStr],
   S.struct({
     name: S.string,
-    contact_email: Email,
+    contact_email: S.optional(Email),
 
-    guestaccesslevel: S.number,
+    guestaccesslevel: S.optional(S.number),
     autoexport: S.string,
     currencyname: S.nullable(S.string),
     lastchanged: DateFromUnixSeconds,
     nb_bills: S.number.pipe(S.int()),
     total_spent: S.number,
-    deletion_disabled: S.boolean,
+    deletion_disabled: S.optional(S.boolean),
     categorysort: S.string,
     paymentmodesort: S.string,
     myaccesslevel: S.number,
