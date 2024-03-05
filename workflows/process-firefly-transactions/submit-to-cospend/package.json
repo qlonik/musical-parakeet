@@ -6,19 +6,19 @@
     "start": "tsx src/main.ts"
   },
   "dependencies": {
-    "@actions/core": "^1.10.0",
+    "@actions/core": "^1.10.1",
     "@effect/platform-node": "^0.44.11",
     "@effect/schema": "^0.63.2",
-    "axios": "^1.4.0",
+    "axios": "^1.6.7",
     "common-tags": "1.8.1",
     "effect": "~2.4.1"
   },
   "devDependencies": {
-    "@tsconfig/node16": "^16.1.0",
-    "@tsconfig/strictest": "^2.0.1",
-    "@types/common-tags": "^1.8.1",
-    "@types/node": "^16.18.40",
-    "tsx": "^3.12.7",
-    "typescript": "^5.1.6"
+    "@tsconfig/node16": "^16.1.1",
+    "@tsconfig/strictest": "^2.0.3",
+    "@types/common-tags": "^1.8.4",
+    "@types/node": "^16.18.86",
+    "tsx": "^4.7.1",
+    "typescript": "^5.3.3"
   }
 }
