@@ -40,12 +40,9 @@ const wrapAxiosInstance = (axios: AxiosInstance): WrappedAxios => ({
     ),
 });
 
-export interface CospendApiService {
-  readonly client: WrappedAxios;
-}
-export const CospendApiService = Context.GenericTag<CospendApiService>(
+export class CospendApiService extends Context.Tag(
   "submit-to-cospend/services/CospendApiService",
-);
+)<CospendApiService, { client: WrappedAxios }>() {}
 
 export const CospendApiServiceLive = T.gen(function* ($) {
   const {
@@ -62,13 +59,9 @@ export const CospendApiServiceLive = T.gen(function* ($) {
   return CospendApiService.of({ client: wrapAxiosInstance(client) });
 }).pipe(Layer.effect(CospendApiService));
 
-export interface FireflyApiService {
-  readonly client: WrappedAxios;
-}
-
-export const FireflyApiService = Context.GenericTag<FireflyApiService>(
+export class FireflyApiService extends Context.Tag(
   "submit-to-cospend/services/FireflyApiService",
-);
+)<FireflyApiService, { readonly client: WrappedAxios }>() {}
 
 export const FireflyApiServiceLive = T.gen(function* ($) {
   const {
