@@ -11,7 +11,7 @@ import { convertErrorToMessage, NetworkError } from "./errors.js";
 export class UpdateFireflyTransactionTagsError extends Data.TaggedError(
   "UpdateFireflyTransactionTagsError",
 )<{ error: NetworkError<unknown, DataToSubmitForUpdate> | ParseError }> {
-  override toString() {
+  override get message() {
     return convertErrorToMessage(this.error, "UpdateFireflyTransactionTags");
   }
 }

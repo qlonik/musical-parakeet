@@ -14,7 +14,7 @@ import { convertErrorToMessage, NetworkError } from "./errors.js";
 export class GetCospendProjectDescriptionError extends Data.TaggedError(
   "GetCospendProjectDescriptionError",
 )<{ error: NetworkError | ParseError }> {
-  override toString() {
+  override get message() {
     return convertErrorToMessage(this.error, "GetCospendProjectDescription");
   }
 }

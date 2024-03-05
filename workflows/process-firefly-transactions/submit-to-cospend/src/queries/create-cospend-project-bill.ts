@@ -8,7 +8,7 @@ import { convertErrorToMessage, NetworkError } from "./errors.js";
 export class CreateCospendProjectBillError extends Data.TaggedError(
   "CreateCospendProjectBillError",
 )<{ error: NetworkError<unknown, Record<string, unknown>> | ParseError }> {
-  override toString() {
+  override get message() {
     return convertErrorToMessage(this.error, "CreateCospendProjectBill");
   }
 }
