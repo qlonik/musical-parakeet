@@ -1,7 +1,7 @@
 import { ParseError } from "@effect/schema/ParseResult";
 import { Schema as S } from "@effect/schema";
 import { Data, Effect as T, Request, RequestResolver, pipe } from "effect";
-import { BillIdStr, BillIdStrTo, ProjectId } from "../model/cospend.js";
+import { BillId, ProjectId } from "../model/cospend.js";
 import { CospendApiService } from "./axios-instances.js";
 import { convertErrorToMessage, NetworkError } from "./errors.js";
 
@@ -14,7 +14,7 @@ export class CreateCospendProjectBillError extends Data.TaggedError(
 }
 
 export interface CreateCospendProjectBill
-  extends Request.Request<BillIdStrTo, CreateCospendProjectBillError> {
+  extends Request.Request<BillId, CreateCospendProjectBillError> {
   readonly _tag: "CreateCospendProjectBill";
   readonly project: ProjectId;
   readonly data: /* should be `typeof OBJECT_TO_SEND` */ Record<
@@ -37,7 +37,7 @@ export const CreateCospendProjectBillResolver = pipe(
         }),
       ),
       T.map((_) => _.data),
-      T.flatMap(S.decodeUnknown(BillIdStr, { errors: "all" })),
+      T.flatMap(S.decodeUnknown(BillId, { errors: "all" })),
       T.mapError((error) => new CreateCospendProjectBillError({ error })),
     ),
   RequestResolver.fromEffect,

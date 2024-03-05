@@ -102,7 +102,8 @@ default, cospend project has \`'Debit card'\` and \`Credit card\` among others.
 );
 const PaymentModeIdStr = S.templateLiteral(PaymentModeId);
 
-const { Bill, BillId } = addBrandedKey(
+export type BillId = S.Schema.To<typeof BillId>;
+export const { Bill, BillId } = addBrandedKey(
   "Bill",
   ["id", Id],
   S.struct({
@@ -124,10 +125,6 @@ const { Bill, BillId } = addBrandedKey(
     repeatfreq: S.number,
   }),
 );
-
-export const BillIdStr = IdStr.pipe(S.identifier("Bill"), S.brand("Bill"));
-export type BillIdStrFrom = S.Schema.From<typeof BillIdStr>;
-export type BillIdStrTo = S.Schema.To<typeof BillIdStr>;
 
 export type CospendCategoriesTo = S.Schema.To<typeof CospendCategories>;
 export const CospendCategories = S.record(CategoryIdStr, Category);
