@@ -67,6 +67,7 @@ function getTransactionConfigurationInput(
             content.slice(i + field_separator.length, content.length),
           ] as const);
     }),
+    RR.fromEntries,
     S.decodeUnknown(transactionConfigurationInputS, { errors: "all" }),
   );
 }
