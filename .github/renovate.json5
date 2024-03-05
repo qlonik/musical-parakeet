@@ -17,6 +17,9 @@
   "pre-commit": {
     "enabled": true
   },
+  "github-actions": {
+    "fileMatch": ["(^|/)workflows/.+.ya?ml$"]
+  },
   "flux": {
     "fileMatch": [
       "(^|/)ansible/.+\\.ya?ml(\\.j2)?$",
