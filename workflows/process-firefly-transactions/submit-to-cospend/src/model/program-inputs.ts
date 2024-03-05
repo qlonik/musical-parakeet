@@ -9,9 +9,6 @@ import {
 } from "./cospend.js";
 import { FireflyPersonalAccessToken, FireflyTransaction } from "./firefly.js";
 
-export type transactionConfigurationInputS = S.Schema.To<
-  typeof transactionConfigurationInputS
->;
 export const transactionConfigurationInputS = S.struct({
   project: ProjectId,
   for: S.optional(S.union(S.literal("all"), MemberUserid), {
@@ -22,9 +19,6 @@ export const transactionConfigurationInputS = S.struct({
 });
 
 export type FireflyTransactionInputId = S.Schema.To<typeof TransactionInputId>;
-export type FireflyTransactionInput = S.Schema.From<
-  typeof fireflyTransactionInputS
->;
 export const {
   TransactionInput: fireflyTransactionInputS,
   TransactionInputId,
@@ -41,6 +35,8 @@ export const {
   }),
 );
 
+// Do not delete. This type is a reference type for inputs used by
+// `load-unprocessed.cjs` script.
 export type PROCESS_FIREFLY_TRANSACTIONS = S.Schema.From<
   typeof PROCESS_FIREFLY_TRANSACTIONS
 >;
