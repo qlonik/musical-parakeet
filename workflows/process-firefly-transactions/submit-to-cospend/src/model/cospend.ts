@@ -27,10 +27,12 @@ export const { Member, MemberId, MemberUserid } = pipe(
         "userid",
         S.string.pipe(
           S.brand("userid"),
-          S.documentation(// language=markdown
-          markdown`
+          S.documentation(
+            // language=markdown
+            markdown`
 One of the user ids from cospend (usually nextcloud user id).
-          `),
+            `,
+          ),
         ),
       ],
       _,
@@ -54,12 +56,14 @@ export const { Category, CategoryId, CategoryName } = pipe(
       [
         "name",
         S.string.pipe(
-          S.documentation(// language=markdown
-          markdown`
+          S.documentation(
+            // language=markdown
+            markdown`
 Category for the purchase. One of the values specified in the cospend project.
 By default, cospend project has \`'Grocery'\`, \`'Restaurant'\`, \`'Shopping'\`,
 \`'Rent'\` and \`'Utilities'\` among others.
-          `),
+            `,
+          ),
         ),
       ],
       _,
@@ -86,11 +90,13 @@ export const { PaymentMode, PaymentModeId, PaymentModeName } = pipe(
       [
         "name",
         S.string.pipe(
-          S.documentation(// language=markdown
-          markdown`
+          S.documentation(
+            // language=markdown
+            markdown`
 Method of payment. One of the values specified in the cospend project. By
 default, cospend project has \`'Debit card'\` and \`Credit card\` among others.
-          `),
+            `,
+          ),
         ),
       ],
       _,
