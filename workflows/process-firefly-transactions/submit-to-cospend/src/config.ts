@@ -65,9 +65,10 @@ export const ApplicationConfig = Config.all({
 });
 
 export interface ApplicationConfigService extends ApplicationConfig {}
-export const ApplicationConfigService = Context.Tag<ApplicationConfigService>(
-  Symbol.for("submit-to-cospend/services/ApplicationConfigService"),
-);
+export const ApplicationConfigService =
+  Context.GenericTag<ApplicationConfigService>(
+    "submit-to-cospend/services/ApplicationConfigService",
+  );
 
 export const ApplicationConfigFromEnvLive = pipe(
   ApplicationConfig,

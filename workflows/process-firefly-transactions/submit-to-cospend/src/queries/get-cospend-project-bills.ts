@@ -19,7 +19,7 @@ export class GetCospendProjectBillsError extends Data.TaggedError(
 }
 
 export interface GetCospendProjectBills
-  extends Request.Request<GetCospendProjectBillsError, CospendProjectBillsTo> {
+  extends Request.Request<CospendProjectBillsTo, GetCospendProjectBillsError> {
   readonly _tag: "GetCospendProjectBills";
   readonly project: ProjectId;
 }

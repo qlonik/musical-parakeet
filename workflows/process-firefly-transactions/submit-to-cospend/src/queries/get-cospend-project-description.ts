@@ -21,8 +21,8 @@ export class GetCospendProjectDescriptionError extends Data.TaggedError(
 
 export interface GetCospendProjectDescription
   extends Request.Request<
-    GetCospendProjectDescriptionError,
-    CospendProjectDescriptionTo
+    CospendProjectDescriptionTo,
+    GetCospendProjectDescriptionError
   > {
   readonly _tag: "GetCospendProjectDescription";
   readonly project: ProjectId;

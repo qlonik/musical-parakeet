@@ -12,9 +12,8 @@ interface WrappedAxios {
   request: <Result = unknown, InputData = never>(
     config: AxiosRequestConfig<InputData>,
   ) => T.Effect<
-    never,
-    NetworkError<Result, InputData>,
-    AxiosResponse<Result, InputData>
+    AxiosResponse<Result, InputData>,
+    NetworkError<Result, InputData>
   >;
 }
 
@@ -44,8 +43,8 @@ const wrapAxiosInstance = (axios: AxiosInstance): WrappedAxios => ({
 export interface CospendApiService {
   readonly client: WrappedAxios;
 }
-export const CospendApiService = Context.Tag<CospendApiService>(
-  Symbol.for("submit-to-cospend/services/CospendApiService"),
+export const CospendApiService = Context.GenericTag<CospendApiService>(
+  "submit-to-cospend/services/CospendApiService",
 );
 
 export const CospendApiServiceLive = T.gen(function* ($) {
@@ -67,8 +66,8 @@ export interface FireflyApiService {
   readonly client: WrappedAxios;
 }
 
-export const FireflyApiService = Context.Tag<FireflyApiService>(
-  Symbol.for("submit-to-cospend/services/FireflyApiService"),
+export const FireflyApiService = Context.GenericTag<FireflyApiService>(
+  "submit-to-cospend/services/FireflyApiService",
 );
 
 export const FireflyApiServiceLive = T.gen(function* ($) {

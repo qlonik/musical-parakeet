@@ -17,7 +17,7 @@ export class UpdateFireflyTransactionTagsError extends Data.TaggedError(
 }
 
 export interface UpdateFireflyTransactionTags
-  extends Request.Request<UpdateFireflyTransactionTagsError, void> {
+  extends Request.Request<void, UpdateFireflyTransactionTagsError> {
   readonly _tag: "UpdateFireflyTransactionTags";
   readonly transactionId: FireflyTransactionId;
   readonly transactions: ReadonlyArray<{

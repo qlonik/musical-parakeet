@@ -15,7 +15,7 @@ import {
   GetCospendProjectDescriptionError,
 } from "./queries/get-cospend-project-description.js";
 import { TreeFormatter } from "@effect/schema";
-import { ReadonlyRecord } from "effect";
+import { ReadonlyRecord, Unify } from "effect";
 import * as O from "effect/Option";
 import {
   createCospendProjectBill,
@@ -40,13 +40,13 @@ const skipping = T.fail({ _tag: "skipping" as const });
 function mkError(
   tid: string,
   message: string,
-): T.Effect<never, { _tag: "error"; tid: string; message: string }, never> {
+): T.Effect<never, { _tag: "error"; tid: string; message: string }> {
   return T.fail({ _tag: "error", tid, message });
 }
 
 function mkFoundBill(
   message: string,
-): T.Effect<never, { _tag: "foundBill"; message: string }, never> {
+): T.Effect<never, { _tag: "foundBill"; message: string }> {
   return T.fail({ _tag: "foundBill", message });
 }
 
@@ -81,7 +81,7 @@ function loadCospendProjectIfNeeded(project: ProjectId, tid: string) {
       ),
     ),
     T.filterOrElse(RA.isEmptyArray, (foundBills) =>
-      T.unified(
+      Unify.unify(
         foundBills.length === 1
           ? mkFoundBill(
               "found one matching bill submitted to cospend. No need to process it again",
@@ -114,14 +114,14 @@ const processTransaction = (
     field_separator: string;
   },
 ): T.Effect<
-  CospendApiService,
-  | GetCospendProjectDescriptionError
-  | GetCospendProjectBillsError
-  | CreateCospendProjectBillError,
   {
     transaction_journal_id: FireflyTransactionJournalId;
     tags?: ReadonlyArray<string>;
-  }
+  },
+  | GetCospendProjectDescriptionError
+  | GetCospendProjectBillsError
+  | CreateCospendProjectBillError,
+  CospendApiService
 > =>
   T.gen(function* (_) {
     const done_label_value = tag_prefix + done_marker;
@@ -272,7 +272,7 @@ export const program = T.gen(function* ($) {
 
   const shouldUpdate = RA.some(toUpdate, (o) =>
     pipe(
-      RR.keys(o),
+      RR.keys(o as Record<string, unknown>),
       RA.difference(["transaction_journal_id"]),
       RA.isNonEmptyArray,
     ),

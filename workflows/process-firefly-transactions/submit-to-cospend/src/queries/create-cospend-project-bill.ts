@@ -14,7 +14,7 @@ export class CreateCospendProjectBillError extends Data.TaggedError(
 }
 
 export interface CreateCospendProjectBill
-  extends Request.Request<CreateCospendProjectBillError, BillIdStrTo> {
+  extends Request.Request<BillIdStrTo, CreateCospendProjectBillError> {
   readonly _tag: "CreateCospendProjectBill";
   readonly project: ProjectId;
   readonly data: /* should be `typeof OBJECT_TO_SEND` */ Record<

@@ -7,11 +7,11 @@
   },
   "dependencies": {
     "@actions/core": "^1.10.0",
-    "@effect/platform-node": "^0.42.4",
-    "@effect/schema": "^0.61.4",
+    "@effect/platform-node": "^0.44.11",
+    "@effect/schema": "^0.63.2",
     "axios": "^1.4.0",
     "common-tags": "1.8.1",
-    "effect": "~2.2.3"
+    "effect": "~2.4.1"
   },
   "devDependencies": {
     "@tsconfig/node16": "^16.1.0",
