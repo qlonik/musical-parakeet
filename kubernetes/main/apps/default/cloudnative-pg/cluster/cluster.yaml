@@ -6,7 +6,7 @@ metadata:
   name: postgres
 spec:
   instances: 3
-  imageName: ghcr.io/tensorchord/cloudnative-pgvecto.rs:14.10@sha256:e46db9b93f0c0ee56e74bbcda842f614cbd94e1acbbf06d9f269e66f4a200225
+  imageName: ghcr.io/tensorchord/cloudnative-pgvecto.rs:14.11@sha256:34f9ea566c8c51e7e5f5210d41ea1f90006cce1570a668da14d2ebe95194c7a2
   postgresql:
     shared_preload_libraries:
       - "vectors.so"
