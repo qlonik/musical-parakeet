@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: immich-app
+  name: immich
 spec:
   interval: 30m
   chart:
@@ -26,14 +26,7 @@ spec:
   dependsOn:
     - name: redis
       namespace: default
-    -
-      # need to be removed or renamed to db
-      name: immich
-      namespace: default
-
   values:
-    global:
-      fullnameOverride: immich
     controllers:
       main:
         nameOverride: server
