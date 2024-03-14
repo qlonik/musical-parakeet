@@ -4,7 +4,7 @@ import { Id, IdStr } from "./generic.js";
 import { addBrandedKey } from "../schema-extra.js";
 import { markdown } from "../template-tags.js";
 
-export type MemberUseridTo = S.Schema.To<typeof MemberUserid>;
+export type MemberUseridTo = S.Schema.Type<typeof MemberUserid>;
 export const { Member, MemberId, MemberUserid } = pipe(
   S.struct({}),
   (_) =>
@@ -13,13 +13,12 @@ export const { Member, MemberId, MemberUserid } = pipe(
       [
         "userid",
         S.string.pipe(
-          S.brand("userid"),
-          S.documentation(
+          S.brand("userid", {
             // language=markdown
-            markdown`
+            documentation: markdown`
 One of the user ids from cospend (usually nextcloud user id).
             `,
-          ),
+          }),
         ),
       ],
       _,
@@ -37,16 +36,14 @@ export const { Category, CategoryId, CategoryName } = pipe(
       "Category",
       [
         "name",
-        S.string.pipe(
-          S.documentation(
-            // language=markdown
-            markdown`
+        S.string.annotations({
+          // language=markdown
+          documentation: markdown`
 Category for the purchase. One of the values specified in the cospend project.
 By default, cospend project has \`'Grocery'\`, \`'Restaurant'\`, \`'Shopping'\`,
 \`'Rent'\` and \`'Utilities'\` among others.
-            `,
-          ),
-        ),
+          `,
+        }),
       ],
       _,
     ),
@@ -56,7 +53,7 @@ By default, cospend project has \`'Grocery'\`, \`'Restaurant'\`, \`'Shopping'\`,
   }),
 );
 
-export type PaymentModeNameTo = S.Schema.To<typeof PaymentModeName>;
+export type PaymentModeNameTo = S.Schema.Type<typeof PaymentModeName>;
 export const { PaymentMode, PaymentModeId, PaymentModeName } = pipe(
   S.struct({}),
   (_) =>
@@ -64,15 +61,13 @@ export const { PaymentMode, PaymentModeId, PaymentModeName } = pipe(
       "PaymentMode",
       [
         "name",
-        S.string.pipe(
-          S.documentation(
-            // language=markdown
-            markdown`
+        S.string.annotations({
+          // language=markdown
+          documentation: markdown`
 Method of payment. One of the values specified in the cospend project. By
 default, cospend project has \`'Debit card'\` and \`Credit card\` among others.
-            `,
-          ),
-        ),
+          `,
+        }),
       ],
       _,
     ),
@@ -82,7 +77,7 @@ default, cospend project has \`'Debit card'\` and \`Credit card\` among others.
   }),
 );
 
-export type BillId = S.Schema.To<typeof BillId>;
+export type BillId = S.Schema.Type<typeof BillId>;
 export const { Bill, BillId } = addBrandedKey(
   "Bill",
   ["id", Id],
@@ -91,10 +86,10 @@ export const { Bill, BillId } = addBrandedKey(
   }),
 );
 
-export type CospendProjectDescriptionTo = S.Schema.To<
+export type CospendProjectDescriptionTo = S.Schema.Type<
   typeof CospendProjectDescriptionS
 >;
-export type ProjectId = S.Schema.To<typeof ProjectId>;
+export type ProjectId = S.Schema.Type<typeof ProjectId>;
 export const { Project: CospendProjectDescriptionS, ProjectId } = addBrandedKey(
   "Project",
   ["id", IdStr],
@@ -106,7 +101,7 @@ export const { Project: CospendProjectDescriptionS, ProjectId } = addBrandedKey(
   }),
 );
 
-export type CospendProjectBillsTo = S.Schema.To<typeof CospendProjectBillsS>;
+export type CospendProjectBillsTo = S.Schema.Type<typeof CospendProjectBillsS>;
 export const CospendProjectBillsS = S.struct({
   bills: S.array(Bill),
 });
