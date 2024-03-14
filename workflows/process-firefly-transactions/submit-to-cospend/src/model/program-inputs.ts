@@ -1,5 +1,5 @@
 import * as S from "@effect/schema/Schema";
-import { addBrandedKey } from "../schema-extra.js";
+import { addBrandedKeys } from "../schema-extra.js";
 import { IdStr } from "./generic.js";
 import {
   CategoryName,
@@ -24,9 +24,8 @@ export type FireflyTransactionInputId = S.Schema.Type<
 export const {
   TransactionInput: fireflyTransactionInputS,
   TransactionInputId,
-} = addBrandedKey(
+} = addBrandedKeys(
   "TransactionInput",
-  ["id", IdStr],
   S.struct({
     info: S.struct({
       pat: FireflyPersonalAccessToken,
@@ -35,6 +34,7 @@ export const {
     }),
     transaction: FireflyTransaction,
   }),
+  ["id", IdStr],
 );
 
 // Do not delete. This type is a reference type for inputs used by
