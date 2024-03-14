@@ -6,12 +6,12 @@ export const FireflyPersonalAccessToken = S.string.pipe(
 );
 
 export const FireflyTransactionId = IdStr.pipe(S.brand("firefly-transactions"));
-export type FireflyTransactionId = S.Schema.To<typeof FireflyTransactionId>;
+export type FireflyTransactionId = S.Schema.Type<typeof FireflyTransactionId>;
 
 export const FireflyTransactionJournalId = IdStr.pipe(
   S.brand("firefly-transaction-journal"),
 );
-export type FireflyTransactionJournalId = S.Schema.To<
+export type FireflyTransactionJournalId = S.Schema.Type<
   typeof FireflyTransactionJournalId
 >;
 
@@ -23,10 +23,10 @@ const FireflyTransactionJournal = S.struct({
   tags: S.array(S.string),
   category_name: S.nullable(S.string),
 });
-type FireflyTransactionJournalFrom = S.Schema.From<
+type FireflyTransactionJournalFrom = S.Schema.Encoded<
   typeof FireflyTransactionJournal
 >;
-export type FireflyTransactionJournalTo = S.Schema.To<
+export type FireflyTransactionJournalTo = S.Schema.Type<
   typeof FireflyTransactionJournal
 >;
 

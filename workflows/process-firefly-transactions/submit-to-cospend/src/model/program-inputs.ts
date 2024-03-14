@@ -18,7 +18,9 @@ export const transactionConfigurationInputS = S.struct({
   mode: S.optional(PaymentModeName),
 });
 
-export type FireflyTransactionInputId = S.Schema.To<typeof TransactionInputId>;
+export type FireflyTransactionInputId = S.Schema.Type<
+  typeof TransactionInputId
+>;
 export const {
   TransactionInput: fireflyTransactionInputS,
   TransactionInputId,
@@ -37,7 +39,7 @@ export const {
 
 // Do not delete. This type is a reference type for inputs used by
 // `load-unprocessed.cjs` script.
-export type PROCESS_FIREFLY_TRANSACTIONS = S.Schema.From<
+export type PROCESS_FIREFLY_TRANSACTIONS = S.Schema.Encoded<
   typeof PROCESS_FIREFLY_TRANSACTIONS
 >;
 const PROCESS_FIREFLY_TRANSACTIONS = S.struct({
@@ -47,7 +49,7 @@ const PROCESS_FIREFLY_TRANSACTIONS = S.struct({
     S.struct({
       pat: FireflyPersonalAccessToken,
       accounts: S.record(
-        S.identifier("ff3-account-id")(S.string),
+        S.string.annotations({ identifier: "ff3-account-id" }),
         PaymentModeName,
       ),
       cospend_payer_username: MemberUserid,

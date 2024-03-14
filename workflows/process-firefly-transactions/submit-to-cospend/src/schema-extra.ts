@@ -1,23 +1,22 @@
 import * as S from "@effect/schema/Schema";
-import { Brand } from "effect/Brand";
 import * as Str from "effect/String";
 import type { Simplify } from "effect/Types";
 
 export type AddBrandedId<
   Brand extends string,
   IdKey extends string,
-  BrandedIdSchema extends S.Schema<any>,
-  StructSchema extends S.Schema<any, any, any>,
+  BrandedIdSchema extends S.Schema.AnyNoContext,
+  StructSchema extends S.Schema.Any,
 > = Simplify<
   { [_ in `${Brand}${Capitalize<IdKey>}`]: BrandedIdSchema } & {
     [_ in `${Brand}`]: S.Schema<
       Simplify<
-        S.Schema.To<StructSchema> &
-          Simplify<S.ToStruct<{ [_ in IdKey]: BrandedIdSchema }>>
+        S.Schema.Type<StructSchema> &
+          S.Struct.Type<{ [_ in IdKey]: BrandedIdSchema }>
       >,
       Simplify<
-        S.Schema.From<StructSchema> &
-          Simplify<S.FromStruct<{ [_ in IdKey]: BrandedIdSchema }>>
+        S.Schema.Encoded<StructSchema> &
+          S.Struct.Encoded<{ [_ in IdKey]: BrandedIdSchema }>
       >,
       S.Schema.Context<StructSchema>
     >;
@@ -38,24 +37,14 @@ export function addBrandedKey<
   brand: B,
   [idKey, idSchema]: readonly [C, S.Schema<IA, II>],
   struct: S.Schema<A, I, R>,
-): AddBrandedId<
-  B,
-  C,
-  S.BrandSchema<IA & Brand<B>, II, never>,
-  S.Schema<A, I, R>
-> {
-  const finalId = idSchema.pipe(S.identifier(brand), S.brand(brand));
+): AddBrandedId<B, C, S.brand<S.Schema<IA, II>, B>, S.Schema<A, I, R>> {
+  const finalId = idSchema.pipe(S.brand(brand, { identifier: brand }));
   const finalType = S.extend(struct, S.struct({ [idKey]: finalId }));
 
   return {
     [brand]: finalType,
     [brand + capitalize(idKey)]: finalId,
-  } as AddBrandedId<
-    B,
-    C,
-    S.BrandSchema<IA & Brand<B>, II, never>,
-    S.Schema<A, I, R>
-  >;
+  } as AddBrandedId<B, C, S.brand<S.Schema<IA, II>, B>, S.Schema<A, I, R>>;
 }
 
 function capitalize(s: string): string {
