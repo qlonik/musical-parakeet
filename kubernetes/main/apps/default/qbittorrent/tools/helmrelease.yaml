@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.2.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -28,16 +28,15 @@ spec:
 
   values:
     controllers:
-      main:
-        enabled: false
-
       tagging:
         type: cronjob
         cronjob:
           schedule: "@hourly"
-          timezone: "${TIMEZONE}"
+          timeZone: "${TIMEZONE}"
         annotations:
           reloader.stakater.com/auto: "true"
+        pod:
+          restartPolicy: OnFailure
 
         initContainers:
           tagging:
@@ -95,6 +94,16 @@ spec:
               - "--port"
               - "8080"
             resources: *resources
+            probes: &probes
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
 
           expired:
             image: *image
@@ -124,21 +133,13 @@ spec:
               - "--port"
               - "8080"
             resources: *resources
-
-        pod:
-          restartPolicy: OnFailure
-          securityContext: &securityContext
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
-            supplementalGroups: [10000]
+            probes: *probes
 
       orphaned:
         type: cronjob
         cronjob:
           schedule: "@daily"
-          timezone: "${TIMEZONE}"
+          timeZone: "${TIMEZONE}"
         containers:
           main:
             image: *image
@@ -153,10 +154,9 @@ spec:
               - "--port"
               - "8080"
             resources: *resources
-
+            probes: *probes
         pod:
           restartPolicy: OnFailure
-          securityContext: *securityContext
 
       reannounce:
         containers:
@@ -171,12 +171,13 @@ spec:
               - "8080"
             resources: *resources
 
-        pod:
-          securityContext: *securityContext
-
-    service:
-      main:
-        enabled: false
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [10000]
 
     persistence:
       config-file:
@@ -189,7 +190,6 @@ spec:
                 subPath: config.yaml
                 readOnly: true
       downloads:
-        enabled: true
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/downloads/qbittorrent
