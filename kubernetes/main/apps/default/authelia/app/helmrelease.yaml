@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.5.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -41,6 +41,16 @@ spec:
             envFrom:
               - secretRef:
                   name: authelia-credentials
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -52,7 +62,6 @@ spec:
               limits:
                 memory: 100Mi
     defaultPodOptions:
-      enableServiceLinks: false
       securityContext:
         runAsUser: 568
         runAsGroup: 568
@@ -61,15 +70,17 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
     service:
       main:
+        primary: true
+        controller: main
         type: LoadBalancer
         externalTrafficPolicy: Local
         annotations:
           io.cilium/lb-ipam-ips: "${LB_AUTHELIA_ADDR}"
         ports:
           http:
+            primary: true
             port: 80
           metrics:
-            enabled: true
             port: 8080
     # serviceMonitor:
     #   main:
@@ -82,7 +93,6 @@ spec:
     #         scrapeTimeout: 10s
     ingress:
       main:
-        enabled: true
         className: external
         annotations:
           cert-manager.io/cluster-issuer: "letsencrypt-production"
@@ -98,7 +108,7 @@ spec:
               - path: /
                 pathType: Prefix
                 service:
-                  name: main
+                  identifier: main
                   port: http
         tls:
           - hosts:
@@ -106,7 +116,6 @@ spec:
             secretName: "authelia-tls"
       outdated:
         # Deprecated. Delete once other resources are migrated to main ingress
-        enabled: true
         className: internal
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
@@ -121,14 +130,13 @@ spec:
               - path: /
                 pathType: Prefix
                 service:
-                  name: main
+                  identifier: main
                   port: http
         tls:
           - hosts:
               - *old-host
     persistence:
       config:
-        enabled: true
         type: configMap
         name: authelia-config
         globalMounts:
