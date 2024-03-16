@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.5.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -45,7 +45,17 @@ spec:
               tag: 1.4.2@sha256:8d4a560d7307d6554bac85c566a49a23f6b47239a031772823cd294acecca72d
             env:
               TZ: ${TIMEZONE}
-            resources:
+            probes: &probes
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources: &resources
               requests:
                 cpu: 10m
                 memory: 250Mi
@@ -60,6 +70,8 @@ spec:
               - --ref=master
               - --period=6h
               - --root=/add-ons/subcleaner
+            probes: *probes
+            resources: *resources
     defaultPodOptions:
       securityContext:
         runAsUser: 568
@@ -69,12 +81,14 @@ spec:
         supplementalGroups: [10000]
     service:
       main:
+        primary: true
+        controller: main
         ports:
           http:
+            primary: true
             port: 6767
     ingress:
       main:
-        enabled: true
         className: internal
         annotations:
           nginx.ingress.kubernetes.io/configuration-snippet: |
@@ -88,14 +102,13 @@ spec:
               - path: "/"
                 pathType: Prefix
                 service:
-                  name: main
+                  identifier: main
                   port: http
         tls:
           - hosts:
               - *host
     persistence:
       media-movies:
-        enabled: true
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/movies
@@ -104,7 +117,6 @@ spec:
             main:
               - path: /media/movies
       media-series:
-        enabled: true
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/series
@@ -113,7 +125,6 @@ spec:
             main:
               - path: /media/series
       add-ons:
-        enabled: true
         type: emptyDir
         globalMounts:
           - path: /add-ons
