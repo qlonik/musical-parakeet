@@ -37,6 +37,12 @@ spec:
               storageClass: truenas-nfs-main
               globalMounts:
                 - path: /romm/database
+            - name: redis-data
+              accessMode: ReadWriteMany
+              size: 2Gi
+              storageClass: truenas-nfs-main
+              globalMounts:
+                - path: /redis-data
         pod:
           enableServiceLinks: false
         containers:
