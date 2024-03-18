@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.5.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -71,13 +71,12 @@ spec:
               limits:
                 memory: 2Gi
       cronjob:
-        dependsOn: main
         type: cronjob
         cronjob:
           schedule: "@hourly"
-          timezone: "${TIMEZONE}"
-          successfulJobsHistoryLimit: 2
-          failedJobsHistoryLimit: 2
+          timeZone: "${TIMEZONE}"
+          successfulJobsHistory: 2
+          failedJobsHistory: 2
           # TODO: add this if supported
           # activeDeadlineSeconds: 120
         containers:
@@ -102,12 +101,14 @@ spec:
                 memory: 50Mi
     service:
       main:
+        primary: true
+        controller: main
         ports:
           http:
+            primary: true
             port: *port
     ingress:
       main:
-        enabled: true
         className: external
         annotations:
           auth.home.arpa/enabled: "true"
@@ -117,13 +118,12 @@ spec:
               - path: "/"
                 pathType: Prefix
                 service:
-                  name: main
+                  identifier: main
                   port: http
         tls:
           - hosts:
               - *host
       api:
-        enabled: true
         className: external
         hosts:
           - host: &host "firefly-iii.${SECRET_DOMAIN}"
@@ -131,14 +131,13 @@ spec:
               - path: "/api"
                 pathType: Prefix
                 service:
-                  name: main
+                  identifier: main
                   port: http
         tls:
           - hosts:
               - *host
     persistence:
       upload:
-        enabled: true
         type: persistentVolumeClaim
         storageClass: nfs-zfs-main
         accessMode: ReadWriteOnce
