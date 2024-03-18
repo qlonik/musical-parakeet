@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.5.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -34,6 +34,16 @@ spec:
               repository: docker.io/glauth/glauth
               tag: v2.2.0-RC1
             args: ["/app/glauth", "-c", "/config"]
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
             resources:
               requests:
                 cpu: 5m
@@ -48,24 +58,26 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
     service:
       main:
+        primary: true
+        controller: main
         ports:
           http:
+            primary: true
             port: 5555
           ldap:
-            enabled: true
             port: 389
     serviceMonitor:
       main:
         enabled: false
+        serviceName: main
         endpoints:
-          - port: metrics
+          - port: http
             scheme: http
             path: /metrics
             interval: 1m
             scrapeTimeout: 10s
     persistence:
       config:
-        enabled: true
         type: secret
         name: glauth-secret
         globalMounts:
