@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.5.0
+      version: 3.0.4
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -39,6 +39,16 @@ spec:
             envFrom:
               - secretRef:
                   name: homepage-secret
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
             resources:
               requests:
                 cpu: 15m
@@ -47,12 +57,14 @@ spec:
                 memory: 1G
     service:
       main:
+        primary: true
+        controller: main
         ports:
           http:
+            primary: true
             port: 3000
     ingress:
       main:
-        enabled: true
         className: internal
         hosts:
           - host: &host home.${SECRET_DOMAIN}
@@ -60,14 +72,13 @@ spec:
               - path: /
                 pathType: Prefix
                 service:
-                  name: main
+                  identifier: main
                   port: http
         tls:
           - hosts:
               - *host
     persistence:
       config:
-        enabled: true
         type: configMap
         name: homepage-config
         globalMounts:
