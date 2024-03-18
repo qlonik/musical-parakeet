@@ -1,21 +1,21 @@
 import * as S from "@effect/schema/Schema";
 import * as Str from "effect/String";
-import type { Simplify } from "effect/Types";
+import * as Types from "effect/Types";
 
 export function addBrandedKeys<
   const Brand extends string,
   const Struct extends S.Schema.Any,
   const Pairs extends ReadonlyArray<readonly [string, S.Schema.AnyNoContext]>,
 >(
-  brand: Brand,
+  brand: Types.Has<S.Schema.Type<Struct>, GetExtraKeys<Pairs>> extends true
+    ? `error: Key '${keyof S.Schema.Type<Struct> &
+        GetExtraKeys<Pairs>}' is already in Type`
+    : Types.Has<S.Schema.Encoded<Struct>, GetExtraKeys<Pairs>> extends true
+    ? `error: Key '${keyof S.Schema.Encoded<Struct> &
+        GetExtraKeys<Pairs>}' is already in Encode`
+    : Brand,
   struct: Struct,
-  ...keyPairs: keyof S.Schema.Type<Struct> & GetExtraKeys<Pairs> extends [never]
-    ? keyof S.Schema.Encoded<Struct> & GetExtraKeys<Pairs> extends [never]
-      ? Pairs
-      : `error: Key '${GetExtraKeys<Pairs> &
-          keyof S.Schema.Encoded<Struct>}' is already in Encode`[]
-    : `error: Key '${GetExtraKeys<Pairs> &
-        keyof S.Schema.Type<Struct>}' is already in Type`[]
+  ...keyPairs: Pairs
 ): AddBrandedKeys<Brand, Struct, Pairs> {
   const extendStruct: Record<string, S.Schema.AnyNoContext> = {};
   const brandedKeys: Record<string, S.Schema.Any> = {};
@@ -46,7 +46,7 @@ type MergeResult<
   Brand extends string,
   Struct extends S.Schema.Any,
   Result extends [unknown, S.Struct.Fields],
-> = Simplify<
+> = Types.Simplify<
   { [_ in Brand]: S.extend<Struct, S.struct<Result[1]>> } & Result[0]
 >;
 
@@ -73,7 +73,7 @@ type CollectPairs<
         },
       ]
     >
-  : [Simplify<Result[0]>, Simplify<Result[1]>];
+  : [Types.Simplify<Result[0]>, Types.Simplify<Result[1]>];
 
 function capitalize(s: string): string {
   if (Str.isEmpty(s)) return s;
