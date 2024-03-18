@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.5.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -54,6 +54,16 @@ spec:
               PHP_MAX_FILE_UPLOAD: 200
               PHP_MAX_POST: 100M
               PHP_MEMORY_LIMIT: 512M
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
             resources:
               requests:
                 cpu: 10m
@@ -66,12 +76,14 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
     service:
       main:
+        primary: true
+        controller: main
         ports:
           http:
+            primary: true
             port: 80
     ingress:
       main:
-        enabled: true
         className: external
         annotations:
           auth.home.arpa/enabled: "true"
@@ -88,14 +100,13 @@ spec:
               - path: /
                 pathType: Prefix
                 service:
-                  name: main
+                  identifier: main
                   port: http
         tls:
           - hosts:
               - *host
     persistence:
       viewcache:
-        enabled: true
         type: emptyDir
         globalMounts:
           - path: /config/data/viewcache
