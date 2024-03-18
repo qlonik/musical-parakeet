@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.4.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -64,6 +64,16 @@ spec:
             envFrom:
               - secretRef:
                   name: romm-secret
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -84,12 +94,14 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     service:
       main:
+        primary: true
+        controller: main
         ports:
           http:
+            primary: true
             port: 8080
     ingress:
       main:
-        enabled: true
         className: internal
         annotations:
           hajimari.io/icon: mdi:disc
@@ -99,14 +111,13 @@ spec:
               - path: "/"
                 pathType: Prefix
                 service:
-                  name: main
+                  identifier: main
                   port: http
         tls:
           - hosts:
               - *host
     persistence:
       config:
-        enabled: true
         type: configMap
         name: romm-config
         globalMounts:
@@ -114,26 +125,22 @@ spec:
             subPath: config.yml
             readOnly: true
       logs:
-        enabled: true
         type: emptyDir
         globalMounts:
           - path: /romm/logs
       library:
-        enabled: true
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/downloads/romm/library
         globalMounts:
           - path: /romm/library
       resources:
-        enabled: true
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/downloads/romm/resources
         globalMounts:
           - path: /romm/resources
       tmp:
-        enabled: true
         type: emptyDir
         globalMounts:
           - path: /tmp
