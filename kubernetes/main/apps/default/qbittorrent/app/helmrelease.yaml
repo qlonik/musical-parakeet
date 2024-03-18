@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.2.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -60,6 +60,16 @@ spec:
               QBITTORRENT__PORT: &port "8080"
               QBT_BitTorrent__Session__Interface: &iface wg0
               QBT_BitTorrent__Session__InterfaceName: *iface
+            probes: &probes
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
             securityContext:
               runAsUser: 568
               runAsGroup: 568
@@ -91,6 +101,7 @@ spec:
             envFrom:
               - secretRef:
                   name: qbittorrent-secret
+            probes: *probes
             securityContext:
               capabilities:
                 add:
@@ -138,21 +149,23 @@ spec:
                     name: "qbittorrent-restic-secret"
                     key: AWS_SECRET_ACCESS_KEY
 
-        pod:
-          securityContext:
-            fsGroup: 568
-            fsGroupChangePolicy: "OnRootMismatch"
-            supplementalGroups: [10000]
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
+        supplementalGroups: [10000]
 
     service:
       main:
+        primary: true
+        controller: main
         ports:
           http:
+            primary: true
             port: *port
 
     ingress:
       main:
-        enabled: true
         className: internal
         # annotations:
         #   nginx.ingress.kubernetes.io/configuration-snippet: |
@@ -164,7 +177,7 @@ spec:
               - path: "/"
                 pathType: Prefix
                 service:
-                  name: main
+                  identifier: main
                   port: http
         tls:
           - hosts:
@@ -172,7 +185,6 @@ spec:
 
     persistence:
       downloads:
-        enabled: true
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/downloads/qbittorrent
@@ -181,7 +193,6 @@ spec:
             main:
               - path: /media/downloads/qbittorrent
       incomplete:
-        enabled: true
         type: emptyDir
         advancedMounts:
           main:
