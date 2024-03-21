@@ -37,7 +37,7 @@ spec:
           main:
             image:
               repository: ghcr.io/authelia/authelia
-              tag: 4.37.5@sha256:25fc5423238b6f3a1fc967fda3f6a9212846aeb4a720327ef61c8ccff52dbbe2
+              tag: 4.38.6@sha256:06e3153d46b4b6fdb90caf94f2303ab57773016ad025eacd64e00a5576105bbe
             envFrom:
               - secretRef:
                   name: authelia-credentials
