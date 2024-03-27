@@ -8,7 +8,7 @@ spec:
   values:
     initContainers:
       minio-init-bucket:
-        image: ghcr.io/qlonik/minio-init-bucket:RELEASE.2024-03-13T23-51-57Z@sha256:6e04e05458dba24c98ce959e88de0bf1272aaea161c3e3260bc85b544fdfb4aa
+        image: ghcr.io/qlonik/minio-init-bucket:RELEASE.2024-03-25T16-41-14Z@sha256:a827ecf0874889e04d5bb85a4c7d9a395ad2caef1517c39fc103afcb4e3b3063
         env:
           MINIO_HOST: http://minio.default.svc.cluster.local:9000
           MINIO_SUPER_ACCESS_KEY:
