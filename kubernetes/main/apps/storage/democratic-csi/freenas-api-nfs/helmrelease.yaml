@@ -60,11 +60,11 @@ spec:
       externalSnapshotter:
         image: registry.k8s.io/sig-storage/csi-snapshotter:v7.0.1
       driver:
-        image: ghcr.io/democratic-csi/democratic-csi:v1.8.4
+        image: ghcr.io/democratic-csi/democratic-csi:v1.9.0
     node:
       annotations:
         reloader.stakater.com/auto: "true"
       driver:
-        image: ghcr.io/democratic-csi/democratic-csi:v1.8.4
+        image: ghcr.io/democratic-csi/democratic-csi:v1.9.0
       driverRegistrar:
         image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.0
