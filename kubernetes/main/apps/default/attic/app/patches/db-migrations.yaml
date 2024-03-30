@@ -13,7 +13,7 @@ spec:
               - init-db
             image:
               repository: ghcr.io/zhaofengli/attic
-              tag: latest@sha256:666e4ecb9d02e1c98d057a30face961f253cd127b612fd6732e62535b3e4755e
+              tag: latest@sha256:309264ff35f2f7cbcb6609c72d816cb41ee62c74d59d4f01cfc05e94a893dae7
             args:
               - --config
               - /config/server.toml
