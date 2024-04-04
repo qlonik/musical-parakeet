@@ -1,8 +1,9 @@
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: arc-home-ops
+  name: gha-rs
 spec:
   interval: 30m
   chart:
@@ -16,14 +17,18 @@ spec:
   install:
     remediation:
       retries: 3
+  dependsOn:
+    - name: gha-rs-controller
+      namespace: actions-runner-system
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
   values:
-    runnerScaleSetName: arc-runner-set-home-ops
+    runnerScaleSetName: gha-home-ops
     githubConfigUrl: https://github.com/qlonik/musical-parakeet
     githubConfigSecret: actions-runner-controller-auth-secret
     minRunners: 1
@@ -36,3 +41,6 @@ spec:
           - name: runner
             image: ghcr.io/onedr0p/actions-runner:rolling@sha256:08ea5f7f4768d07be9975a2190ffc5ab2df44e77e173f4cda96f9906dffdaadd
             command: ["/home/runner/run.sh"]
+    controllerServiceAccount:
+      name: gha-rs-controller
+      namespace: actions-runner-system

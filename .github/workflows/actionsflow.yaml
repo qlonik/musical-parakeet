@@ -34,7 +34,7 @@ on:
 
 jobs:
   run:
-    runs-on: ["arc-runner-set-home-ops"]
+    runs-on: ["gha-home-ops"]
     name: Run
     concurrency: actionsflow
     steps:
