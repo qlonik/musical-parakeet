@@ -30,7 +30,7 @@ spec:
       type: statefulset
     image:
       repository: ghcr.io/linuxserver/heimdall
-      tag: v2.6.1-ls260@sha256:162b62c2341b8892e7a5371f39e6de1c16aed4517d63f372c7524243ec14a1c7
+      tag: v2.6.1-ls262@sha256:14549064a36e59cb35732914c912c1bc8664b8d73085fb21d10a547fb93d8869
     env:
       TZ: ${TIMEZONE}
       PUID: 568
