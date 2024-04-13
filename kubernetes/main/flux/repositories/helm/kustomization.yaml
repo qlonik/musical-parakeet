@@ -16,6 +16,7 @@ resources:
   - ./democratic-csi.yaml
   - ./descheduler.yaml
   - ./external-dns.yaml
+  - ./external-secrets.yaml
   - ./grafana.yaml
   - ./hajimari.yaml
   - ./immich.yaml

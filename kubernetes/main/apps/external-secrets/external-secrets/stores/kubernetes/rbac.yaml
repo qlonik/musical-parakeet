@@ -1,0 +1,40 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: external-secrets-store-k8s
+secrets:
+  - name: external-secrets-store-k8s
+---
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/service-account-token
+metadata:
+  name: external-secrets-store-k8s
+  annotations:
+    kubernetes.io/service-account.name: external-secrets-store-k8s
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: external-secrets-store-k8s
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["watch", "get", "list"]
+  - apiGroups: ["authorization.k8s.io"]
+    resources: ["selfsubjectrulesreviews"]
+    verbs: ["create"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: external-secrets-store-k8s-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: external-secrets-store-k8s
+subjects:
+  - kind: ServiceAccount
+    name: external-secrets-store-k8s
+    namespace: external-secrets
