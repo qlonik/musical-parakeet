@@ -28,7 +28,7 @@ spec:
       namespace: default
   values:
     controllers:
-      main:
+      attic:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -41,10 +41,10 @@ spec:
               - /config/server.toml
               - --mode
               - api-server
-            envFrom:
+            envFrom: &envFrom
               - secretRef:
                   name: attic-credentials
-            probes: &probes
+            probes:
               liveness:
                 enabled: true
               readiness:
@@ -64,6 +64,29 @@ spec:
                 memory: 10Mi
               limits:
                 memory: 100Mi
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 14.10@sha256:71ddc70edccf201d6a521fe6216bc58d8c7c856a1ef96c4d4fbe9f548818ea4d
+            envFrom: *envFrom
+          db-migrations:
+            dependsOn:
+              - init-db
+            image:
+              repository: ghcr.io/zhaofengli/attic
+              tag: latest@sha256:309264ff35f2f7cbcb6609c72d816cb41ee62c74d59d4f01cfc05e94a893dae7
+            args:
+              - --config
+              - /config/server.toml
+              - --mode
+              - db-migrations
+            envFrom: *envFrom
+          minio-init-bucket:
+            image:
+              repository: ghcr.io/qlonik/minio-init-bucket
+              tag: RELEASE.2024-03-30T15-29-52Z@sha256:df9283b84644c03b38cbbfee2757c6f70540120b27727619a15956bf8098993b
+            envFrom: *envFrom
       gc-cronjob:
         type: cronjob
         cronjob:
@@ -81,10 +104,7 @@ spec:
               - /config/server.toml
               - --mode
               - garbage-collector-once
-            envFrom:
-              - secretRef:
-                  name: attic-credentials
-            probes: *probes
+            envFrom: *envFrom
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -104,7 +124,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     service:
       main:
-        controller: main
+        controller: attic
         primary: true
         ports:
           http:
