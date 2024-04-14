@@ -78,8 +78,6 @@ spec:
               repository: ghcr.io/qlonik/minio-init-bucket
               tag: RELEASE.2024-03-30T15-29-52Z@sha256:df9283b84644c03b38cbbfee2757c6f70540120b27727619a15956bf8098993b
             envFrom: *envFrom
-            env:
-              MINIO_HOST: http://minio.default.svc.cluster.local:9000
     service:
       main:
         controller: audiobookshelf
