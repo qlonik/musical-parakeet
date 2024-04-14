@@ -8,6 +8,7 @@ metadata:
 spec:
   dependsOn:
     - name: cert-manager
+    - name: external-secrets-stores
   path: ./kubernetes/main/apps/actions-runner-system/gha-rs-controller/app
   targetNamespace: actions-runner-system
   commonMetadata:
