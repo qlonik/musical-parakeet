@@ -48,6 +48,7 @@ spec:
         ingressClassName: external
         annotations:
           auth.home.arpa/enabled: "true"
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_set_header Accept-Encoding "";
             # sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_DOMAIN}/css/base/calibre-web/nord.css"></head>';
@@ -68,6 +69,7 @@ spec:
         annotations:
           auth.home.arpa/enabled: "true"
           auth.home.arpa/type: "basic"
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
           nginx.ingress.kubernetes.io/configuration-snippet: |
             # need to hide header to trigger proxy-based authentication
             proxy_set_header Authorization "";
