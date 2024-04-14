@@ -29,6 +29,7 @@ metadata:
 spec:
   dependsOn:
     - name: external-secrets
+    - name: external-secrets-everything
   path: ./kubernetes/main/apps/external-secrets/external-secrets/stores
   targetNamespace: external-secrets
   commonMetadata:
