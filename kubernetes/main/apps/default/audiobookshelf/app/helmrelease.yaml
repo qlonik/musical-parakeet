@@ -25,7 +25,7 @@ spec:
     keepHistory: false
   values:
     controllers:
-      main:
+      audiobookshelf:
         type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
@@ -48,7 +48,7 @@ spec:
               AUDIOBOOKSHELF_GID: 568
               CONFIG_PATH: /config
               METADATA_PATH: /config/metadata
-            envFrom:
+            envFrom: &envFrom
               - secretRef:
                   name: audiobookshelf-secret
             probes:
@@ -72,9 +72,17 @@ spec:
                 memory: 100Mi
               limits:
                 memory: 500Mi
+        initContainers:
+          minio-init-bucket:
+            image:
+              repository: ghcr.io/qlonik/minio-init-bucket
+              tag: RELEASE.2024-03-30T15-29-52Z@sha256:df9283b84644c03b38cbbfee2757c6f70540120b27727619a15956bf8098993b
+            envFrom: *envFrom
+            env:
+              MINIO_HOST: http://minio.default.svc.cluster.local:9000
     service:
       main:
-        controller: main
+        controller: audiobookshelf
         primary: true
         ports:
           http:
