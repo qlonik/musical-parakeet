@@ -5,6 +5,8 @@ metadata:
   name: &app actionsflow-webhook
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: external-secrets-stores
   path: ./kubernetes/main/apps/actions-runner-system/actionsflow-webhook/app
   targetNamespace: actions-runner-system
   commonMetadata:
