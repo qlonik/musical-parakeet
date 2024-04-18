@@ -9,9 +9,9 @@ import {
 } from "./cospend.js";
 import { FireflyPersonalAccessToken, FireflyTransaction } from "./firefly.js";
 
-export const transactionConfigurationInputS = S.struct({
+export const transactionConfigurationInputS = S.Struct({
   project: ProjectId,
-  for: S.optional(S.union(S.literal("all"), MemberUserid), {
+  for: S.optional(S.Union(S.Literal("all"), MemberUserid), {
     default: () => "all" as const,
   }),
   category: S.optional(CategoryName),
@@ -26,8 +26,8 @@ export const {
   TransactionInputId,
 } = addBrandedKeys(
   "TransactionInput",
-  S.struct({
-    info: S.struct({
+  S.Struct({
+    info: S.Struct({
       pat: FireflyPersonalAccessToken,
       cospend_payer_username: MemberUserid,
       cospend_payment_mode: PaymentModeName,
@@ -42,14 +42,14 @@ export const {
 export type PROCESS_FIREFLY_TRANSACTIONS = S.Schema.Encoded<
   typeof PROCESS_FIREFLY_TRANSACTIONS
 >;
-const PROCESS_FIREFLY_TRANSACTIONS = S.struct({
+const PROCESS_FIREFLY_TRANSACTIONS = S.Struct({
   nc_user: MemberUserid,
-  nc_password: S.string.pipe(S.brand("nextcloud-app-password")),
-  firefly_users: S.array(
-    S.struct({
+  nc_password: S.String.pipe(S.brand("nextcloud-app-password")),
+  firefly_users: S.Array(
+    S.Struct({
       pat: FireflyPersonalAccessToken,
-      accounts: S.record(
-        S.string.annotations({ identifier: "ff3-account-id" }),
+      accounts: S.Record(
+        S.String.annotations({ identifier: "ff3-account-id" }),
         PaymentModeName,
       ),
       cospend_payer_username: MemberUserid,

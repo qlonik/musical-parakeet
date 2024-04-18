@@ -51,7 +51,10 @@ export const ApplicationConfig = Config.all({
           errors: "all",
         }),
         Either.mapLeft((error) =>
-          ConfigError.InvalidData(["input"], TreeFormatter.formatError(error)),
+          ConfigError.InvalidData(
+            ["input"],
+            TreeFormatter.formatErrorSync(error),
+          ),
         ),
       ),
     ),

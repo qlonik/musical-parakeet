@@ -9,13 +9,13 @@ import {
   getCospendProjectBills,
   GetCospendProjectBillsError,
 } from "./queries/get-cospend-project-bills.js";
-import * as RA from "effect/ReadonlyArray";
+import * as RA from "effect/Array";
 import {
   getCospendProjectDescription,
   GetCospendProjectDescriptionError,
 } from "./queries/get-cospend-project-description.js";
 import { TreeFormatter } from "@effect/schema";
-import { ReadonlyRecord, Unify } from "effect";
+import * as Unify from "effect/Unify";
 import * as O from "effect/Option";
 import {
   createCospendProjectBill,
@@ -31,7 +31,7 @@ import {
   FireflyTransactionJournalTo,
 } from "./model/firefly.js";
 import { CospendApiService } from "./queries/axios-instances.js";
-import * as RR from "effect/ReadonlyRecord";
+import * as RR from "effect/Record";
 import { updateFireflyTransactionTags } from "./queries/update-firefly-transaction-tags.js";
 import { ApplicationConfigService } from "./config.js";
 
@@ -157,7 +157,7 @@ const processTransaction = (
 
     yield* _(T.logInfo("No matching bills found in cospend"));
 
-    const allUsersMap = ReadonlyRecord.fromIterableWith(members, (m) => [
+    const allUsersMap = RR.fromIterableWith(members, (m) => [
       m.userid,
       m.id.toString(),
     ]);

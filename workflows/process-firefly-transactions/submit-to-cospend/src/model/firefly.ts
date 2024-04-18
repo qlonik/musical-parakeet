@@ -1,7 +1,7 @@
 import { IdStr } from "./generic.js";
 import * as S from "@effect/schema/Schema";
 
-export const FireflyPersonalAccessToken = S.string.pipe(
+export const FireflyPersonalAccessToken = S.String.pipe(
   S.brand("ff3-personal-access-token"),
 );
 
@@ -15,13 +15,13 @@ export type FireflyTransactionJournalId = S.Schema.Type<
   typeof FireflyTransactionJournalId
 >;
 
-const FireflyTransactionJournal = S.struct({
+const FireflyTransactionJournal = S.Struct({
   transaction_journal_id: FireflyTransactionJournalId,
   date: S.Date,
-  amount: S.string,
-  description: S.string,
-  tags: S.array(S.string),
-  category_name: S.nullable(S.string),
+  amount: S.String,
+  description: S.String,
+  tags: S.Array(S.String),
+  category_name: S.NullOr(S.String),
 });
 type FireflyTransactionJournalFrom = S.Schema.Encoded<
   typeof FireflyTransactionJournal
@@ -30,10 +30,10 @@ export type FireflyTransactionJournalTo = S.Schema.Type<
   typeof FireflyTransactionJournal
 >;
 
-export const FireflyTransaction = S.struct({
+export const FireflyTransaction = S.Struct({
   id: FireflyTransactionId,
-  attributes: S.struct({
-    transactions: S.array(FireflyTransactionJournal),
+  attributes: S.Struct({
+    transactions: S.Array(FireflyTransactionJournal),
   }),
 });
 

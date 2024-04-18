@@ -27,10 +27,10 @@ function getFormatterFunction(
   return LogLevel.lessThanEqual(logLevel, LogLevel.Debug)
     ? debug
     : LogLevel.lessThanEqual(logLevel, LogLevel.Info)
-    ? notice
-    : LogLevel.lessThanEqual(logLevel, LogLevel.Warning)
-    ? warning
-    : error;
+      ? notice
+      : LogLevel.lessThanEqual(logLevel, LogLevel.Warning)
+        ? warning
+        : error;
 }
 
 function serializeUnknown(u: unknown): string {
