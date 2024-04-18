@@ -9,13 +9,12 @@ spec:
     schedule: "0 * * * *"
   restic:
     repository: nextcloud-restic-secret
-    copyMethod: Snapshot
+    copyMethod: Direct
     pruneIntervalDays: 7
-    volumeSnapshotClassName: truenas-nfs-main
     cacheStorageClassName: local-path # truenas-nfs-main
     cacheAccessModes: ["ReadWriteOnce"] # ["ReadWriteMany"]
     cacheCapacity: 4Gi
-    storageClassName: truenas-nfs-main
+    storageClassName: local-path
     accessModes: ["ReadWriteMany"]
     moverSecurityContext:
       runAsUser: 33

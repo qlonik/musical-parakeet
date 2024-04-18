@@ -5,10 +5,11 @@ metadata:
   name: nextcloud-main
   labels:
     app.kubernetes.io/name: nextcloud
+  annotations:
+    volume.kubernetes.io/selected-node: andromeda
 spec:
-  storageClassName: truenas-nfs-main
-  accessModes:
-    - ReadWriteMany
+  storageClassName: local-path
+  accessModes: ["ReadWriteOnce"]
   resources:
     requests:
       storage: 5Gi
