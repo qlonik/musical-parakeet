@@ -10,9 +10,7 @@
     "*.json5": "jsonc",
     "./ansible/**/*.yaml": "ansible",
     "./ansible/**/*.sops.yaml": "yaml",
-    "./ansible/**/inventory/**/*.yaml": "yaml",
-    "./kubernetes/**/*.sops.toml": "plaintext",
-    "./kubernetes/**/.decrypted~*.sops.toml": "toml"
+    "./ansible/**/inventory/**/*.yaml": "yaml"
   },
   "sops.defaults.ageKeyFile": "age.key",
   "yaml.schemas": {

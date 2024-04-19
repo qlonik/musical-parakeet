@@ -5,10 +5,6 @@ creation_rules:
     key_groups:
       - age:
           - "age1w68rvrv30t2xfm42ctr02vurav5222065pl03ys6ps5aklraq42s4jeyjl"
-  - path_regex: kubernetes/.*\.sops\.toml
-    key_groups:
-      - age:
-          - "age1w68rvrv30t2xfm42ctr02vurav5222065pl03ys6ps5aklraq42s4jeyjl"
   - path_regex: ansible/.*\.sops\.ya?ml
     key_groups:
       - age:
