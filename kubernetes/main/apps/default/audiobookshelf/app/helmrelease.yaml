@@ -76,7 +76,7 @@ spec:
           minio-init-bucket:
             image:
               repository: ghcr.io/qlonik/minio-init-bucket
-              tag: RELEASE.2024-03-30T15-29-52Z@sha256:df9283b84644c03b38cbbfee2757c6f70540120b27727619a15956bf8098993b
+              tag: RELEASE.2024-04-18T16-45-29Z@sha256:0c91caa7b1fde68cefdd1ae56d2e5a1cb87d3d5a73b0a9fb2cb312f8ade9fc89
             envFrom: *envFrom
     service:
       main:
