@@ -30,7 +30,7 @@ spec:
       type: statefulset
     image:
       repository: ghcr.io/linuxserver/calibre-web
-      tag: 0.6.21-ls262@sha256:584366bdcad9b3e9e1143d9ff5b012f684f32071d515f532953680af7fa43418
+      tag: 0.6.21-ls264@sha256:153babfa106ea042777784f64b06d228e9d4e28e3b96db1a88e7800729b1cfe8
     env:
       TZ: ${TIMEZONE}
       PUID: 568
