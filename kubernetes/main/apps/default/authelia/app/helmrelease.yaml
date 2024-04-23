@@ -29,7 +29,7 @@ spec:
       namespace: default
   values:
     controllers:
-      main:
+      authelia:
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
@@ -38,19 +38,47 @@ spec:
             image:
               repository: ghcr.io/authelia/authelia
               tag: 4.38.8@sha256:19375b10024caeef4e0b119a6247beae84cbaa02c846cfd750e92dea910d4b6a
+            env:
+              AUTHELIA_SERVER_ADDRESS: tcp://0.0.0.0:80
+              AUTHELIA_SERVER_DISABLE_HEALTHCHECK: "true"
+              AUTHELIA_TELEMETRY_METRICS_ADDRESS: "tcp://0.0.0.0:8080"
+              AUTHELIA_TELEMETRY_METRICS_ENABLED: "true"
+              X_AUTHELIA_CONFIG: /config/configuration.yaml
+              X_AUTHELIA_CONFIG_FILTERS: template
+
+              AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: openldap-credentials
+                    key: LDAP_ADMIN_PASSWORD
+              AUTHELIA_SESSION_REDIS_HIGH_AVAILABILITY_SENTINEL_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: redis-credentials
+                    key: redis-password
+              AUTHELIA_SESSION_REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: redis-credentials
+                    key: redis-password
             envFrom:
               - secretRef:
                   name: authelia-credentials
             probes:
-              liveness:
+              liveness: &probe
                 enabled: true
-              readiness:
-                enabled: true
-              startup:
-                enabled: true
+                custom: true
                 spec:
-                  failureThreshold: 30
-                  periodSeconds: 5
+                  httpGet:
+                    path: /api/health
+                    port: &port 80
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probe
+              startup:
+                enabled: false
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -61,6 +89,39 @@ spec:
                 memory: 10Mi
               limits:
                 memory: 100Mi
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 14.10@sha256:71ddc70edccf201d6a521fe6216bc58d8c7c856a1ef96c4d4fbe9f548818ea4d
+            env:
+              - name: INIT_POSTGRES_HOST
+                value: postgres-rw.default.svc.cluster.local
+              - name: INIT_POSTGRES_SUPER_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: postgres-secret
+                    key: username
+              - name: INIT_POSTGRES_SUPER_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: postgres-secret
+                    key: password
+              - name: INIT_POSTGRES_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: authelia-credentials
+                    key: AUTHELIA_STORAGE_POSTGRES_USERNAME
+              - name: INIT_POSTGRES_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: authelia-credentials
+                    key: AUTHELIA_STORAGE_POSTGRES_PASSWORD
+              - name: INIT_POSTGRES_DBNAME
+                valueFrom:
+                  secretKeyRef:
+                    name: authelia-credentials
+                    key: AUTHELIA_STORAGE_POSTGRES_DATABASE
     defaultPodOptions:
       securityContext:
         runAsUser: 568
@@ -71,7 +132,7 @@ spec:
     service:
       main:
         primary: true
-        controller: main
+        controller: authelia
         type: LoadBalancer
         externalTrafficPolicy: Local
         annotations:
@@ -79,18 +140,18 @@ spec:
         ports:
           http:
             primary: true
-            port: 80
+            port: *port
           metrics:
             port: 8080
-    # serviceMonitor:
-    #   main:
-    #     enabled: true
-    #     endpoints:
-    #       - port: metrics
-    #         scheme: http
-    #         path: /metrics
-    #         interval: 1m
-    #         scrapeTimeout: 10s
+    serviceMonitor:
+      main:
+        serviceName: authelia
+        endpoints:
+          - port: metrics
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
     ingress:
       main:
         className: external
@@ -114,32 +175,11 @@ spec:
           - hosts:
               - *host
             secretName: "authelia-tls"
-      outdated:
-        # Deprecated. Delete once other resources are migrated to main ingress
-        className: internal
-        annotations:
-          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
-          nginx.ingress.kubernetes.io/configuration-snippet: |
-            add_header Cache-Control "no-store";
-            add_header Pragma "no-cache";
-            add_header X-Frame-Options "SAMEORIGIN";
-            add_header X-XSS-Protection "1; mode=block";
-        hosts:
-          - host: &old-host "authelia.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                pathType: Prefix
-                service:
-                  identifier: main
-                  port: http
-        tls:
-          - hosts:
-              - *old-host
     persistence:
       config:
         type: configMap
         name: authelia-config
         globalMounts:
-          - path: /config/configuration.yml
-            subPath: configuration.yml
-            readOnly: false
+          - path: /config/configuration.yaml
+            subPath: configuration.yaml
+            readOnly: true

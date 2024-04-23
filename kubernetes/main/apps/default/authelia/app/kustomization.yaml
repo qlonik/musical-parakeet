@@ -5,13 +5,9 @@ resources:
   - ./secret.sops.yaml
   - ./helmrelease.yaml
 
-patches:
-  - path: ./patches/env.yaml
-  - path: ./patches/postgres-init.yaml
-
 configMapGenerator:
   - name: authelia-config
     files:
-      - ./config/configuration.yml
+      - ./resources/configuration.yaml
     options:
       disableNameSuffixHash: true
