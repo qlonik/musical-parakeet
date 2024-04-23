@@ -22,10 +22,29 @@
    3. Click on "add" interface button and set the following:
       - type: bridge
       - name: br0
-      - check DHCP
       - bridge members: `eno1`
+      - press add 'Alias' and enter ip address `192.168.0.37/24`.
    4. Go to router, find MAC for the ip address of truenas server and assign it
       in DHCP settings to have IP address `192.168.0.37`.
+   5. Then go back to the bridge interface added at the step 3, edit its
+      settings and enable `DHCP` switch.
+
+   Setting the IP address 'Alias' at the step 3 will make the server use the
+   required IP address without needing to restart either server or router. After
+   switching bridge interface settings back to `DHCP` mode, the IP address
+   specified on the router will be assigned to the TrueNAS server, when server
+   restarts.
+
+   However, it is highly likely that the router already leased an IP address to
+   the server with the given MAC address. In this case the DHCP lease cache
+   needs to be flushed, usually by restarting the router. However, OpenWRT might
+   have other ways to remove a specific IP lease without the restart. If there
+   is no way to remove a speicific IP address lease, and restarting the router
+   is not desirable, then it is possible to force the TrueNAS server to use the
+   required IP address by cycling `DHCP` flag in the bridge setting. However,
+   for the server to also be accessible via domain name (`nova.home.arpa` in
+   this case), the IP address needs to be assigned via `DHCP`, and so the router
+   restart might be required.
 
 4. Configure SSH service:
 
