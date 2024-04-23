@@ -45,23 +45,7 @@ spec:
               AUTHELIA_TELEMETRY_METRICS_ENABLED: "true"
               X_AUTHELIA_CONFIG: /config/configuration.yaml
               X_AUTHELIA_CONFIG_FILTERS: template
-
-              AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: openldap-credentials
-                    key: LDAP_ADMIN_PASSWORD
-              AUTHELIA_SESSION_REDIS_HIGH_AVAILABILITY_SENTINEL_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: redis-credentials
-                    key: redis-password
-              AUTHELIA_SESSION_REDIS_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: redis-credentials
-                    key: redis-password
-            envFrom:
+            envFrom: &envFrom
               - secretRef:
                   name: authelia-credentials
             probes:
@@ -94,34 +78,7 @@ spec:
             image:
               repository: ghcr.io/onedr0p/postgres-init
               tag: 14.10@sha256:71ddc70edccf201d6a521fe6216bc58d8c7c856a1ef96c4d4fbe9f548818ea4d
-            env:
-              - name: INIT_POSTGRES_HOST
-                value: postgres-rw.default.svc.cluster.local
-              - name: INIT_POSTGRES_SUPER_USER
-                valueFrom:
-                  secretKeyRef:
-                    name: postgres-secret
-                    key: username
-              - name: INIT_POSTGRES_SUPER_PASS
-                valueFrom:
-                  secretKeyRef:
-                    name: postgres-secret
-                    key: password
-              - name: INIT_POSTGRES_USER
-                valueFrom:
-                  secretKeyRef:
-                    name: authelia-credentials
-                    key: AUTHELIA_STORAGE_POSTGRES_USERNAME
-              - name: INIT_POSTGRES_PASS
-                valueFrom:
-                  secretKeyRef:
-                    name: authelia-credentials
-                    key: AUTHELIA_STORAGE_POSTGRES_PASSWORD
-              - name: INIT_POSTGRES_DBNAME
-                valueFrom:
-                  secretKeyRef:
-                    name: authelia-credentials
-                    key: AUTHELIA_STORAGE_POSTGRES_DATABASE
+            envFrom: *envFrom
     defaultPodOptions:
       securityContext:
         runAsUser: 568

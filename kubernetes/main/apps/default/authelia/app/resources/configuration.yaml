@@ -67,10 +67,6 @@ server:
     read: 8192
     write: 8192
 
-storage:
-  postgres:
-    address: postgres-rw.default.svc.cluster.local
-
 theme: auto
 
 access_control:
