@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: amd-gpu
-      version: 0.12.0
+      version: 0.13.0
       sourceRef:
         kind: HelmRepository
         name: amd-device-plugin
@@ -38,10 +38,7 @@ spec:
       enabled: true
     lbl:
       resources: *resources
-    # Need to enable this for template to apply node selectors.
-    # However, all nfd resources are deleted using a patch.
-    nfd:
-      enabled: true
+    node_selector_enabled: true
 
   postRenderers:
     - kustomize:
@@ -81,13 +78,3 @@ spec:
             target:
               group: rbac.authorization.k8s.io
               kind: ClusterRole
-
-          # remove all nfd related resources
-          - patch: |-
-              $patch: delete
-              apiVersion: not-used
-              kind: not-used
-              metadata:
-                name: not-used
-            target:
-              labelSelector: "app.kubernetes.io/instance=device-plugin-amd-gpu,app.kubernetes.io/name=node-feature-discovery"
