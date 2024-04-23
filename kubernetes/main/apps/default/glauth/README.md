@@ -10,3 +10,4 @@ Services that are known to use glauth and were configured via web ui:
 Services that use glauth via config files:
 
 - `authelia`
+- `mealie`

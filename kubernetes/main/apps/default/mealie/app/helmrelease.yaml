@@ -54,15 +54,15 @@ spec:
               SMTP_AUTH_STRATEGY: NONE
 
               LDAP_AUTH_ENABLED: "true"
-              LDAP_SERVER_URL: ldap://openldap.default.svc.cluster.local:389
-              LDAP_TLS_INSECURE: "false"
+              LDAP_SERVER_URL: ldap://glauth.default.svc.cluster.local:389
+              LDAP_TLS_INSECURE: "true"
               LDAP_TLS_CACERTFILE: ""
               LDAP_ENABLE_STARTTLS: "false"
               LDAP_BASE_DN: dc=home,dc=arpa
-              LDAP_QUERY_BIND: cn=admin,dc=home,dc=arpa
-              LDAP_USER_FILTER: "(memberOf=cn=user,ou=groups,dc=home,dc=arpa)(objectClass=inetOrgPerson)"
-              LDAP_ADMIN_FILTER: "(&(memberOf=cn=admin,ou=groups,dc=home,dc=arpa)(objectClass=inetOrgPerson))"
-              LDAP_ID_ATTRIBUTE: uid
+              LDAP_QUERY_BIND: cn=search,ou=svcacct,ou=users,dc=home,dc=arpa
+              LDAP_USER_FILTER: "(&(memberOf=ou=person,ou=groups,dc=home,dc=arpa)(objectClass=posixAccount))"
+              LDAP_ADMIN_FILTER: "(&(memberOf=ou=admin,ou=groups,dc=home,dc=arpa)(objectClass=inetOrgPerson))"
+              LDAP_ID_ATTRIBUTE: cn
               LDAP_NAME_ATTRIBUTE: uid
               LDAP_MAIL_ATTRIBUTE: mail
             envFrom: &envFrom
