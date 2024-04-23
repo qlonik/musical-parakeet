@@ -45,12 +45,7 @@ spec:
               API_PORT: &port 9000
               AUTO_BACKUP_ENABLED: "true"
               BASE_URL: "https://recipes.${SECRET_DOMAIN}"
-              DEFAULT_EMAIL: "admin@${SECRET_DOMAIN}"
               TOKEN_TIME: 720
-
-              DB_ENGINE: postgres
-              POSTGRES_SERVER: postgres-rw.default.svc.cluster.local
-              POSTGRES_PORT: 5432
 
               SMTP_HOST: smtp-relay.default.svc.cluster.local
               SMTP_PORT: 2525
@@ -65,17 +60,12 @@ spec:
               LDAP_ENABLE_STARTTLS: "false"
               LDAP_BASE_DN: dc=home,dc=arpa
               LDAP_QUERY_BIND: cn=admin,dc=home,dc=arpa
-              LDAP_QUERY_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: openldap-credentials
-                    key: LDAP_ADMIN_PASSWORD
               LDAP_USER_FILTER: "(memberOf=cn=user,ou=groups,dc=home,dc=arpa)(objectClass=inetOrgPerson)"
               LDAP_ADMIN_FILTER: "(&(memberOf=cn=admin,ou=groups,dc=home,dc=arpa)(objectClass=inetOrgPerson))"
               LDAP_ID_ATTRIBUTE: uid
               LDAP_NAME_ATTRIBUTE: uid
               LDAP_MAIL_ATTRIBUTE: mail
-            envFrom:
+            envFrom: &envFrom
               - secretRef:
                   name: mealie-secret
             probes:
@@ -99,6 +89,17 @@ spec:
                 memory: 200Mi
               limits:
                 memory: 1000Mi
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 14.10@sha256:71ddc70edccf201d6a521fe6216bc58d8c7c856a1ef96c4d4fbe9f548818ea4d
+            envFrom: *envFrom
+          minio-init-bucket:
+            image:
+              repository: ghcr.io/qlonik/minio-init-bucket
+              tag: RELEASE.2024-04-18T16-45-29Z@sha256:0c91caa7b1fde68cefdd1ae56d2e5a1cb87d3d5a73b0a9fb2cb312f8ade9fc89
+            envFrom: *envFrom
     defaultPodOptions:
       securityContext:
         runAsUser: 568
