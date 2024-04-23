@@ -2,21 +2,20 @@
 # Note: Authelia vars should be escaped with $${VAR_NAME} to avoid interpolation by Flux
 authentication_backend:
   ldap:
-    address: ldap://openldap.default.svc.cluster.local:389
+    address: ldap://glauth.default.svc.cluster.local:389
     implementation: custom
     timeout: 5s
     start_tls: false
     base_dn: dc=home,dc=arpa
-    additional_users_dn: ou=users
-    users_filter: (&({username_attribute}={input})(objectClass=inetOrgPerson))
-    additional_groups_dn: ou=groups
-    groups_filter: "(&(objectClass=groupOfUniqueNames)(uniqueMember={dn}))"
-    # change it to "cn=search,ou=svcacct,ou=users,dc=home,dc=arpa"
-    user: cn=admin,dc=home,dc=arpa
+    additional_users_dn: ou=person,ou=users
+    users_filter: (&({username_attribute}={input})(objectClass=posixAccount))
+    additional_groups_dn: ou=users
+    groups_filter: "(&(uniqueMember={dn})(objectClass=posixGroup))"
+    user: cn=search,ou=svcacct,ou=users,dc=home,dc=arpa
     attributes:
       username: cn
       display_name: uid
-      group_name: cn
+      group_name: ou
       mail: mail
       member_of: memberOf
   password_reset:

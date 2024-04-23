@@ -6,3 +6,7 @@ Services that are known to use glauth and were configured via web ui:
 
 - `nextcloud`
 - `jellyfin`
+
+Services that use glauth via config files:
+
+- `authelia`
