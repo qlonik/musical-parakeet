@@ -42,4 +42,3 @@ resources:
   - ./unpackerr/ks.yaml
   - ./vikunja/ks.yaml
   - ./youtube-dl-server/ks.yaml
-  - ./youtubedl-material/ks.yaml
