@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: cluster-apps-authelia
     - name: cluster-apps-cloudnative-pg-cluster
-    - name: cluster-apps-redis-lb
+    - name: redis-lb
   path: ./kubernetes/main/apps/default/vikunja/api
   targetNamespace: default
   commonMetadata:

@@ -8,7 +8,7 @@ spec:
   dependsOn:
     - name: cluster-apps-cloudnative-pg-cluster
     - name: cluster-apps-openldap
-    - name: cluster-apps-redis
+    - name: redis
   path: ./kubernetes/main/apps/default/authelia/app
   targetNamespace: default
   commonMetadata:
