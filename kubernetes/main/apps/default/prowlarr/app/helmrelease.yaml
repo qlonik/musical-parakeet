@@ -48,7 +48,7 @@ spec:
               TZ: ${TIMEZONE}
               PROWLARR__INSTANCE_NAME: Prowlarr
               PROWLARR__AUTHENTICATION_METHOD: External
-            envFrom:
+            envFrom: &envfrom
               - secretRef:
                   name: prowlarr-secret
             probes:
@@ -77,28 +77,7 @@ spec:
             image:
               repository: ghcr.io/qlonik/minio-init-bucket
               tag: RELEASE.2024-04-18T16-45-29Z@sha256:0c91caa7b1fde68cefdd1ae56d2e5a1cb87d3d5a73b0a9fb2cb312f8ade9fc89
-            env:
-              MINIO_HOST: http://minio.default.svc.cluster.local:9000
-              MINIO_SUPER_ACCESS_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: minio-secret
-                    key: MINIO_ROOT_USER
-              MINIO_SUPER_SECRET_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: minio-secret
-                    key: MINIO_ROOT_PASSWORD
-              MINIO_BUCKET_NAME:
-                valueFrom:
-                  secretKeyRef:
-                    name: "{{ .Release.Name }}-restic-secret"
-                    key: AWS_ACCESS_KEY_ID
-              MINIO_BUCKET_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: "{{ .Release.Name }}-restic-secret"
-                    key: AWS_SECRET_ACCESS_KEY
+            envFrom: *envfrom
     defaultPodOptions:
       securityContext:
         runAsUser: 568
