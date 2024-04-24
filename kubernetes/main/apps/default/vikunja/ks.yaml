@@ -2,36 +2,14 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cluster-apps-vikunja-api
+  name: &app vikunja
   namespace: flux-system
 spec:
   dependsOn:
     - name: authelia
     - name: cluster-apps-cloudnative-pg-cluster
     - name: redis-lb
-  path: ./kubernetes/main/apps/default/vikunja/api
-  targetNamespace: default
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-kubernetes
-  wait: true
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: &app cluster-apps-vikunja-web
-  namespace: flux-system
-spec:
-  dependsOn:
-    - name: cluster-apps-vikunja-api
-  path: ./kubernetes/main/apps/default/vikunja/web
+  path: ./kubernetes/main/apps/default/vikunja/app
   targetNamespace: default
   commonMetadata:
     labels:

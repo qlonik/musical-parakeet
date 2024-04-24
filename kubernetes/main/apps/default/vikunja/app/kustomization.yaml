@@ -2,17 +2,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./secret.sops.yaml
   - ./pvc.yaml
+  - ./externalsecret.yaml
   - ./helmrelease.yaml
-
-patches:
-  - path: ./patches/env.yaml
-  - path: ./patches/postgres-init.yaml
 
 configMapGenerator:
   - name: vikunja-config
     files:
-      - ./config/config.yml
+      - ./resources/config.yaml
     options:
       disableNameSuffixHash: true
