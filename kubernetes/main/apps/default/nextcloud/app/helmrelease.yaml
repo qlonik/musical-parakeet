@@ -30,6 +30,8 @@ spec:
       namespace: default
     - name: redis-lb
       namespace: default
+    - name: glauth
+      namespace: default
   values:
     nextcloud:
       host: &host "cloud.${SECRET_DOMAIN}"

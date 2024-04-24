@@ -7,6 +7,7 @@ metadata:
 spec:
   dependsOn:
     - name: cluster-apps-minio
+    - name: cluster-apps-glauth
     - name: volsync
     - name: device-plugin-amd-gpu
   path: ./kubernetes/main/apps/default/jellyfin/app

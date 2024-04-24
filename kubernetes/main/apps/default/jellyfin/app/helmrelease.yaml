@@ -25,6 +25,8 @@ spec:
   dependsOn:
     - name: minio
       namespace: default
+    - name: glauth
+      namespace: default
   values:
     controller:
       type: statefulset

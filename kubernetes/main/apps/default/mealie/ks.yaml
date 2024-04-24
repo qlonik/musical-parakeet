@@ -9,7 +9,7 @@ spec:
     - name: cluster-apps-cloudnative-pg-cluster
     - name: cluster-apps-maddy
     - name: cluster-apps-minio
-    - name: cluster-apps-openldap
+    - name: cluster-apps-glauth
     - name: volsync
   path: ./kubernetes/main/apps/default/mealie/app
   targetNamespace: default

@@ -24,7 +24,7 @@ spec:
   uninstall:
     keepHistory: false
   dependsOn:
-    - name: openldap
+    - name: glauth
       namespace: default
   values:
     controllers:
