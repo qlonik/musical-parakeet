@@ -12,6 +12,8 @@ spec:
   ignore: |
     # exclude all
     /*
+    # include kubernetes repositories
+    !/kubernetes/repositories
     # include kubernetes directory
     !/kubernetes/main
 ---
