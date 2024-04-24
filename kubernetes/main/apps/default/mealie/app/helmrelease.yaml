@@ -71,15 +71,8 @@ spec:
             probes:
               liveness: &probes
                 enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /api/app/about
-                    port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
+                type: HTTP
+                path: /api/app/about
               readiness: *probes
               startup:
                 enabled: false

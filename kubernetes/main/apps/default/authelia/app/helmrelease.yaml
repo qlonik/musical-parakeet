@@ -51,15 +51,8 @@ spec:
             probes:
               liveness: &probe
                 enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /api/health
-                    port: &port 80
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
+                type: HTTP
+                path: /api/health
               readiness: *probe
               startup:
                 enabled: false
@@ -97,7 +90,7 @@ spec:
         ports:
           http:
             primary: true
-            port: *port
+            port: 80
           metrics:
             port: 8080
     serviceMonitor:
