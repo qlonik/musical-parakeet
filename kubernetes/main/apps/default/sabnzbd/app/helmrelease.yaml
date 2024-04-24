@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -26,72 +26,101 @@ spec:
     - name: minio
       namespace: default
   values:
-    controller:
-      type: statefulset
-    image:
-      repository: ghcr.io/onedr0p/sabnzbd
-      tag: 4.2.3@sha256:da0b03dabd606e8328d772cd53bbdeaac5e787ad19e3cc0533525d1be27f5261
-    env:
-      TZ: ${TIMEZONE}
-      SABNZBD__PORT: &port 80
-      SABNZBD__HOST_WHITELIST_ENTRIES: >-
-        {{ .Release.Name }}.${SECRET_DOMAIN},
-        {{ .Release.Name }},
-        {{ .Release.Name }}.{{ .Release.Namespace }},
-        {{ .Release.Name }}.{{ .Release.Namespace }}.svc,
-        {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster,
-        {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
-    envFrom:
-      - secretRef:
-          name: sabnzbd-secret
+    controllers:
+      sabnzbd:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteMany
+              size: 1Gi
+              storageClass: truenas-nfs-main
+              globalMounts:
+                - path: /config
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/sabnzbd
+              tag: 4.2.3@sha256:da0b03dabd606e8328d772cd53bbdeaac5e787ad19e3cc0533525d1be27f5261
+            env:
+              TZ: ${TIMEZONE}
+              SABNZBD__PORT: &port 80
+              SABNZBD__HOST_WHITELIST_ENTRIES: >-
+                {{ .Release.Name }}.${SECRET_DOMAIN},
+                {{ .Release.Name }},
+                {{ .Release.Name }}.{{ .Release.Namespace }},
+                {{ .Release.Name }}.{{ .Release.Namespace }}.svc,
+                {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster,
+                {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
+            envFrom: &envFrom
+              - secretRef:
+                  name: sabnzbd-secret
+            probes:
+              liveness: &probe
+                enabled: true
+                type: HTTP
+                path: /sabnzbd/api?mode=version
+              readiness: *probe
+              startup:
+                <<: *probe
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+                memory: 250Mi
+              limits:
+                memory: 2Gi
+        initContainers:
+          minio-init-bucket:
+            image:
+              repository: ghcr.io/qlonik/minio-init-bucket
+              tag: RELEASE.2024-04-18T16-45-29Z@sha256:0c91caa7b1fde68cefdd1ae56d2e5a1cb87d3d5a73b0a9fb2cb312f8ade9fc89
+            envFrom: *envFrom
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        runAsNonRoot: true
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
     service:
       main:
+        controller: sabnzbd
         ports:
           http:
             port: *port
     ingress:
       main:
-        enabled: true
-        ingressClassName: internal
+        className: internal
         annotations:
-          nginx.ingress.kubernetes.io/configuration-snippet: |
-            proxy_set_header Accept-Encoding "";
-            # sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_DOMAIN}/css/base/sabnzbd/nord.css"></head>';
-            # sub_filter_once on;
           hajimari.io/icon: mdi:download
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
               - path: "/"
                 pathType: Prefix
+                service:
+                  identifier: main
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-      supplementalGroups: [10000]
-    volumeClaimTemplates:
-      - name: config
-        mountPath: /config
-        accessMode: ReadWriteMany
-        size: 1Gi
-        storageClass: truenas-nfs-main
     persistence:
       downloads:
-        enabled: true
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/downloads/sabnzbd
-        mountPath: /downloads/sabnzbd
+        globalMounts:
+          - path: /downloads/sabnzbd
       incomplete:
-        enabled: true
         type: emptyDir
-    resources:
-      requests:
-        cpu: 10m
-        memory: 250Mi
-      limits:
-        memory: 2Gi
+        globalMounts:
+          - path: /incomplete
