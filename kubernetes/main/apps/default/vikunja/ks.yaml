@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cluster-apps-authelia
+    - name: authelia
     - name: cluster-apps-cloudnative-pg-cluster
     - name: redis-lb
   path: ./kubernetes/main/apps/default/vikunja/api

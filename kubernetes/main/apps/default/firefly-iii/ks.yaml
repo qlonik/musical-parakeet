@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cluster-apps-authelia
+    - name: authelia
     - name: cluster-apps-cloudnative-pg-cluster
   path: ./kubernetes/main/apps/default/firefly-iii/app
   targetNamespace: default
@@ -29,7 +29,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cluster-apps-authelia
+    - name: authelia
     - name: cluster-apps-firefly-iii
   postBuild:
     substitute:
@@ -55,7 +55,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cluster-apps-authelia
+    - name: authelia
     - name: cluster-apps-firefly-iii
   postBuild:
     substitute:

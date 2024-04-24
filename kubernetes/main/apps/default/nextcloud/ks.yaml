@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cluster-apps-authelia
+    - name: authelia
     - name: cluster-apps-cloudnative-pg-cluster
     - name: csi-driver-nfs
     - name: rancher-local-path-provisioner
