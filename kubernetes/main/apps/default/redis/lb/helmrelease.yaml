@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -26,38 +26,48 @@ spec:
     - name: redis
       namespace: default
   values:
-    controller:
-      replicas: 1
-      strategy: RollingUpdate
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: public.ecr.aws/docker/library/haproxy
-      tag: 2.9.7-alpine@sha256:109bc4b43c6705762257a5f7a3ab07894304fd1e68a3a7127e4af7fb51494ae3
-    env:
-      REDIS_PASSWORD:
-        valueFrom:
-          secretKeyRef:
-            name: redis-credentials
-            key: redis-password
+    controllers:
+      redis-lb:
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: public.ecr.aws/docker/library/haproxy
+              tag: 2.9.7-alpine@sha256:109bc4b43c6705762257a5f7a3ab07894304fd1e68a3a7127e4af7fb51494ae3
+            env:
+              REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: redis-credentials
+                    key: redis-password
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 99
+        runAsGroup: 99
+        runAsNonRoot: true
+        fsGroup: 99
+        fsGroupChangePolicy: "OnRootMismatch"
     service:
       main:
+        controller: redis-lb
         ports:
           http:
             port: 8080
-            targetPort: 8080
           redis-write:
             port: 6379
-            targetPort: 6379
           redis-read:
             port: 6380
-            targetPort: 6380
           redis-sentinel:
             port: 26379
-            targetPort: 26379
     serviceMonitor:
       main:
-        enabled: true
+        serviceName: redis-lb
         endpoints:
           - port: http
             scheme: http
@@ -66,25 +76,25 @@ spec:
             scrapeTimeout: 10s
     ingress:
       main:
-        enabled: true
-        ingressClassName: internal
+        className: internal
         annotations:
           hajimari.io/icon: simple-icons:redis
         hosts:
-          - host: redis-lb.${SECRET_DOMAIN}
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
-    podSecurityContext:
-      runAsUser: 99
-      runAsGroup: 99
-      fsGroup: 99
-      fsGroupChangePolicy: "OnRootMismatch"
+                service:
+                  identifier: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
     persistence:
       config:
-        enabled: true
         type: configMap
         name: redis-lb-configmap
-        mountPath: /usr/local/etc/haproxy/haproxy.cfg
-        subPath: haproxy.cfg
-        readOnly: true
+        globalMounts:
+          - path: /usr/local/etc/haproxy/haproxy.cfg
+            subPath: haproxy.cfg
+            readOnly: true
