@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cluster-apps-prowlarr
+    - name: prowlarr
     - name: cluster-apps-qbittorrent
   path: ./kubernetes/main/apps/default/cross-seed/app
   targetNamespace: default
