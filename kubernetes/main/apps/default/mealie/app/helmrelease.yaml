@@ -47,7 +47,7 @@ spec:
               BASE_URL: "https://recipes.${SECRET_DOMAIN}"
               TOKEN_TIME: 720
 
-              SMTP_HOST: smtp-relay.default.svc.cluster.local
+              SMTP_HOST: maddy.default.svc.cluster.local
               SMTP_PORT: 2525
               SMTP_FROM_NAME: Mealie
               SMTP_FROM_EMAIL: "mealie@${SECRET_DOMAIN}"

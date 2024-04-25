@@ -2,13 +2,13 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: &app smtp-relay
+  name: maddy
 spec:
   interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,35 +23,43 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    controller:
-      replicas: 1
-      strategy: RollingUpdate
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: ghcr.io/foxcpp/maddy
-      tag: 0.7.1@sha256:6ab538e2f28baf2324f7cb418c7f9476fd9c7e9fa9b14bc3aecf51a9f6962064
-    env:
-      DEBUG: "true"
-      SMTP_PORT: 465
-    envFrom:
-      - secretRef:
-          name: smtp-relay-secret
+    controllers:
+      maddy:
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/foxcpp/maddy
+              tag: 0.7.1@sha256:6ab538e2f28baf2324f7cb418c7f9476fd9c7e9fa9b14bc3aecf51a9f6962064
+            env:
+              DEBUG: "false"
+            envFrom:
+              - secretRef:
+                  name: maddy-secret
+            resources:
+              requests:
+                cpu: 10m
+                memory: 10Mi
+              limits:
+                memory: 50Mi
     service:
       main:
+        controller: maddy
+        type: LoadBalancer
+        externalTrafficPolicy: Local
+        annotations:
+          io.cilium/lb-ipam-ips: "${LB_MADDY_ADDR}"
         ports:
           http:
+            primary: true
             port: 2525
           metrics:
-            enabled: true
             port: 9749
-        type: LoadBalancer
-        annotations:
-          io.cilium/lb-ipam-ips: "${LB_SMTP_RELAY_ADDR}"
-        externalTrafficPolicy: Local
     serviceMonitor:
       main:
-        enabled: true
+        serviceName: maddy
         endpoints:
           - port: metrics
             scheme: http
@@ -60,28 +68,15 @@ spec:
             scrapeTimeout: 10s
     persistence:
       config:
-        enabled: true
         type: configMap
         name: maddy-configmap
-        subPath: maddy.conf
-        mountPath: /data/maddy.conf
-        readOnly: true
+        globalMounts:
+          - path: /data/maddy.conf
+            subPath: maddy.conf
+            readOnly: true
       data:
-        enabled: true
         type: emptyDir
         medium: Memory
         sizeLimit: 1Gi
-        mountPath: /dev/shm
-    topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: DoNotSchedule
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/name: *app
-    resources:
-      requests:
-        cpu: 10m
-        memory: 10Mi
-      limits:
-        memory: 50Mi
+        globalMounts:
+          - path: /dev/shm
