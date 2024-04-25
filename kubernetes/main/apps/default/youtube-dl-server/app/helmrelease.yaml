@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -26,22 +26,53 @@ spec:
     - name: minio
       namespace: default
   values:
-    controller:
-      type: statefulset
-    image:
-      repository: nbr23/youtube-dl-server
-      tag: yt-dlp@sha256:cb83868e829e267297dae98a25b0947d03e7d9f771ff93de72f4ec3179e0d025
-    env:
-      TZ: ${TIMEZONE}
+    controllers:
+      youtube-dl-server:
+        type: statefulset
+        statefulset:
+          volumeClaimTemplates:
+            - name: data
+              accessMode: ReadWriteMany
+              size: 1Gi
+              storageClass: truenas-nfs-main
+              globalMounts:
+                - path: /youtube-dl/
+        containers:
+          main:
+            image:
+              repository: nbr23/youtube-dl-server
+              tag: yt-dlp@sha256:cb83868e829e267297dae98a25b0947d03e7d9f771ff93de72f4ec3179e0d025
+            env:
+              TZ: ${TIMEZONE}
+            resources:
+              requests:
+                cpu: 10m
+                memory: 250Mi
+              limits:
+                memory: 2Gi
+        initContainers:
+          minio-init-bucket:
+            image:
+              repository: ghcr.io/qlonik/minio-init-bucket
+              tag: RELEASE.2024-04-18T16-45-29Z@sha256:0c91caa7b1fde68cefdd1ae56d2e5a1cb87d3d5a73b0a9fb2cb312f8ade9fc89
+            envFrom:
+              - secretRef:
+                  name: youtube-dl-server-secret
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
     service:
       main:
+        controller: youtube-dl-server
         ports:
           http:
             port: 8080
     ingress:
       main:
-        enabled: true
-        ingressClassName: internal
+        className: internal
         annotations:
           hajimari.io/icon: mdi:filmstrip
         hosts:
@@ -49,47 +80,33 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
+                service:
+                  identifier: main
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-    volumeClaimTemplates:
-      - name: data
-        mountPath: /youtube-dl/
-        accessMode: ReadWriteMany
-        size: 1Gi
-        storageClass: truenas-nfs-main
     persistence:
       config:
-        enabled: true
         type: configMap
         name: youtube-dl-server-config
-        subPath: config.yml
-        mountPath: /app_config/config.yml
-        readOnly: true
+        globalMounts:
+          - path: /app_config/config.yml
+            subPath: config.yaml
+            readOnly: true
       downloads:
-        enabled: true
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/downloads/youtube/downloads
-        mountPath: /youtube-dl/downloads
+        globalMounts:
+          - path: /youtube-dl/downloads
       playlists:
-        enabled: true
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/downloads/youtube/playlists
-        mountPath: /youtube-dl/playlists
+        globalMounts:
+          - path: /youtube-dl/playlists
       cache-dir:
-        enabled: true
         type: emptyDir
-        mountPath: /youtube-dl/.cache
-    resources:
-      requests:
-        cpu: 10m
-        memory: 250Mi
-      limits:
-        memory: 2Gi
+        globalMounts:
+          - path: /youtube-dl/.cache
