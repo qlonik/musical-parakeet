@@ -1,4 +1,5 @@
 # https://github.com/AnalogJ/scrutiny/blob/master/docker/example.hubspoke.docker-compose.yml
+# https://github.com/AnalogJ/scrutiny/blob/master/docs/TROUBLESHOOTING_DEVICE_COLLECTOR.md
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
@@ -9,7 +10,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,26 +24,152 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
-  dependsOn:
-    - name: scrutiny-influxdb
-      namespace: monitoring
   values:
-    controller:
-      type: statefulset
-    image:
-      repository: ghcr.io/analogj/scrutiny
-      tag: v0.8.1-web@sha256:dbb6b56e5d3dfa9256fea8ef9b9fd8fb302c555ddd0554b8ad958ec050a14994
-    env:
-      TZ: "${TIMEZONE}"
-      SCRUTINY_WEB_INFLUXDB_HOST: scrutiny-influxdb.monitoring.svc.cluster.local
+    controllers:
+      01-influxdb:
+        nameOverride: influxdb
+        type: statefulset
+        statefulset:
+          volumeClaimTemplates:
+            - name: data
+              accessMode: ReadWriteMany
+              size: 1Gi
+              storageClass: truenas-nfs-main
+              globalMounts:
+                - path: /var/lib/influxdb2
+        containers:
+          main:
+            image:
+              repository: public.ecr.aws/docker/library/influxdb
+              tag: 2.7.6@sha256:d73f76acbfddbd5789be1bd2e6697a13041a0d6d4efde929c3addaa00029bf01
+            probes:
+              liveness: &influxProbe
+                enabled: true
+                type: HTTP
+                path: /health
+                # spec:
+                #   initialDelaySeconds: 30
+              readiness: *influxProbe
+              startup:
+                <<: *influxProbe
+                spec:
+                  # initialDelaySeconds: 0
+                  periodSeconds: 5
+                  failureThreshold: 30
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128M
+              limits:
+                memory: 384M
+
+      02-scrutiny:
+        nameOverride: scrutiny
+        type: statefulset
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteMany
+              size: 1Gi
+              storageClass: truenas-nfs-main
+              globalMounts:
+                - path: /opt/scrutiny/config
+        containers:
+          main:
+            image:
+              repository: ghcr.io/analogj/scrutiny
+              tag: v0.8.1-web@sha256:dbb6b56e5d3dfa9256fea8ef9b9fd8fb302c555ddd0554b8ad958ec050a14994
+            env:
+              TZ: "${TIMEZONE}"
+              SCRUTINY_WEB_INFLUXDB_HOST: scrutiny-influxdb.monitoring.svc.cluster.local
+            probes:
+              liveness: &probe
+                enabled: true
+                type: HTTP
+                path: /api/health
+                # spec:
+                #   initialDelaySeconds: 30
+              readiness: *probe
+              startup:
+                <<: *probe
+                spec:
+                  # initialDelaySeconds: 0
+                  periodSeconds: 5
+                  failureThreshold: 30
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                memory: 128Mi
+
+      03-collector:
+        nameOverride: collector
+        type: daemonset
+        containers:
+          main:
+            image:
+              repository: ghcr.io/analogj/scrutiny
+              tag: v0.8.1-collector@sha256:5f6536d68be2d7424627647cdd658e6b4c1f69751a21622fb97b999a3155ba86
+            env:
+              COLLECTOR_API_ENDPOINT: http://scrutiny.monitoring.svc.cluster.local:8080
+            lifecycle:
+              postStart:
+                exec:
+                  command:
+                    - /bin/bash
+                    - -c
+                    - /opt/scrutiny/bin/scrutiny-collector-metrics run --config /opt/scrutiny/config/collector.yaml
+            securityContext:
+              privileged: true
+              capabilities:
+                add: ["SYS_RAWIO", "SYS_ADMIN"]
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                memory: 128Mi
+        initContainers:
+          init-config:
+            image:
+              repository: ghcr.io/onedr0p/alpine
+              tag: 3.19.1@sha256:3fbc581cb0fe29830376161ae026e2a765dcc11e1747477fe9ebf155720b8638
+            args: # double "$$" escape flux substitutions
+              - /bin/bash
+              - -c
+              - |
+                mkdir -p /opt/scrutiny/config &&
+                cat << EOF > /opt/scrutiny/config/collector.yaml
+                ---
+                # config piped from lifecycle.postStart script
+                version: 1
+                host:
+                  id: "$${NODE_NAME}"
+                api:
+                  endpoint: "$${COLLECTOR_API_ENDPOINT}"
+                EOF
+            env:
+              COLLECTOR_API_ENDPOINT: http://scrutiny.monitoring.svc.cluster.local:8080
+              NODE_NAME:
+                valueFrom:
+                  fieldRef:
+                    fieldPath: spec.nodeName
+
     service:
       main:
+        primary: true
+        controller: 02-scrutiny
         ports:
           http:
-            port: &port 8080
+            port: 8080
+      influxdb:
+        controller: 01-influxdb
+        ports:
+          http:
+            port: 8086
     ingress:
       main:
-        enabled: true
         className: internal
         annotations:
           auth.home.arpa/enabled: "true"
@@ -53,42 +180,33 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
+                service:
+                  identifier: main
+                  port: http
         tls:
           - hosts:
               - *host
-    probes:
-      liveness: &health
-        enabled: true
-        custom: true
-        spec:
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 1
-          failureThreshold: 3
-          httpGet:
-            path: /api/health
-            port: *port
-      readiness: *health
-      startup:
-        enabled: true
-        custom: true
-        spec:
-          initialDelaySeconds: 0
-          timeoutSeconds: 1
-          periodSeconds: 5
-          failureThreshold: 30
-          httpGet:
-            path: /api/health
-            port: *port
-    volumeClaimTemplates:
-      - name: config
-        mountPath: /opt/scrutiny/config
-        accessMode: ReadWriteMany
-        size: 1Gi
-        storageClass: truenas-nfs-main
-    resources:
-      requests:
-        cpu: 100m
-        memory: 128Mi
-      limits:
-        memory: 128Mi
+    persistence:
+      udev:
+        type: hostPath
+        hostPath: /run/udev
+        advancedMounts:
+          03-collector:
+            main:
+              - path: /run/udev
+                readOnly: true
+      dev:
+        type: hostPath
+        hostPath: /dev
+        advancedMounts:
+          03-collector:
+            main:
+              - path: /dev
+      config:
+        type: emptyDir
+        advancedMounts:
+          03-collector:
+            main:
+              - path: /opt/scrutiny/config
+            init-config:
+              - path: /opt/scrutiny/config
