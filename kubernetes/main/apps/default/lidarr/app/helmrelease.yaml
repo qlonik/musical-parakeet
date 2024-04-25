@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -26,27 +26,69 @@ spec:
     - name: minio
       namespace: default
   values:
-    controller:
-      type: statefulset
-    image:
-      repository: ghcr.io/onedr0p/lidarr
-      tag: 2.2.5.4141@sha256:6eea2458a2b0da20fde3ad18b64f970acde9ede4645b9af89e193ec08b635d09
-    env:
-      TZ: ${TIMEZONE}
-      LIDARR__INSTANCE_NAME: Lidarr
-      LIDARR__AUTHENTICATION_METHOD: External
-    envFrom:
-      - secretRef:
-          name: lidarr-secret
+    controllers:
+      lidarr:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteMany
+              size: 5Gi
+              storageClass: truenas-nfs-main
+              globalMounts:
+                - path: /config
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/lidarr
+              tag: 2.2.5.4141@sha256:6eea2458a2b0da20fde3ad18b64f970acde9ede4645b9af89e193ec08b635d09
+            env:
+              TZ: ${TIMEZONE}
+              LIDARR__INSTANCE_NAME: Lidarr
+              LIDARR__AUTHENTICATION_METHOD: External
+            envFrom: &envFrom
+              - secretRef:
+                  name: lidarr-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                type: HTTP
+                path: /ping
+              readiness: *probes
+              startup:
+                <<: *probes
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 10m
+                memory: 250Mi
+              limits:
+                memory: 2Gi
+        initContainers:
+          minio-init-bucket:
+            image:
+              repository: ghcr.io/qlonik/minio-init-bucket
+              tag: RELEASE.2024-04-18T16-45-29Z@sha256:0c91caa7b1fde68cefdd1ae56d2e5a1cb87d3d5a73b0a9fb2cb312f8ade9fc89
+            envFrom: *envFrom
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
     service:
       main:
+        controller: lidarr
         ports:
           http:
             port: 8686
     ingress:
       main:
-        enabled: true
-        ingressClassName: internal
+        className: internal
         annotations:
           auth.home.arpa/enabled: "true"
           hajimari.io/icon: mdi:headphones
@@ -55,37 +97,22 @@ spec:
             paths:
               - path: "/"
                 pathType: Prefix
+                service:
+                  identifier: main
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-      supplementalGroups: [10000]
-    volumeClaimTemplates:
-      - name: config
-        mountPath: /config
-        accessMode: ReadWriteMany
-        size: 5Gi
-        storageClass: truenas-nfs-main
     persistence:
       music:
-        enabled: true
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/music
-        mountPath: /media/music
+        globalMounts:
+          - path: /media/music
       downloads:
-        enabled: true
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/downloads
-        mountPath: /media/downloads
-    resources:
-      requests:
-        cpu: 10m
-        memory: 250Mi
-      limits:
-        memory: 2Gi
+        globalMounts:
+          - path: /media/downloads
