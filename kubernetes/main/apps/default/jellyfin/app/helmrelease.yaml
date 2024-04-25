@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -28,35 +28,71 @@ spec:
     - name: glauth
       namespace: default
   values:
-    controller:
-      type: statefulset
-    image:
-      repository: docker.io/jellyfin/jellyfin
-      tag: 10.8.13@sha256:05a9734d7e83086b957c5b7a16cbb5a60b5bb8d113ffb953e57547359dd05140
-    env:
-      TZ: ${TIMEZONE}
-      JELLYFIN_PublishedServerUrl: "https://{{ .Release.Name }}.${SECRET_DOMAIN}/"
+    controllers:
+      jellyfin:
+        type: statefulset
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteMany
+              size: 10Gi
+              storageClass: truenas-nfs-main
+              globalMounts:
+                - path: /config
+        containers:
+          main:
+            image:
+              repository: docker.io/jellyfin/jellyfin
+              tag: 10.8.13@sha256:05a9734d7e83086b957c5b7a16cbb5a60b5bb8d113ffb953e57547359dd05140
+            env:
+              TZ: ${TIMEZONE}
+              JELLYFIN_PublishedServerUrl: "https://{{ .Release.Name }}.${SECRET_DOMAIN}/"
+            resources:
+              requests:
+                gpu.intel.com/i915: 1
+                cpu: 100m
+                memory: 1Gi
+              limits:
+                gpu.intel.com/i915: 1
+                memory: 4Gi
+        initContainers:
+          minio-init-bucket:
+            image:
+              repository: ghcr.io/qlonik/minio-init-bucket
+              tag: RELEASE.2024-04-18T16-45-29Z@sha256:0c91caa7b1fde68cefdd1ae56d2e5a1cb87d3d5a73b0a9fb2cb312f8ade9fc89
+            envFrom:
+              - secretRef:
+                  name: jellyfin-secret
+        pod:
+          nodeSelector:
+            intel.feature.node.kubernetes.io/gpu: "true"
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
+        supplementalGroups: [44, 105, 10000]
     service:
       main:
+        controller: jellyfin
         type: LoadBalancer
         annotations:
           io.cilium/lb-ipam-ips: "${LB_JELLYFIN_ADDR}"
         externalTrafficPolicy: Local
         ports:
           http:
+            primary: true
             port: 8096
           autodiscovery1:
-            enabled: true
             port: 1900
             protocol: UDP
           autodiscovery2:
-            enabled: true
             port: 7359
             protocol: UDP
     ingress:
       main:
-        enabled: true
-        ingressClassName: external
+        className: external
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
           hajimari.io/icon: simple-icons:jellyfin
@@ -65,58 +101,39 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
+                service:
+                  identifier: main
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-      supplementalGroups: [44, 105, 10000]
-    volumeClaimTemplates:
-      - name: config
-        mountPath: /config
-        accessMode: ReadWriteMany
-        size: 10Gi
-        storageClass: truenas-nfs-main
     persistence:
       movies:
-        enabled: true
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/movies
-        mountPath: /data/movies
-        readOnly: true
+        globalMounts:
+          - path: /data/movies
+            readOnly: true
       music:
-        enabled: true
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/music
-        mountPath: /data/music
-        readOnly: true
+        globalMounts:
+          - path: /data/music
+            readOnly: true
       series:
-        enabled: true
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/series
-        mountPath: /data/tvshows
-        readOnly: true
+        globalMounts:
+          - path: /data/tvshows
+            readOnly: true
       transcodes:
-        enabled: true
         type: emptyDir
-        mountPath: /config/transcodes
+        globalMounts:
+          - path: /config/transcodes
       cache:
-        enabled: true
         type: emptyDir
-        mountPath: /config/cache
-    nodeSelector:
-      intel.feature.node.kubernetes.io/gpu: "true"
-    resources:
-      requests:
-        gpu.intel.com/i915: 1
-        cpu: 100m
-        memory: 1Gi
-      limits:
-        gpu.intel.com/i915: 1
-        memory: 4Gi
+        globalMounts:
+          - path: /config/cache
