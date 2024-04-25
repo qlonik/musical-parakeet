@@ -2,10 +2,11 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cluster-apps-readarr-ebook
+  name: &app readarr-ebook
   namespace: flux-system
 spec:
   dependsOn:
+    - name: cluster-apps-calibre
     - name: cluster-apps-cloudnative-pg-cluster
     - name: cluster-apps-minio
     - name: volsync
@@ -26,10 +27,11 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cluster-apps-readarr-audio
+  name: &app readarr-audio
   namespace: flux-system
 spec:
   dependsOn:
+    - name: cluster-apps-cloudnative-pg-cluster
     - name: cluster-apps-minio
     - name: volsync
   path: ./kubernetes/main/apps/default/readarr/audio

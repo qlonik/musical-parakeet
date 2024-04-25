@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -22,29 +22,78 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: calibre
+      namespace: default
   values:
-    controller:
-      type: statefulset
-    image:
-      repository: ghcr.io/onedr0p/readarr-develop
-      tag: 0.3.23.2506@sha256:de8fd287c5810945bd8148caa4b5aadca3571f4d142ab972f32da006491de9bd
-    env:
-      TZ: ${TIMEZONE}
-      READARR__URL_BASE: /ebook
-      READARR__POSTGRES_HOST: postgres-rw.default.svc.cluster.local
-      READARR__AUTHENTICATION_METHOD: None
-    envFrom:
-      - secretRef:
-          name: readarr-ebook-secret
+    controllers:
+      readarr-ebook:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteMany
+              size: 1Gi
+              storageClass: truenas-nfs-main
+              globalMounts:
+                - path: /config
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/readarr-develop
+              tag: 0.3.23.2506@sha256:de8fd287c5810945bd8148caa4b5aadca3571f4d142ab972f32da006491de9bd
+            env:
+              TZ: ${TIMEZONE}
+              READARR__URL_BASE: /ebook
+              READARR__AUTHENTICATION_METHOD: None
+            envFrom: &envFrom
+              - secretRef:
+                  name: readarr-ebook-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                type: HTTP
+                path: /ping
+              readiness: *probes
+              startup:
+                <<: *probes
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 10m
+                memory: 250Mi
+              limits:
+                memory: 500Mi
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 14.10@sha256:71ddc70edccf201d6a521fe6216bc58d8c7c856a1ef96c4d4fbe9f548818ea4d
+            envFrom: *envFrom
+          minio-init-bucket:
+            image:
+              repository: ghcr.io/qlonik/minio-init-bucket
+              tag: RELEASE.2024-04-18T16-45-29Z@sha256:0c91caa7b1fde68cefdd1ae56d2e5a1cb87d3d5a73b0a9fb2cb312f8ade9fc89
+            envFrom: *envFrom
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
     service:
       main:
+        controller: readarr-ebook
         ports:
           http:
             port: 8787
     ingress:
       main:
-        enabled: true
-        ingressClassName: internal
+        className: internal
         annotations:
           auth.home.arpa/enabled: "true"
           hajimari.io/icon: mdi:headphones
@@ -53,37 +102,22 @@ spec:
             paths:
               - path: "/ebook"
                 pathType: Prefix
+                service:
+                  identifier: main
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-      supplementalGroups: [10000]
-    volumeClaimTemplates:
-      - name: config
-        mountPath: /config
-        accessMode: ReadWriteMany
-        size: 1Gi
-        storageClass: truenas-nfs-main
     persistence:
       books:
-        enabled: true
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/ebooks
-        mountPath: /media/books/ebooks
+        globalMounts:
+          - path: /media/books/ebooks
       downloads:
-        enabled: true
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/downloads
-        mountPath: /media/downloads
-    resources:
-      requests:
-        cpu: 10m
-        memory: 250Mi
-      limits:
-        memory: 500Mi
+        globalMounts:
+          - path: /media/downloads
