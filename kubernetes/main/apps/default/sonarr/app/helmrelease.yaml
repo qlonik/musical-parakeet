@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -26,27 +26,58 @@ spec:
     - name: minio
       namespace: default
   values:
-    controller:
-      type: statefulset
-    image:
-      repository: ghcr.io/onedr0p/sonarr
-      tag: 4.0.4.1491@sha256:3689961acc03cc295a2c51cf6fb2227fd69c00c3c27a803c6e8e255ae3e45890
-    env:
-      TZ: ${TIMEZONE}
-      SONARR__INSTANCE_NAME: Sonarr
-      SONARR__AUTHENTICATION_METHOD: External
-    envFrom:
-      - secretRef:
-          name: sonarr-secret
+    controllers:
+      sonarr:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteMany
+              size: 1Gi
+              storageClass: truenas-nfs-main
+              globalMounts:
+                - path: /config
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/sonarr
+              tag: 4.0.4.1491@sha256:3689961acc03cc295a2c51cf6fb2227fd69c00c3c27a803c6e8e255ae3e45890
+            env:
+              TZ: ${TIMEZONE}
+              SONARR__INSTANCE_NAME: Sonarr
+              SONARR__AUTHENTICATION_METHOD: External
+            envFrom: &envFrom
+              - secretRef:
+                  name: sonarr-secret
+            resources:
+              requests:
+                cpu: 10m
+                memory: 250Mi
+              limits:
+                memory: 2Gi
+        initContainers:
+          minio-init-bucket:
+            image:
+              repository: ghcr.io/qlonik/minio-init-bucket
+              tag: RELEASE.2024-04-18T16-45-29Z@sha256:0c91caa7b1fde68cefdd1ae56d2e5a1cb87d3d5a73b0a9fb2cb312f8ade9fc89
+            envFrom: *envFrom
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
     service:
       main:
+        controller: sonarr
         ports:
           http:
             port: 8989
     ingress:
       main:
-        enabled: true
-        ingressClassName: internal
+        className: internal
         annotations:
           auth.home.arpa/enabled: "true"
           hajimari.io/icon: mdi:headphones
@@ -55,37 +86,22 @@ spec:
             paths:
               - path: "/"
                 pathType: Prefix
+                service:
+                  identifier: main
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: "OnRootMismatch"
-      supplementalGroups: [10000]
-    volumeClaimTemplates:
-      - name: config
-        mountPath: /config
-        accessMode: ReadWriteMany
-        size: 1Gi
-        storageClass: truenas-nfs-main
     persistence:
       series:
-        enabled: true
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/series
-        mountPath: /media/series
+        globalMounts:
+          - path: /media/series
       downloads:
-        enabled: true
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/downloads
-        mountPath: /media/downloads
-    resources:
-      requests:
-        cpu: 10m
-        memory: 250Mi
-      limits:
-        memory: 2Gi
+        globalMounts:
+          - path: /media/downloads
