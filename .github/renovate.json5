@@ -194,7 +194,8 @@
       "description": "Use custom versioning for linuxserver.io containers",
       "matchDatasources": ["docker"],
       "versioning": "regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?(?:-ls(?<build>\\d+))?$",
-      "matchPackagePatterns": ["^ghcr.io\\/linuxserver\\/"]
+      "matchPackagePatterns": ["^ghcr.io\\/linuxserver\\/"],
+      "excludePackageNames": ["ghcr.io/linuxserver/mods"]
     },
     {
       "description": "Use custom versioning for k0s/k3s",
@@ -362,6 +363,20 @@
         "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\n.*?-\\s(.*?)/(?<currentValue>[^/]+)/[^/]+\n"
       ],
       "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}"
+    },
+    {
+      "customType": "regex",
+      "description": "Process docker mods for linuxserver images",
+      "fileMatch": ["(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$"],
+      "matchStrings": [
+        // Example:
+        //   "// renovate: lsio-docker-mod"
+        //   "ghcr.io/linuxserver/mods:universal-calibre-v7.8.0@sha256:eee6b6428104692d9b24590b82a654d46b230385a5979a11f2dd373a80353d3c"
+        //   "ghcr.io/linuxserver/mods:lazylibrarian-ffmpeg@sha256:5083d9f2bdfcb27edf65a55e7c05d0ae8ce309d02d5f0cdc83bfe8e95c942dd4"
+        "renovate: lsio-docker-mod.*\\n\\s*\"(?<depName>.+?):(?<currentValue>.+?)(@sha256:(?<currentDigest>.+?))?\""
+      ],
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "regex:^(?<compatibility>.+)(-v(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))?)?$"
     }
   ]
 }

@@ -48,7 +48,18 @@ spec:
               TZ: ${TIMEZONE}
               PUID: 568
               PGID: 568
-              DOCKER_MODS: ghcr.io/linuxserver/mods:universal-calibre-v7.8.0@sha256:eee6b6428104692d9b24590b82a654d46b230385a5979a11f2dd373a80353d3c
+              DOCKER_MODS: >-
+                {{- $items := list
+                  "// renovate: lsio-docker-mod"
+                  "ghcr.io/linuxserver/mods:universal-calibre-v7.8.0@sha256:eee6b6428104692d9b24590b82a654d46b230385a5979a11f2dd373a80353d3c"
+                -}}
+                {{- $filtered := list -}}
+                {{- range $item := $items -}}
+                  {{- if not (hasPrefix "//" $item) -}}
+                    {{- $filtered = append $filtered $item -}}
+                  {{- end -}}
+                {{- end -}}
+                {{- $filtered | join "|" | quote -}}
             probes:
               liveness:
                 enabled: true
