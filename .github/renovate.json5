@@ -198,6 +198,12 @@
       "excludePackageNames": ["ghcr.io/linuxserver/mods"]
     },
     {
+      "description": "Custom versioning for linuxserver.io lazylibrarian",
+      "matchDatasources": ["docker"],
+      "versioning": "regex:^(?<major>\\w+)(?:-ls(?<build>\\d+))?$",
+      "matchPackageNames": ["ghcr.io/linuxserver/lazylibrarian"]
+    },
+    {
       "description": "Custom versioning for linuxserver.io mods",
       "matchDatasources": ["docker"],
       "versioning": "regex:^(?<compatibility>.+?)(-v(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))?)?$",
