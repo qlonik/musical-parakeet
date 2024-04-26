@@ -1,0 +1,122 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: lazylibrarian
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.1.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      main:
+        type: statefulset
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              accessMode: ReadWriteMany
+              size: 1Gi
+              storageClass: truenas-nfs-main
+              advancedMounts:
+                main:
+                  - path: /config
+        containers:
+          main:
+            image:
+              repository: ghcr.io/linuxserver/lazylibrarian
+              tag: 280532d2-ls50@sha256:c093e4787db9c0c4f1220f2738eca6b6ac8c2e218adc06489bfb9dbb3f7247d8
+            env:
+              TZ: ${TIMEZONE}
+              PUID: 568
+              PGID: 568
+              DOCKER_MODS: >-
+                {{- $items := list
+                  "// comment"
+                  "ghcr.io/linuxserver/mods:universal-calibre-v7.8.0@sha256:eee6b6428104692d9b24590b82a654d46b230385a5979a11f2dd373a80353d3c"
+                  "// comment"
+                  "ghcr.io/linuxserver/mods:lazylibrarian-ffmpeg@sha256:5083d9f2bdfcb27edf65a55e7c05d0ae8ce309d02d5f0cdc83bfe8e95c942dd4"
+                -}}
+                {{- $filtered := list -}}
+                {{- range $item := $items -}}
+                  {{- if not (hasPrefix "//" $item) -}}
+                    {{- $filtered = append $filtered $item -}}
+                  {{- end -}}
+                {{- end -}}
+                {{- $filtered | join "|" | quote -}}
+            resources:
+              requests:
+                cpu: 10m
+                memory: 250Mi
+              limits:
+                memory: 500Mi
+        initContainers:
+          minio-init-bucket:
+            image:
+              repository: ghcr.io/qlonik/minio-init-bucket
+              tag: RELEASE.2024-04-18T16-45-29Z@sha256:0c91caa7b1fde68cefdd1ae56d2e5a1cb87d3d5a73b0a9fb2cb312f8ade9fc89
+            envFrom:
+              - secretRef:
+                  name: lazylibrarian-secret
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
+    service:
+      main:
+        controller: main
+        ports:
+          http:
+            port: 5299
+    ingress:
+      main:
+        className: internal
+        annotations:
+          auth.home.arpa/enabled: "true"
+          hajimari.io/icon: mdi:download
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: "/"
+                pathType: Prefix
+                service:
+                  identifier: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      ebooks:
+        type: nfs
+        server: nova.home.arpa
+        path: /mnt/main/media/ebooks
+        globalMounts:
+          - path: /books/ebooks
+            readOnly: true
+      audiobooks:
+        type: nfs
+        server: nova.home.arpa
+        path: /mnt/main/media/audiobooks
+        globalMounts:
+          - path: /books/audiobooks
+            readOnly: true
+      downloads:
+        type: nfs
+        server: nova.home.arpa
+        path: /mnt/main/media/downloads/lazylibrarian
+        globalMounts:
+          - path: /downloads
