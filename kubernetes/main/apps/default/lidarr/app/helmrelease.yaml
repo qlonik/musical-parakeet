@@ -51,17 +51,6 @@ spec:
             envFrom: &envFrom
               - secretRef:
                   name: lidarr-secret
-            probes:
-              liveness: &probes
-                enabled: true
-                type: HTTP
-                path: /ping
-              readiness: *probes
-              startup:
-                <<: *probes
-                spec:
-                  failureThreshold: 30
-                  periodSeconds: 5
             resources:
               requests:
                 cpu: 10m
