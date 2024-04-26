@@ -195,7 +195,10 @@
       "matchDatasources": ["docker"],
       "versioning": "regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?(?:-ls(?<build>\\d+))?$",
       "matchPackagePatterns": ["^ghcr.io\\/linuxserver\\/"],
-      "excludePackageNames": ["ghcr.io/linuxserver/mods"]
+      "excludePackageNames": [
+        "ghcr.io/linuxserver/mods",
+        "ghcr.io/linuxserver/lazylibrarian"
+      ]
     },
     {
       "description": "Custom versioning for linuxserver.io mods",
