@@ -51,17 +51,6 @@ spec:
             envFrom: &envfrom
               - secretRef:
                   name: prowlarr-secret
-            probes:
-              liveness: &probes
-                enabled: true
-                type: HTTP
-                path: /ping
-              readiness: *probes
-              startup:
-                <<: *probes
-                spec:
-                  failureThreshold: 30
-                  periodSeconds: 5
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
