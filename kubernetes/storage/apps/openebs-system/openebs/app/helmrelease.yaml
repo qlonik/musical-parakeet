@@ -9,28 +9,37 @@ spec:
   chart:
     spec:
       chart: openebs
-      version: 3.10.0
+      version: 4.0.1
       sourceRef:
         kind: HelmRepository
         name: openebs
         namespace: flux-system
   install:
+    crds: CreateReplace
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
+    crds: CreateReplace
     remediation:
       retries: 3
   uninstall:
     keepHistory: false
   values:
-    localprovisioner:
+    localpv-provisioner:
       hostpathClass:
         enabled: true
         name: openebs-hostpath
         isDefaultClass: false
         basePath: /var/openebs/local
-    ndm:
-      enabled: false
-    ndmOperator:
-      enabled: false
+      analytics:
+        enabled: false
+    engines:
+      local:
+        lvm:
+          enabled: false
+        zfs:
+          enabled: false
+      replicated:
+        mayastor:
+          enabled: false
