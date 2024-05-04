@@ -38,10 +38,10 @@ jobs:
     name: Run
     concurrency: actionsflow
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/checkout@v4
 
       - name: Run Actionsflow
-        uses: qlonik/actionsflow-action@5c5711469f7013ab40235bd3eb515b26ab2e81b7 # v3
+        uses: qlonik/actionsflow-action@3
         with:
           args: >-
             build
