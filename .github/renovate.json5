@@ -171,8 +171,7 @@
       "matchDatasources": ["npm"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
-      },
-      "separateMinorPatch": true
+      }
     },
     {
       "description": "K8s CSI Group",
