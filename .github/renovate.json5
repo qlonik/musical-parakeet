@@ -196,6 +196,15 @@
       },
       "separateMinorPatch": true
     },
+    {
+      "description": "@tsconfig bases Group",
+      "groupName": "tsconfig-bases",
+      "matchPackagePrefixes": ["@tsconfig"],
+      "matchDatasources": ["npm"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
+    },
     // custom versioning
     {
       "description": "Use custom versioning for firefly-iii",
