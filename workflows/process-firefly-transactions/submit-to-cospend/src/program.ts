@@ -124,14 +124,14 @@ const processTransaction = (
   | CreateCospendProjectBillError,
   CospendApiService
 > =>
-  T.gen(function* (_) {
+  T.gen(function* () {
     const done_label_value = tag_prefix + done_marker;
     const tid = `${id}:tj_${t.transaction_journal_id}`;
 
     const tags = RA.filter(t.tags, (t) => t.startsWith(tag_prefix));
 
     if (!RA.isNonEmptyArray(tags) || tags.includes(done_label_value)) {
-      return yield* _(skipping);
+      return yield* skipping;
     }
 
     const {
@@ -139,23 +139,24 @@ const processTransaction = (
       for: payFor,
       category,
       mode: transactionPaymentMode,
-    } = yield* _(
-      getTransactionConfigurationInput(tags, tag_prefix, field_separator).pipe(
-        T.catchTag("ParseError", (error) =>
-          mkError(
-            tid,
-            "transaction configuration does not match schema:\n" +
-              TreeFormatter.formatError(error),
-          ),
+    } = yield* getTransactionConfigurationInput(
+      tags,
+      tag_prefix,
+      field_separator,
+    ).pipe(
+      T.catchTag("ParseError", (error) =>
+        mkError(
+          tid,
+          "transaction configuration does not match schema:\n" +
+            TreeFormatter.formatError(error),
         ),
       ),
     );
 
-    const { active_members, members, categories, paymentmodes } = yield* _(
-      loadCospendProjectIfNeeded(project, tid),
-    );
+    const { active_members, members, categories, paymentmodes } =
+      yield* loadCospendProjectIfNeeded(project, tid);
 
-    yield* _(T.logInfo("No matching bills found in cospend"));
+    yield* T.logInfo("No matching bills found in cospend");
 
     const allUsersMap = RR.fromIterableWith(members, (m) => [
       m.userid,
@@ -169,13 +170,11 @@ const processTransaction = (
         : RA.map(active_members, (m) => m.id.toString()).join(",");
 
     if (payer == null || payed_for == null) {
-      return yield* _(
-        mkError(
-          tid,
-          payer == null
-            ? '"cospend_payer_username" field does not match any known project member'
-            : 'unknown "pay-for" target',
-        ),
+      return yield* mkError(
+        tid,
+        payer == null
+          ? '"cospend_payer_username" field does not match any known project member'
+          : 'unknown "pay-for" target',
       );
     }
 
@@ -198,20 +197,18 @@ const processTransaction = (
       O.getOrElse(() => ""),
     );
 
-    const newBillId = yield* _(
-      createCospendProjectBill(project, {
-        timestamp: new Date(t.date).getTime() / 1000,
-        what: t.description,
-        comment: tid + "\n\n",
-        amount: t.amount,
-        payer,
-        payed_for,
-        categoryid,
-        paymentmodeid,
-      }),
-    );
-    return yield* _(
-      mkFoundBill(`Successfully created a new bill at id "${newBillId}"`),
+    const newBillId = yield* createCospendProjectBill(project, {
+      timestamp: new Date(t.date).getTime() / 1000,
+      what: t.description,
+      comment: tid + "\n\n",
+      amount: t.amount,
+      payer,
+      payed_for,
+      categoryid,
+      paymentmodeid,
+    });
+    return yield* mkFoundBill(
+      `Successfully created a new bill at id "${newBillId}"`,
     );
   }).pipe(
     T.catchTags({
@@ -233,7 +230,7 @@ const processTransaction = (
     }),
   );
 
-export const program = T.gen(function* ($) {
+export const program = T.gen(function* () {
   const {
     input: {
       id,
@@ -250,26 +247,24 @@ export const program = T.gen(function* ($) {
     tag_prefix,
     done_marker,
     field_separator,
-  } = yield* $(ApplicationConfigService);
+  } = yield* ApplicationConfigService;
 
   if (RA.isEmptyReadonlyArray(transactions)) {
-    return yield* $(T.logInfo("no transactions to process"));
+    return yield* T.logInfo("no transactions to process");
   }
 
-  const toUpdate = yield* $(
-    T.forEach(transactions, (t) =>
-      processTransaction(t, {
-        id,
-        payerUsername,
-        accountPaymentMode,
-        tag_prefix,
-        done_marker,
-        field_separator,
-      }),
-    ),
+  const toUpdate = yield* T.forEach(transactions, (t) =>
+    processTransaction(t, {
+      id,
+      payerUsername,
+      accountPaymentMode,
+      tag_prefix,
+      done_marker,
+      field_separator,
+    }),
   );
 
-  yield* $(T.logInfo("transactions successfully processed"));
+  yield* T.logInfo("transactions successfully processed");
 
   const shouldUpdate = RA.some(toUpdate, (o) =>
     pipe(
@@ -280,7 +275,7 @@ export const program = T.gen(function* ($) {
   );
 
   if (shouldUpdate) {
-    yield* $(updateFireflyTransactionTags(transactionId, toUpdate));
-    yield* $(T.logInfo("updated matching transactions in firefly"));
+    yield* updateFireflyTransactionTags(transactionId, toUpdate);
+    yield* T.logInfo("updated matching transactions in firefly");
   }
 }).pipe(T.withRequestCaching(true));

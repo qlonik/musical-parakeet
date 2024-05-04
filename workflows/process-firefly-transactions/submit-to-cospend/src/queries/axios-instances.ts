@@ -44,12 +44,12 @@ export class CospendApiService extends Context.Tag(
   "submit-to-cospend/services/CospendApiService",
 )<CospendApiService, { client: WrappedAxios }>() {}
 
-export const CospendApiServiceLive = T.gen(function* ($) {
+export const CospendApiServiceLive = T.gen(function* () {
   const {
     nc_base_url: baseUrl,
     nc_user: username,
     nc_password: password,
-  } = yield* $(ApplicationConfigService);
+  } = yield* ApplicationConfigService;
 
   const client = Axios.create({
     baseURL: `${baseUrl}/index.php/apps/cospend`,
@@ -63,13 +63,13 @@ export class FireflyApiService extends Context.Tag(
   "submit-to-cospend/services/FireflyApiService",
 )<FireflyApiService, { readonly client: WrappedAxios }>() {}
 
-export const FireflyApiServiceLive = T.gen(function* ($) {
+export const FireflyApiServiceLive = T.gen(function* () {
   const {
     ff3_base_url: baseUrl,
     input: {
       info: { pat },
     },
-  } = yield* $(ApplicationConfigService);
+  } = yield* ApplicationConfigService;
 
   const client = Axios.create({
     baseURL: `${baseUrl}/api`,
