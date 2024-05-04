@@ -183,6 +183,20 @@
         "commitMessageTopic": "{{{groupName}}} group"
       }
     },
+    {
+      "description": "calibre Group",
+      "groupName": "calibre",
+      "matchPackagePatterns": [
+        "ghcr.io/linuxserver/calibre",
+        "ghcr.io/linuxserver/mods"
+      ],
+      "matchCurrentValue": "/^(universal-calibre-)?v\\d+/",
+      "matchDatasources": ["docker"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "separateMinorPatch": true
+    },
     // custom versioning
     {
       "description": "Use custom versioning for firefly-iii",
