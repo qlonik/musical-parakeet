@@ -12,11 +12,11 @@ importers:
         specifier: ^1.10.1
         version: 1.10.1
       '@effect/platform-node':
-        specifier: ^0.47.3
-        version: 0.47.3(@effect/platform@0.50.3)(effect@3.0.3)
+        specifier: ^0.48.0
+        version: 0.48.3(@effect/platform@0.50.3(@effect/schema@0.66.14(effect@3.1.2)(fast-check@3.17.2))(effect@3.1.2)(ws@8.17.0))(effect@3.1.2)
       '@effect/schema':
         specifier: ^0.66.6
-        version: 0.66.6(effect@3.0.3)(fast-check@3.17.2)
+        version: 0.66.14(effect@3.1.2)(fast-check@3.17.2)
       axios:
         specifier: ^1.6.7
         version: 1.6.8
@@ -25,7 +25,7 @@ importers:
         version: 1.8.1
       effect:
         specifier: ^3.0.3
-        version: 3.0.3
+        version: 3.1.2
     devDependencies:
       '@tsconfig/node20':
         specifier: ^20.1.2
@@ -54,17 +54,17 @@ packages:
   '@actions/http-client@2.2.1':
     resolution: {integrity: sha512-KhC/cZsq7f8I4LfZSJKgCvEwfkE8o1538VoBeoGzokVLLnbFDEAdFD3UhoMklxo2un9NJVBdANOresx7vTHlHw==}
 
-  '@effect/platform-node-shared@0.4.8':
-    resolution: {integrity: sha512-KrqC0WhoQd793Mh7DbZM3xfmbJkOtaI4Jyc2xXKM4VGyDKt7rn7RMMId0R9o8uZWbbSyP+n7skgIRE/EFz5vWA==}
+  '@effect/platform-node-shared@0.4.17':
+    resolution: {integrity: sha512-iYUYIDGhEIGd8eUVyG9V2+GfRR/6Xh3TlaLqB6iaLPzkDp4kj+Kj5d1HVv8xAxHJ/p3I58YblBQp4eN7fSfg8Q==}
     peerDependencies:
-      '@effect/platform': ^0.50.3
-      effect: ^3.0.3
+      '@effect/platform': ^0.52.2
+      effect: ^3.1.2
 
-  '@effect/platform-node@0.47.3':
-    resolution: {integrity: sha512-WabWWtltmtqirTkB9QXWZS2JHH9pUG0rB2NuSZ/l+K6+9qaM515CaVXsha2JvwXVYYa3d2ANKz59CklJzYMSUw==}
+  '@effect/platform-node@0.48.3':
+    resolution: {integrity: sha512-bvkbRPhpBeJZ8iJkST+E9O9bWVbIwt3EOu5iCyh79ujF847vLuVURDZlvNUKlVvA5my2lchl13kjUmrAVoumlg==}
     peerDependencies:
-      '@effect/platform': ^0.50.3
-      effect: ^3.0.3
+      '@effect/platform': ^0.52.2
+      effect: ^3.1.2
 
   '@effect/platform@0.50.3':
     resolution: {integrity: sha512-rZsuhZ8BOAjb3UMF1U0lpsvYJL4TjkdJOeKsJT7LbE28J3cE+faxLqx+B6pnL50tFdcJfQPYhfFXP5o6RF7i7A==}
@@ -72,10 +72,10 @@ packages:
       '@effect/schema': ^0.66.6
       effect: ^3.0.3
 
-  '@effect/schema@0.66.6':
-    resolution: {integrity: sha512-ucyPKkmiXiiAN6SurfysM3wG2qFKz2XCCmR1EMR7PJtcjLi5TKvW2Ax9gXf7ByChKXKcp1sM3Wzbr/3sQw9zwg==}
+  '@effect/schema@0.66.14':
+    resolution: {integrity: sha512-2Yc6gnXpcMmwQnbU2JUwDl0ckeOJmFZzteXn2jjVWuNi9PGv+jp2yK7jxv0pALcieuYwdR5tKkCRI7STuhEwfg==}
     peerDependencies:
-      effect: ^3.0.3
+      effect: ^3.1.2
       fast-check: ^3.13.2
 
   '@esbuild/aix-ppc64@0.19.12':
@@ -335,8 +335,8 @@ packages:
     engines: {node: '>=0.10'}
     hasBin: true
 
-  effect@3.0.3:
-    resolution: {integrity: sha512-mgG+FoWrM4sny8OxDFWCpq+6LwGf9cK/JztVhxZQeZM9ZMXY+lKbdMEQmemNYce0QVAz2+YqUKwhKzOidwbZzg==}
+  effect@3.1.2:
+    resolution: {integrity: sha512-XakSWck6w6ROqKyEys0tKE9K6Gx2p8W/09u2ZTEZZrneO5Z3QEdPhXzWTyC73kD5zUvfJinZLVIas8I1xoHaTg==}
 
   esbuild@0.19.12:
     resolution: {integrity: sha512-aARqgq8roFBj054KvQr5f1sFu0D65G+miZRCuJyJ0G13Zwx7vRar5Zhn2tkQNzIXcBrNVsv/8stehpj+GAjgbg==}
@@ -357,8 +357,8 @@ packages:
     resolution: {integrity: sha512-qOo9F+dMUmC2Lcb4BbVvnKJxTPjCm+RRpe4gDuGrzkL7mEVl/djYSu2OdQ2Pa302N4oqkSg9ir6jaLWJ2USVpQ==}
     engines: {node: '>=8'}
 
-  find-my-way-ts@0.1.1:
-    resolution: {integrity: sha512-nXUdq29JRQ1tYa1/n+DHTVChMARJHz+gi7sDZibwQukzHP7Hrr6s+sxKbaIM8xB3LzhSBJy5yLb0JhIUmHmOiA==}
+  find-my-way-ts@0.1.2:
+    resolution: {integrity: sha512-AWsH49RGcyayzzxSAkwQKC1bToY5ForAfNreix88slo7wijg1wwTtCPvUUoVm/qhIY3UVSHBKApw8mOGPxsvSg==}
 
   follow-redirects@1.15.6:
     resolution: {integrity: sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==}
@@ -415,8 +415,8 @@ packages:
     engines: {node: '>=10.0.0'}
     hasBin: true
 
-  multipasta@0.2.0:
-    resolution: {integrity: sha512-MNAym1D9GTpY0/CKYJFDmaJ3TfhblfsQyyipCCSsgasMZCAyR2fCNDJhR7lACfJ0YMwQSDi5RHeIdJcsze6WMg==}
+  multipasta@0.2.1:
+    resolution: {integrity: sha512-0NR15o5iewJFMsZ4jN6cztCd4izTLZPyHUfBrakbg/x70B8zplPE6qumbs+A7LmhGtQMzpN/K8MOOdifMgAKFA==}
 
   node-addon-api@7.1.0:
     resolution: {integrity: sha512-mNcltoe1R8o7STTegSOHdnJNN7s5EUvhoS7ShnTHDyOSd+8H+UdWODq6qSv67PjC8Zc5JRT8+oLAMCr0SIXw7g==}
@@ -463,16 +463,16 @@ packages:
     resolution: {integrity: sha512-3ItfzbrhDlINjaP0duwnNsKpDQk3acHI3gVJ1z4fmwMK31k5G9OVIAMLSIaP6w4FaGkaAkN6zaQO9LUvZ1t7VA==}
     engines: {node: '>=14.0'}
 
-  undici@6.14.0:
-    resolution: {integrity: sha512-esJ/x2QU5boTG6thdA0o4qP3cv/oPx9mcQGcp8TAHI+ZBTa0EvM9Jiyp0ILdPGLGxs5HATTKrJqAK+YhrSFicg==}
+  undici@6.15.0:
+    resolution: {integrity: sha512-VviMt2tlMg1BvQ0FKXxrz1eJuyrcISrL2sPfBf7ZskX/FCEc/7LeThQaoygsMJpNqrATWQIsRVx+1Dpe4jaYuQ==}
     engines: {node: '>=18.17'}
 
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
 
-  ws@8.16.0:
-    resolution: {integrity: sha512-HS0c//TP7Ina87TfiPUz1rQzMhHrl/SG2guqRcTOIUYD2q8uhUdNHZYJUaQ8aTGPzCh+c6oawMKW35nFl1dxyQ==}
+  ws@8.17.0:
+    resolution: {integrity: sha512-uJq6108EgZMAl20KagGkzCKfMEjxmKvZHG7Tlq0Z6nOky7YF7aq4mOx6xK8TJ/i1LeK4Qus7INktacctDgY8Ow==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -495,39 +495,39 @@ snapshots:
       tunnel: 0.0.6
       undici: 5.28.3
 
-  '@effect/platform-node-shared@0.4.8(@effect/platform@0.50.3)(effect@3.0.3)':
+  '@effect/platform-node-shared@0.4.17(@effect/platform@0.50.3(@effect/schema@0.66.14(effect@3.1.2)(fast-check@3.17.2))(effect@3.1.2)(ws@8.17.0))(effect@3.1.2)':
     dependencies:
-      '@effect/platform': 0.50.3(@effect/schema@0.66.6)(effect@3.0.3)(ws@8.16.0)
+      '@effect/platform': 0.50.3(@effect/schema@0.66.14(effect@3.1.2)(fast-check@3.17.2))(effect@3.1.2)(ws@8.17.0)
       '@parcel/watcher': 2.4.1
-      effect: 3.0.3
-      multipasta: 0.2.0
+      effect: 3.1.2
+      multipasta: 0.2.1
 
-  '@effect/platform-node@0.47.3(@effect/platform@0.50.3)(effect@3.0.3)':
+  '@effect/platform-node@0.48.3(@effect/platform@0.50.3(@effect/schema@0.66.14(effect@3.1.2)(fast-check@3.17.2))(effect@3.1.2)(ws@8.17.0))(effect@3.1.2)':
     dependencies:
-      '@effect/platform': 0.50.3(@effect/schema@0.66.6)(effect@3.0.3)(ws@8.16.0)
-      '@effect/platform-node-shared': 0.4.8(@effect/platform@0.50.3)(effect@3.0.3)
-      effect: 3.0.3
+      '@effect/platform': 0.50.3(@effect/schema@0.66.14(effect@3.1.2)(fast-check@3.17.2))(effect@3.1.2)(ws@8.17.0)
+      '@effect/platform-node-shared': 0.4.17(@effect/platform@0.50.3(@effect/schema@0.66.14(effect@3.1.2)(fast-check@3.17.2))(effect@3.1.2)(ws@8.17.0))(effect@3.1.2)
+      effect: 3.1.2
       mime: 3.0.0
-      undici: 6.14.0
-      ws: 8.16.0
+      undici: 6.15.0
+      ws: 8.17.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform@0.50.3(@effect/schema@0.66.6)(effect@3.0.3)(ws@8.16.0)':
+  '@effect/platform@0.50.3(@effect/schema@0.66.14(effect@3.1.2)(fast-check@3.17.2))(effect@3.1.2)(ws@8.17.0)':
     dependencies:
-      '@effect/schema': 0.66.6(effect@3.0.3)(fast-check@3.17.2)
-      effect: 3.0.3
-      find-my-way-ts: 0.1.1
-      isows: 1.0.4(ws@8.16.0)
-      multipasta: 0.2.0
+      '@effect/schema': 0.66.14(effect@3.1.2)(fast-check@3.17.2)
+      effect: 3.1.2
+      find-my-way-ts: 0.1.2
+      isows: 1.0.4(ws@8.17.0)
+      multipasta: 0.2.1
       path-browserify: 1.0.1
     transitivePeerDependencies:
       - ws
 
-  '@effect/schema@0.66.6(effect@3.0.3)(fast-check@3.17.2)':
+  '@effect/schema@0.66.14(effect@3.1.2)(fast-check@3.17.2)':
     dependencies:
-      effect: 3.0.3
+      effect: 3.1.2
       fast-check: 3.17.2
 
   '@esbuild/aix-ppc64@0.19.12':
@@ -691,7 +691,7 @@ snapshots:
 
   detect-libc@1.0.3: {}
 
-  effect@3.0.3: {}
+  effect@3.1.2: {}
 
   esbuild@0.19.12:
     optionalDependencies:
@@ -733,7 +733,7 @@ snapshots:
     dependencies:
       to-regex-range: 5.0.1
 
-  find-my-way-ts@0.1.1:
+  find-my-way-ts@0.1.2:
     dependencies:
       fast-querystring: 1.1.2
 
@@ -760,9 +760,9 @@ snapshots:
 
   is-number@7.0.0: {}
 
-  isows@1.0.4(ws@8.16.0):
+  isows@1.0.4(ws@8.17.0):
     dependencies:
-      ws: 8.16.0
+      ws: 8.17.0
 
   micromatch@4.0.5:
     dependencies:
@@ -777,7 +777,7 @@ snapshots:
 
   mime@3.0.0: {}
 
-  multipasta@0.2.0: {}
+  multipasta@0.2.1: {}
 
   node-addon-api@7.1.0: {}
 
@@ -812,8 +812,8 @@ snapshots:
     dependencies:
       '@fastify/busboy': 2.1.1
 
-  undici@6.14.0: {}
+  undici@6.15.0: {}
 
   uuid@8.3.2: {}
 
-  ws@8.16.0: {}
+  ws@8.17.0: {}
