@@ -4,6 +4,7 @@ httpConnection:
     host: ENC[AES256_GCM,data:TJ+joRLr5PpzxyIES84=,iv:NBjrf1issBUc5Qm0XhHhERsYcyPle6mvB78EDT0tiOQ=,tag:2BWTOCv6045GLaBCe6xyvw==,type:str]
     port: ENC[AES256_GCM,data:kSs=,iv:8VbfWb7nPc6+GLBmFqzYDTio0u6LwUs28vwq2iVl+Ao=,tag:Tlf+NDuxq8kEwAURhjRvzQ==,type:int]
     apiKey: ENC[AES256_GCM,data:uYnn9dSzJU24ktG2S+brk6pcnEQi/QHZhM0PeWUDyAIRF7gH0mxE7wpOrSeG9ysA59Sq+9r8LaAp92zzSG7EkYRw,iv:YqIEPk+MyOqOmxc9T9eHF5eC+X02ENtE+5+Zhb+RIH4=,tag:8i6oqzqtVsDJoa9JGmwHaQ==,type:str]
+    apiVersion: ENC[AES256_GCM,data:Wg==,iv:kFFeok+fRbei/+AEUuX/CiQTBEPkC6Pdeg2huxBz/Uc=,tag:jFBjeXvZwp/fSuEWjc3kNQ==,type:int]
 zfs:
     datasetParentName: main/appdata/pvc-vols
     detachedSnapshotsDatasetParentName: main/appdata/pvc-snaps
@@ -38,8 +39,8 @@ sops:
             QTdUQVNtMjlLYndrUkIyN2gyUlZWTTgKa7gaAEmfUILROlWGjkjgKga8jTb09xTd
             NjFjmoTfpYNNJeBedjbPu1gU+V6dJer91Y+37ZFE552TmH7c9LaSsg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-03-17T04:31:03Z"
-    mac: ENC[AES256_GCM,data:PdGnb5RHVjmKjMQvZ/9SDa8fWxi+vWCO5H+l6uLXNa+BbfqmApT526Xn2YYDu+g4UTz62yGXgPgC0dfGFWhsQGTybAme2R0T/BIm6SYK93vm7Y22g7WHt0HBlc8hdXveuINEpaYqB3wTSqqz01Rg8AGybUL7s86I23gxN99DvDg=,iv:m8BiVLXWoahlegMdXPAcXGTqJX3C5pMeFuUPg7Gard0=,tag:9Ne0rdjCOa6sWLrYOMXIaA==,type:str]
+    lastmodified: "2024-05-04T20:11:36Z"
+    mac: ENC[AES256_GCM,data:QlVhsY4Y0EZyfPb0zUdTi7YfC5qnHXbzUC3fBrEHzVnS1ydwtMBIYYMxy527oLcGKy8NVHwCiErK7ozCdbRHY88qS5NruxSRLDdp/L7oKNCCarVgHu40pyDzZU+qbmhMMqLyldpG/n/YCuu+X0J83c1E0TxvIxosxQajTts9M8c=,iv:Wbnd75L7zfcV4j45FMzsxfPOKqI0s8aPXoJBuqrIQIA=,tag:Tk6DbxvUkdZNkNBPBmdR4w==,type:str]
     pgp: []
     encrypted_regex: ^httpConnection$
     version: 3.8.1
