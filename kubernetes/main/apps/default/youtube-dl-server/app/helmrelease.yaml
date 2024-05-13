@@ -41,7 +41,7 @@ spec:
           main:
             image:
               repository: nbr23/youtube-dl-server
-              tag: yt-dlp@sha256:a4f04648037ea4ac0c5f45ff50767abf2818945bbca39f4e2185088ae6c2a241
+              tag: yt-dlp@sha256:95c45216a2b534fd33f48121cbcf6b89701ae531d17a026c3e331ab38cf94a42
             env:
               TZ: ${TIMEZONE}
             resources:
