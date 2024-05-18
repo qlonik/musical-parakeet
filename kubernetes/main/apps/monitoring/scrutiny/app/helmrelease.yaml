@@ -41,7 +41,7 @@ spec:
           main:
             image:
               repository: public.ecr.aws/docker/library/influxdb
-              tag: 2.7.6@sha256:b18296633f4c6368ed9ef0687defa1a414c94df613779d0444ee0d49b2ebcf90
+              tag: 2.7.6@sha256:d99286d6d608ab56c099a34cf89b06081855e4e74b7f19cbc77f0767bc481960
             probes:
               liveness: &influxProbe
                 enabled: true
