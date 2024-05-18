@@ -5,7 +5,7 @@ collections:
   - name: ansible.utils
     version: 4.1.0
   - name: arensb.truenas
-    version: 1.9.0
+    version: 1.9.4
   - name: community.general
     version: 8.6.0
   - name: community.sops
