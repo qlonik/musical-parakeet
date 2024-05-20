@@ -18,9 +18,7 @@ export const transactionConfigurationInputS = S.Struct({
   mode: S.optional(PaymentModeName),
 });
 
-export type FireflyTransactionInputId = S.Schema.Type<
-  typeof TransactionInputId
->;
+export type FireflyTransactionInputId = typeof TransactionInputId.Type;
 export const {
   TransactionInput: fireflyTransactionInputS,
   TransactionInputId,
@@ -39,9 +37,8 @@ export const {
 
 // Do not delete. This type is a reference type for inputs used by
 // `load-unprocessed.cjs` script.
-export type PROCESS_FIREFLY_TRANSACTIONS = S.Schema.Encoded<
-  typeof PROCESS_FIREFLY_TRANSACTIONS
->;
+export type PROCESS_FIREFLY_TRANSACTIONS =
+  typeof PROCESS_FIREFLY_TRANSACTIONS.Encoded;
 const PROCESS_FIREFLY_TRANSACTIONS = S.Struct({
   nc_user: MemberUserid,
   nc_password: S.String.pipe(S.brand("nextcloud-app-password")),

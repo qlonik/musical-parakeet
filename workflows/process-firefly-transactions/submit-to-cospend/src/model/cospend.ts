@@ -3,7 +3,7 @@ import { Id, IdStr } from "./generic.js";
 import { addBrandedKeys } from "../schema-extra.js";
 import { markdown } from "../template-tags.js";
 
-export type MemberUseridTo = S.Schema.Type<typeof MemberUserid>;
+export type MemberUseridTo = typeof MemberUserid.Type;
 export const { Member, MemberId, MemberUserid } = addBrandedKeys(
   "Member",
   S.Struct({}),
@@ -38,7 +38,7 @@ By default, cospend project has \`'Grocery'\`, \`'Restaurant'\`, \`'Shopping'\`,
   ],
 );
 
-export type PaymentModeNameTo = S.Schema.Type<typeof PaymentModeName>;
+export type PaymentModeNameTo = typeof PaymentModeName.Type;
 export const { PaymentMode, PaymentModeId, PaymentModeName } = addBrandedKeys(
   "PaymentMode",
   S.Struct({}),
@@ -55,7 +55,7 @@ default, cospend project has \`'Debit card'\` and \`Credit card\` among others.
   ],
 );
 
-export type BillId = S.Schema.Type<typeof BillId>;
+export type BillId = typeof BillId.Type;
 export const { Bill, BillId } = addBrandedKeys(
   "Bill",
   S.Struct({
@@ -64,9 +64,8 @@ export const { Bill, BillId } = addBrandedKeys(
   ["id", Id],
 );
 
-export type CospendProjectDescriptionTo = S.Schema.Type<
-  typeof CospendProjectDescriptionS
->;
+export type CospendProjectDescriptionTo =
+  typeof CospendProjectDescriptionS.Type;
 export type ProjectId = S.Schema.Type<typeof ProjectId>;
 export const { Project: CospendProjectDescriptionS, ProjectId } =
   addBrandedKeys(
@@ -80,7 +79,7 @@ export const { Project: CospendProjectDescriptionS, ProjectId } =
     ["id", IdStr],
   );
 
-export type CospendProjectBillsTo = S.Schema.Type<typeof CospendProjectBillsS>;
+export type CospendProjectBillsTo = typeof CospendProjectBillsS.Type;
 export const CospendProjectBillsS = S.Struct({
   bills: S.Array(Bill),
 });

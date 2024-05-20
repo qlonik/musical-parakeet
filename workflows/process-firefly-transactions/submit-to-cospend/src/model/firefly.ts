@@ -6,14 +6,13 @@ export const FireflyPersonalAccessToken = S.String.pipe(
 );
 
 export const FireflyTransactionId = IdStr.pipe(S.brand("firefly-transactions"));
-export type FireflyTransactionId = S.Schema.Type<typeof FireflyTransactionId>;
+export type FireflyTransactionId = typeof FireflyTransactionId.Type;
 
 export const FireflyTransactionJournalId = IdStr.pipe(
   S.brand("firefly-transaction-journal"),
 );
-export type FireflyTransactionJournalId = S.Schema.Type<
-  typeof FireflyTransactionJournalId
->;
+export type FireflyTransactionJournalId =
+  typeof FireflyTransactionJournalId.Type;
 
 const FireflyTransactionJournal = S.Struct({
   transaction_journal_id: FireflyTransactionJournalId,
@@ -23,12 +22,8 @@ const FireflyTransactionJournal = S.Struct({
   tags: S.Array(S.String),
   category_name: S.NullOr(S.String),
 });
-type FireflyTransactionJournalFrom = S.Schema.Encoded<
-  typeof FireflyTransactionJournal
->;
-export type FireflyTransactionJournalTo = S.Schema.Type<
-  typeof FireflyTransactionJournal
->;
+type FireflyTransactionJournalFrom = typeof FireflyTransactionJournal.Encoded;
+export type FireflyTransactionJournalTo = typeof FireflyTransactionJournal.Type;
 
 export const FireflyTransaction = S.Struct({
   id: FireflyTransactionId,
