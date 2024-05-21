@@ -77,9 +77,9 @@ jobs:
     name: Print
     runs-on: ubuntu-latest
     steps:
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 9
           run_install: |
             - cwd: workflows/process-firefly-transactions/submit-to-cospend/
               args: [--frozen-lockfile, --strict-peer-dependencies]
