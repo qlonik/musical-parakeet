@@ -52,11 +52,11 @@ spec:
       annotations:
         reloader.stakater.com/auto: "true"
       externalAttacher:
-        image: registry.k8s.io/sig-storage/csi-attacher:v4.5.1
+        image: registry.k8s.io/sig-storage/csi-attacher:v4.6.0
       externalProvisioner:
         image: registry.k8s.io/sig-storage/csi-provisioner:v5.0.0
       externalResizer:
-        image: registry.k8s.io/sig-storage/csi-resizer:v1.10.1
+        image: registry.k8s.io/sig-storage/csi-resizer:v1.11.0
       externalSnapshotter:
         image: registry.k8s.io/sig-storage/csi-snapshotter:v8.0.0
       driver:
