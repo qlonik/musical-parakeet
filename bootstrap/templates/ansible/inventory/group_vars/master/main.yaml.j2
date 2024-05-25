@@ -21,7 +21,7 @@ k3s_server:
   disable-cloud-controller: true
   disable-kube-proxy: true
   write-kubeconfig-mode: "644"
-  pause-image: registry.k8s.io/pause:3.9
+  pause-image: registry.k8s.io/pause:3.10
   secrets-encryption: true
   #% if bootstrap_advanced_flags.dual_stack_ipv4_first|default(false) %#
   cluster-cidr: "#{ bootstrap_cluster_cidr.split(',')[0] }#,#{ bootstrap_cluster_cidr.split(',')[1] }#"
