@@ -31,7 +31,7 @@ k3s_server:
   kube-scheduler-arg: ["bind-address=0.0.0.0"]
   kubelet-arg: ["image-gc-low-threshold=50", "image-gc-high-threshold=55"]
   node-ip: "{{ ansible_host }}"
-  pause-image: registry.k8s.io/pause:3.9
+  pause-image: registry.k8s.io/pause:3.10
   secrets-encryption: true
   service-cidr: 10.133.0.0/16
   tls-san: ["{{ k3s_registration_address }}", "nova.home.arpa", "nova"]
