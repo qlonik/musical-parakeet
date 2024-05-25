@@ -77,8 +77,7 @@ spec:
           timeZone: "${TIMEZONE}"
           successfulJobsHistory: 2
           failedJobsHistory: 2
-          # TODO: add this if supported
-          # activeDeadlineSeconds: 120
+          activeDeadlineSeconds: 120
         containers:
           main:
             image:
