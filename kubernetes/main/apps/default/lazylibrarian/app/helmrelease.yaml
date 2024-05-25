@@ -47,7 +47,7 @@ spec:
               DOCKER_MODS: >-
                 {{- $items := list
                   "// renovate: lsio-docker-mod"
-                  "ghcr.io/linuxserver/mods:universal-calibre-v7.10.0@sha256:16dad84f006663579d93dd3002df04217a909ca1a8db2d8da3871bb6d3bfa203"
+                  "ghcr.io/linuxserver/mods:universal-calibre-v7.11.0@sha256:f033a55acfd13a96993f789a2ab91d9a7bad02f174a8d3198e5aad179be81773"
                   "// renovate: lsio-docker-mod"
                   "ghcr.io/linuxserver/mods:lazylibrarian-ffmpeg@sha256:5083d9f2bdfcb27edf65a55e7c05d0ae8ce309d02d5f0cdc83bfe8e95c942dd4"
                 -}}
