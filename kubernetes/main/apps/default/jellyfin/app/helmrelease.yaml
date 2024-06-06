@@ -43,7 +43,7 @@ spec:
           main:
             image:
               repository: docker.io/jellyfin/jellyfin
-              tag: 10.9.2@sha256:21e49baac0a05efd4822269e3d8ba2f693e741006a2f81aa397cf5f8445e48a9
+              tag: 10.9.5@sha256:406fb7cd86cc2de603029daff664919c72e50f5eef14bad4b67f23a356c4dfa5
             env:
               TZ: ${TIMEZONE}
               JELLYFIN_PublishedServerUrl: "https://{{ .Release.Name }}.${SECRET_DOMAIN}/"
