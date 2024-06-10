@@ -32,11 +32,15 @@ on:
         required: false
         default: "false"
 
+concurrency: actionsflow
+
 jobs:
-  run:
+  generate-workflows:
+    name: Generate workflows from Actionsflow
     runs-on: ["gha-home-ops"]
-    name: Run
-    concurrency: actionsflow
+    outputs:
+      run-act: ${{ steps.check-workflow-files.outputs.present }}
+      artifact-id: ${{ steps.upload-configs.outputs.artifact-id }}
     steps:
       - uses: actions/checkout@v4
 
@@ -58,6 +62,29 @@ jobs:
             echo "present=true" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Upload generated workflows
+        id: upload-configs
+        if: ${{ steps.check-workflow-files.outputs.present == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: actionsflow-act-config
+          path: ./dist
+          if-no-files-found: error
+          retention-days: 1
+
+  run-act:
+    name: Run act
+    runs-on: ["gha-home-ops"]
+    needs: generate-workflows
+    if: ${{ needs.generate-workflows.outputs.run-act == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: actionsflow-act-config
+          path: ./dist
+
       - name: Install act
         if: ${{ steps.check-workflow-files.outputs.present == 'true' }}
         run: curl -fsSL https://raw.githubusercontent.com/nektos/act/master/install.sh | bash -s -- -b ~/bin/
@@ -77,3 +104,13 @@ jobs:
             --secret-file ./dist/.secrets \
             --env-file ./dist/.env \
             --platform ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-latest
+
+      - name: Delete artifacts
+        if: ${{ always() }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.actions.deleteArtifact({
+              artifact_id: "${{ needs.generate-workflows.outputs.artifact-id }}",
+              ...context.repo,
+            })
