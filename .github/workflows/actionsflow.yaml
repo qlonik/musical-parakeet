@@ -51,9 +51,19 @@ jobs:
           json-secrets: ${{ toJSON(secrets) }}
           json-github: ${{ toJSON(github) }}
 
+      - name: Check workflow files
+        id: check-workflow-files
+        run: |-
+          if [[ -d "./dist/workflows" && ! -z "$(ls -A ./dist/workflows)" ]]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Install act
+        if: ${{ steps.check-workflow-files.outputs.present == 'true' }}
         run: curl -fsSL https://raw.githubusercontent.com/nektos/act/master/install.sh | bash -s -- -b ~/bin/
+
       - name: Run act
+        if: ${{ steps.check-workflow-files.outputs.present == 'true' }}
         # Consider adding support for cache artifacts
         # https://github.com/nektos/act/issues/329#issuecomment-1187246629
         # With this, cache action can be used in actionsflow workflows, caught by act
