@@ -41,7 +41,7 @@ spec:
           main:
             image:
               repository: ghcr.io/linuxserver/heimdall
-              tag: v2.6.1-ls268@sha256:338b56fe08dc8b38b94b081c02b5934ca3755a6173bbe00460f534c1da25f47e
+              tag: v2.6.1-ls269@sha256:4bc39fa9b080d2e04075d61d4947669cd458575cb09e0d447ff5e2d2e25eee57
             env:
               TZ: ${TIMEZONE}
               PUID: 568
