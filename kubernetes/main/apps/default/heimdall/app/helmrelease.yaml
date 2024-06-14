@@ -66,7 +66,7 @@ spec:
           minio-init-bucket:
             image:
               repository: ghcr.io/qlonik/minio-init-bucket
-              tag: RELEASE.2024-06-01T15-03-35Z@sha256:af0f5d613d2c13a963066f56d7f3b5db9a2bb01aabd20210d699c5f2d45b2b25
+              tag: RELEASE.2024-06-12T14-34-03Z@sha256:c6b15ae3a93b09573e850c42b1411fca7444dd5118b55f1c1e3e0b8825b61652
             envFrom:
               - secretRef:
                   name: heimdall-secret
