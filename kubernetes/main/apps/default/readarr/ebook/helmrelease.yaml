@@ -47,7 +47,7 @@ spec:
             env:
               TZ: ${TIMEZONE}
               READARR__URL_BASE: /ebook
-              READARR__AUTHENTICATION_METHOD: None
+              READARR__AUTHENTICATION_METHOD: External
             envFrom: &envFrom
               - secretRef:
                   name: readarr-ebook-secret
