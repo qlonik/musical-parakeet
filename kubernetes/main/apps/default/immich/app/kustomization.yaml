@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./pvc.yaml
-  - ./configmap.yaml
   - ./secret.sops.yaml
 
 configMapGenerator:

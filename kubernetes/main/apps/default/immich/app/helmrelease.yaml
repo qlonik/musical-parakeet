@@ -28,25 +28,25 @@ spec:
       namespace: default
   values:
     controllers:
-      main:
-        nameOverride: server
+      immich:
         containers:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v1.105.1@sha256:658b40420d7a39d6eb34c797cec8d36ff315f5adb168301aaf27dc4eafc8e228
-            args: ["./start.sh", "immich"]
-            envFrom: &envfrom
-              - configMapRef:
-                  name: &configmap immich-configmap
+              tag: v1.106.4@sha256:d39cb7ecbcc9924f2c51a3e0deb8a469075996c6ba9e1384eb2ddb550984848e
+            env:
+              TZ: "${TIMEZONE}"
+              IMMICH_LOG_LEVEL: verbose
+              IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning.default.svc.cluster.local:3003
+            envFrom:
               - secretRef:
                   name: immich-secret
             resources:
               requests:
                 cpu: 100m
-                memory: 250Mi
+                memory: 1Gi
               limits:
-                memory: 2Gi
+                memory: 4Gi
             probes:
               liveness: &server-probe
                 enabled: true
@@ -107,30 +107,14 @@ spec:
             image: *init-image
             args: ["/config/run-sql-scripts.sh"]
             env: *init-env
-      microservices:
-        containers:
-          main:
-            image:
-              repository: ghcr.io/immich-app/immich-server
-              tag: v1.105.1@sha256:658b40420d7a39d6eb34c797cec8d36ff315f5adb168301aaf27dc4eafc8e228
-            args: ["./start.sh", "microservices"]
-            envFrom: *envfrom
-            securityContext: *container-sec
-            resources:
-              requests:
-                cpu: 100m
-                memory: 1Gi
-              limits:
-                memory: 4Gi
       machine-learning:
         containers:
           main:
             image:
               repository: ghcr.io/immich-app/immich-machine-learning
-              tag: v1.105.1@sha256:2e2736ba2f2270485c0b6fa33eee66ea0b2279b70b92ea838a015c4d5289c9f0
-            envFrom:
-              - configMapRef:
-                  name: *configmap
+              tag: v1.106.4@sha256:9db20e5c2033bef01fa2be50fa0a2c3d62e43f069aedde4d49a65e65a436d40b
+            env:
+              TZ: "${TIMEZONE}"
             probes:
               liveness: &machine-learning-probe
                 enabled: true
@@ -159,10 +143,9 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
 
     service:
-      main:
-        nameOverride: server
+      immich:
         primary: true
-        controller: main
+        controller: immich
         ports:
           http:
             primary: true
@@ -177,7 +160,7 @@ spec:
             port: *machine-learning-port
 
     ingress:
-      main:
+      immich:
         className: external
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
@@ -189,7 +172,7 @@ spec:
               - path: /
                 pathType: Prefix
                 service:
-                  identifier: main
+                  identifier: immich
                   port: http
         tls:
           - hosts:
@@ -200,10 +183,7 @@ spec:
         type: persistentVolumeClaim
         existingClaim: immich
         advancedMounts:
-          main:
-            main:
-              - path: /usr/src/app/upload
-          microservices:
+          immich:
             main:
               - path: /usr/src/app/upload
       postgresql-init-scripts:
@@ -211,14 +191,14 @@ spec:
         name: immich-postgresql-init-scripts
         defaultMode: 0775
         advancedMounts:
-          main:
+          immich:
             create-extensions:
               - path: /config
                 readOnly: true
       geocoding-dump:
         type: emptyDir
         advancedMounts:
-          microservices:
+          immich:
             main:
               - path: /usr/src/app/.reverse-geocoding-dump
       machine-learning-cache:
