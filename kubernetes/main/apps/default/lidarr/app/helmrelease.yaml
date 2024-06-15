@@ -46,8 +46,9 @@ spec:
               tag: 2.3.3.4204@sha256:6e097b835ea63ff43f6496668ba5c7ee6e5d3aff36a85c59e391cc7d8f43e05f
             env:
               TZ: ${TIMEZONE}
-              LIDARR__INSTANCE_NAME: Lidarr
-              LIDARR__AUTHENTICATION_METHOD: External
+              LIDARR__APP__INSTANCENAME: Lidarr
+              LIDARR__AUTH__METHOD: External
+              LIDARR__AUTH__REQUIRED: DisabledForLocalAddresses
             envFrom: &envFrom
               - secretRef:
                   name: lidarr-secret

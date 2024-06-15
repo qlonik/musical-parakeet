@@ -46,7 +46,7 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: prowlarr-secret
-                    key: PROWLARR__API_KEY
+                    key: PROWLARR__AUTH__APIKEY
             probes:
               liveness:
                 enabled: true

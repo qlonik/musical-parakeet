@@ -46,8 +46,9 @@ spec:
               tag: 1.18.0.4543@sha256:15873755424ad3de0cf074dcde9eb19440849d61a9c827a4a84291b56d3a6b9d
             env:
               TZ: ${TIMEZONE}
-              PROWLARR__INSTANCE_NAME: Prowlarr
-              PROWLARR__AUTHENTICATION_METHOD: External
+              PROWLARR__APP__INSTANCENAME: Prowlarr
+              PROWLARR__AUTH__METHOD: External
+              PROWLARR__AUTH__REQUIRED: DisabledForLocalAddresses
             envFrom: &envfrom
               - secretRef:
                   name: prowlarr-secret

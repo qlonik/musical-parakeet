@@ -43,7 +43,7 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: sonarr-secret
-                    key: SONARR__API_KEY
+                    key: SONARR__AUTH__APIKEY
               UN_RADARR_0_URL: http://radarr.default.svc.cluster.local
               UN_RADARR_0_PATHS_0: /downloads/transmission/complete/Movies
               UN_RADARR_0_PATHS_1: /downloads/qbittorrent/complete/radarr
@@ -51,7 +51,7 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: radarr-secret
-                    key: RADARR__API_KEY
+                    key: RADARR__AUTH__APIKEY
             probes:
               liveness:
                 enabled: true

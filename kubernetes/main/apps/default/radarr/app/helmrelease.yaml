@@ -46,8 +46,9 @@ spec:
               tag: 5.6.0.8846@sha256:6d9fe01aab867098e79d1041f7b71eca5b668b8254944ab89c23eef26042570c
             env:
               TZ: ${TIMEZONE}
-              RADARR__INSTANCE_NAME: Radarr
-              RADARR__AUTHENTICATION_METHOD: External
+              RADARR__APP__INSTANCENAME: Radarr
+              RADARR__AUTH__METHOD: External
+              RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
             envFrom: &envFrom
               - secretRef:
                   name: radarr-secret
