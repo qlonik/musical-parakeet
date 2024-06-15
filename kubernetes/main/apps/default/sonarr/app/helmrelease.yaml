@@ -59,6 +59,11 @@ spec:
               limits:
                 memory: 2Gi
         initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 14.10@sha256:71ddc70edccf201d6a521fe6216bc58d8c7c856a1ef96c4d4fbe9f548818ea4d
+            envFrom: *envFrom
           minio-init-bucket:
             image:
               repository: ghcr.io/qlonik/minio-init-bucket

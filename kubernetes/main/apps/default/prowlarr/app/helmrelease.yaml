@@ -49,7 +49,7 @@ spec:
               PROWLARR__APP__INSTANCENAME: Prowlarr
               PROWLARR__AUTH__METHOD: External
               PROWLARR__AUTH__REQUIRED: DisabledForLocalAddresses
-            envFrom: &envfrom
+            envFrom: &envFrom
               - secretRef:
                   name: prowlarr-secret
             securityContext:
@@ -63,11 +63,16 @@ spec:
               limits:
                 memory: 2Gi
         initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 14.10@sha256:71ddc70edccf201d6a521fe6216bc58d8c7c856a1ef96c4d4fbe9f548818ea4d
+            envFrom: *envFrom
           minio-init-bucket:
             image:
               repository: ghcr.io/qlonik/minio-init-bucket
               tag: RELEASE.2024-06-12T14-34-03Z@sha256:c6b15ae3a93b09573e850c42b1411fca7444dd5118b55f1c1e3e0b8825b61652
-            envFrom: *envfrom
+            envFrom: *envFrom
     defaultPodOptions:
       securityContext:
         runAsUser: 568
