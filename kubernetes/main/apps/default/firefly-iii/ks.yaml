@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cluster-apps-firefly-iii
+  name: &app firefly-iii
   namespace: flux-system
 spec:
   dependsOn:
@@ -21,20 +21,20 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+#
+#
+#
+#
+#
+# data importer setup
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cluster-apps-firefly-iii-data-importer-user-01
+  name: &app firefly-iii-data-importer-resources
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: authelia
-    - name: cluster-apps-firefly-iii
-  postBuild:
-    substitute:
-      user_id: user-01
-  path: ./kubernetes/main/apps/default/firefly-iii/data-importer-template
+  path: ./kubernetes/main/apps/default/firefly-iii/data-importer/resources
   targetNamespace: default
   commonMetadata:
     labels:
@@ -51,36 +51,10 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cluster-apps-firefly-iii-data-importer-user-02
+  name: &app firefly-iii-data-importer-substitutions
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: authelia
-    - name: cluster-apps-firefly-iii
-  postBuild:
-    substitute:
-      user_id: user-02
-  path: ./kubernetes/main/apps/default/firefly-iii/data-importer-template
-  targetNamespace: default
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: home-kubernetes
-  wait: true
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: &app cluster-apps-firefly-iii-data-importer-substitutions
-  namespace: flux-system
-spec:
-  path: ./kubernetes/main/apps/default/firefly-iii/data-importer-substitutions
+  path: ./kubernetes/main/apps/default/firefly-iii/data-importer/substitutions
   targetNamespace: flux-system
   commonMetadata:
     labels:
@@ -97,16 +71,70 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cluster-apps-firefly-iii-data-importer-ingress
+  name: &app firefly-iii-data-importer-user-01
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: authelia
+    - name: firefly-iii
+    - name: firefly-iii-data-importer-resources
+  postBuild:
+    substitute:
+      user_id: user-01
+  path: ./kubernetes/main/apps/default/firefly-iii/data-importer/template
+  targetNamespace: default
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: true
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app firefly-iii-data-importer-user-02
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: authelia
+    - name: firefly-iii
+    - name: firefly-iii-data-importer-resources
+  postBuild:
+    substitute:
+      user_id: user-02
+  path: ./kubernetes/main/apps/default/firefly-iii/data-importer/template
+  targetNamespace: default
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: true
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app firefly-iii-data-importer-ingress
   namespace: flux-system
   labels:
     substitution.flux.home.arpa/disabled: "true"
 spec:
   dependsOn:
-    - name: cluster-apps-firefly-iii
-    - name: cluster-apps-firefly-iii-data-importer-substitutions
-    - name: cluster-apps-firefly-iii-data-importer-user-01
-    - name: cluster-apps-firefly-iii-data-importer-user-02
+    - name: firefly-iii
+    - name: firefly-iii-data-importer-substitutions
+    - name: firefly-iii-data-importer-user-01
+    - name: firefly-iii-data-importer-user-02
   postBuild:
     substituteFrom:
       - kind: ConfigMap
@@ -119,7 +147,7 @@ spec:
         name: cluster-secrets-user
       - kind: Secret
         name: firefly-iii-data-importer-substitutions
-  path: ./kubernetes/main/apps/default/firefly-iii/data-importer-ingress
+  path: ./kubernetes/main/apps/default/firefly-iii/data-importer/ingress
   targetNamespace: default
   commonMetadata:
     labels:
