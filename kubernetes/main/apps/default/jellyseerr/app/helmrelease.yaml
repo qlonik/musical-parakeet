@@ -27,7 +27,7 @@ spec:
       namespace: default
   values:
     controllers:
-      main:
+      jellyseerr:
         type: statefulset
         statefulset:
           volumeClaimTemplates:
@@ -35,8 +35,9 @@ spec:
               accessMode: ReadWriteMany
               size: 1Gi
               storageClass: truenas-nfs-main
-              globalMounts:
-                - path: /app/config
+              advancedMounts:
+                main:
+                  - path: /app/config
         containers:
           main:
             image:
@@ -65,6 +66,14 @@ spec:
                 memory: 250Mi
               limits:
                 memory: 2Gi
+        initContainers:
+          minio-init-bucket:
+            image:
+              repository: ghcr.io/qlonik/minio-init-bucket
+              tag: RELEASE.2024-06-12T14-34-03Z@sha256:c6b15ae3a93b09573e850c42b1411fca7444dd5118b55f1c1e3e0b8825b61652
+            envFrom:
+              - secretRef:
+                  name: jellyseerr-secret
     defaultPodOptions:
       enableServiceLinks: false
       securityContext:
@@ -76,7 +85,7 @@ spec:
     service:
       main:
         primary: true
-        controller: main
+        controller: jellyseerr
         ports:
           http:
             primary: true
