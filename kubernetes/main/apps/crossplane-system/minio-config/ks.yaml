@@ -2,10 +2,12 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app crossplane
+  name: &app crossplane-minio-config
   namespace: flux-system
 spec:
-  path: ./kubernetes/main/apps/crossplane-system/crossplane/app
+  dependsOn:
+    - name: crossplane
+  path: ./kubernetes/main/apps/crossplane-system/minio-config/app
   targetNamespace: crossplane-system
   commonMetadata:
     labels:
@@ -14,7 +16,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
-  wait: true
+  wait: false
   interval: 30m
   retryInterval: 1m
   timeout: 5m
