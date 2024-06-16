@@ -38,7 +38,7 @@ spec:
               TZ: "${TIMEZONE}"
               IMMICH_LOG_LEVEL: verbose
               IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning.default.svc.cluster.local:3003
-            envFrom:
+            envFrom: &envFrom
               - secretRef:
                   name: immich-secret
             resources:
@@ -71,42 +71,12 @@ spec:
             image: &init-image
               repository: ghcr.io/onedr0p/postgres-init
               tag: 14.10@sha256:71ddc70edccf201d6a521fe6216bc58d8c7c856a1ef96c4d4fbe9f548818ea4d
-            env: &init-env
-              - name: INIT_POSTGRES_SUPER_USER
-                valueFrom:
-                  secretKeyRef:
-                    name: postgres-secret
-                    key: username
-              - name: INIT_POSTGRES_SUPER_PASS
-                valueFrom:
-                  secretKeyRef:
-                    name: postgres-secret
-                    key: password
-              - name: INIT_POSTGRES_HOST
-                valueFrom:
-                  secretKeyRef:
-                    name: immich-secret
-                    key: DB_HOSTNAME
-              - name: INIT_POSTGRES_USER
-                valueFrom:
-                  secretKeyRef:
-                    name: immich-secret
-                    key: DB_USERNAME
-              - name: INIT_POSTGRES_PASS
-                valueFrom:
-                  secretKeyRef:
-                    name: immich-secret
-                    key: DB_PASSWORD
-              - name: INIT_POSTGRES_DBNAME
-                valueFrom:
-                  secretKeyRef:
-                    name: immich-secret
-                    key: DB_DATABASE_NAME
+            envFrom: *envFrom
           create-extensions:
             dependsOn: init-db
             image: *init-image
             args: ["/config/run-sql-scripts.sh"]
-            env: *init-env
+            envFrom: *envFrom
       machine-learning:
         containers:
           main:
