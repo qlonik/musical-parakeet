@@ -3,6 +3,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./providerconfig.yaml
-  - ./secret.sops.yaml
+  - ./externalsecret.yaml
   - ./xrd-bucket.yaml
   - ./composition.yaml
