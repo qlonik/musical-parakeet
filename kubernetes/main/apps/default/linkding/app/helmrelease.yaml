@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app linkding
+  name: linkding
 spec:
   interval: 30m
   chart:
@@ -28,7 +28,7 @@ spec:
       namespace: default
   values:
     controllers:
-      main:
+      linkding:
         replicas: 1
         strategy: RollingUpdate
         annotations:
@@ -39,17 +39,13 @@ spec:
               repository: sissbruecker/linkding
               tag: 1.30.0@sha256:d706f0d32aa2d3bd816e0a0a03b77a59eebd9b8043de471e59d946d37eab2219
             env:
-              LD_SUPERUSER_NAME: admin
               LD_ENABLE_AUTH_PROXY: "True"
               LD_AUTH_PROXY_USERNAME_HEADER: HTTP_REMOTE_USER
               LD_AUTH_PROXY_LOGOUT_URL: "https://auth.${SECRET_DOMAIN}/logout"
               # LD_CSRF_TRUSTED_ORIGINS: "https://bookmarks.${SECRET_DOMAIN}"
-              LD_DB_ENGINE: postgres
-              LD_DB_HOST: "postgres-rw.default.svc.cluster.local"
-              LD_DB_PORT: "5432"
-            envFrom:
+            envFrom: &envFrom
               - secretRef:
-                  name: linkding-credentials
+                  name: linkding-secret
             probes:
               liveness: &probes
                 enabled: true
@@ -71,6 +67,12 @@ spec:
                 memory: 100Mi
               limits:
                 memory: 750Mi
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 14.10@sha256:71ddc70edccf201d6a521fe6216bc58d8c7c856a1ef96c4d4fbe9f548818ea4d
+            envFrom: *envFrom
     defaultPodOptions:
       securityContext:
         fsGroup: 568
@@ -78,7 +80,7 @@ spec:
     service:
       main:
         primary: true
-        controller: main
+        controller: linkding
         ports:
           http:
             primary: true
