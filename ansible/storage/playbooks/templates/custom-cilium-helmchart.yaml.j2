@@ -21,6 +21,9 @@ spec:
     cluster:
       name: storage
       id: 2
+    cni:
+      binPath: "{{ k3s_cni_bin_dir }}"
+      confPath: "{{ k3s_cni_conf_dir }}"
     containerRuntime:
       integration: containerd
       socketPath: /var/run/k3s/containerd/containerd.sock

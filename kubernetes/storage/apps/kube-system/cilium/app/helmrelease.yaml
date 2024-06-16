@@ -32,6 +32,10 @@ spec:
     cluster:
       name: storage
       id: 2
+    cni:
+      # these 2 paths have to match values from ansible during installation
+      binPath: /var/lib/cni/bin
+      confPath: /etc/cni/net.d
     containerRuntime:
       integration: containerd
       socketPath: /var/run/k3s/containerd/containerd.sock

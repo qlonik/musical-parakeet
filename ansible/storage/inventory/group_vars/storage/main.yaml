@@ -3,6 +3,7 @@
 # general kubernetes cluster settings
 k3s_become: true
 k3s_etcd_datastore: true
+k3s_install_dir: "/var/lib/rancher/_bin_"
 k3s_install_hard_links: true
 k3s_registration_address: "{{ ansible_host }}"
 # renovate: datasource=github-releases depName=k3s-io/k3s
@@ -36,3 +37,7 @@ k3s_server:
   service-cidr: 10.133.0.0/16
   tls-san: ["{{ k3s_registration_address }}", "nova.home.arpa", "nova"]
   write-kubeconfig-mode: "0644" # quote
+
+## these flags do not exist in ansible-role-k3s
+k3s_cni_bin_dir: /var/lib/cni/bin # custom flag. this is changed, since default /opt/cni/bin is not writable on TrueNAS
+k3s_cni_conf_dir: /etc/cni/net.d # custom flag. this is default value

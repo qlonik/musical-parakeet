@@ -14,5 +14,5 @@ collections:
     version: 5.0.0
 roles:
   - name: xanmanning.k3s
-    src: https://github.com/PyratLabs/ansible-role-k3s
-    version: v3.4.4
+    src: https://github.com/qlonik/ansible-role-k3s
+    version: cfd4879d63dd04df638219f28cced0b3befc0a15

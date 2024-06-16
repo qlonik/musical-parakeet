@@ -1,0 +1,10 @@
+# Configuration is documented here:
+# https://github.com/containerd/containerd/blob/main/docs/cri/config.md
+# permalink:
+# https://github.com/containerd/containerd/blob/ab61734e3d4589cd2806624e8a0fe96d6ff9003b/docs/cri/config.md
+
+{% raw %}{{ template "base" . }}{% endraw %}
+
+[plugins."io.containerd.grpc.v1.cri".cni]
+  bin_dir = "{{ k3s_cni_bin_dir }}"
+  conf_dir = "{{ k3s_cni_conf_dir }}"

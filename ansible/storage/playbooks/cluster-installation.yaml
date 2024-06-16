@@ -26,6 +26,20 @@
         k3s_state: installed
       when: k3s_state is not defined
 
+    - name: Install custom containerd config for TrueNAS
+      when: not k3s_installed.stat.exists
+      block:
+        - name: Create dir for config
+          ansible.builtin.file:
+            path: /var/lib/rancher/k3s/agent/etc/containerd/
+            state: directory
+            mode: 0755
+        - name: Copy config
+          ansible.builtin.template:
+            src: containerd-config.toml.j2
+            dest: /var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl
+            mode: 0644
+
     - name: Install Kubernetes
       ansible.builtin.include_role:
         name: xanmanning.k3s
