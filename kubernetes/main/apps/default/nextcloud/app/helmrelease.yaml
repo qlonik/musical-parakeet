@@ -37,7 +37,7 @@ spec:
       host: &host "cloud.${SECRET_DOMAIN}"
       existingSecret:
         enabled: true
-        secretName: nextcloud-credentials
+        secretName: nextcloud-secret
       mail:
         enabled: true
         fromAddress: nextcloud
@@ -45,38 +45,99 @@ spec:
         smtp:
           port: 2525
           secure: ""
+      configs:
+        main-config.config.php: |-
+          <?php
+          $CONFIG = array (
+            'passwordsalt' => getenv('PASSWORD_SALT'),
+            'secret' => getenv('SECRET'),
+            'instanceid' => getenv('INSTANCE_ID'),
+            'updater.secret' => getenv('UPDATER_SECRET'),
+            'trusted_domains' => array (
+              0 => 'localhost',
+              1 => getenv('NEXTCLOUD_TRUSTED_DOMAINS'),
+            ),
+            'overwrite.cli.url' => 'https://' . getenv('NEXTCLOUD_TRUSTED_DOMAINS'),
+            'ldapProviderFactory' => 'OCA\\User_LDAP\\LDAPProviderFactory',
+          );
+        reverse-proxy.config.php: |-
+          <?php
+          $CONFIG = array (
+            'trusted_proxies' => array (
+              0 => '127.0.0.1',
+              1 => '${CLUSTER_CIDR}',
+              2 => '${SERVICE_CIDR}',
+            ),
+            'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
+            'overwriteprotocol' => 'https',
+            'overwritehost' => getenv('NEXTCLOUD_TRUSTED_DOMAINS'),
+          );
+        oidc-login.config.php: |-
+          <?php
+          $CONFIG = array (
+            'allow_user_to_change_display_name' => false,
+            'lost_password_link' => 'disabled',
+            'oidc_login_provider_url' => 'https://auth.${SECRET_DOMAIN}',
+            'oidc_login_client_id' => 'nextcloud',
+            'oidc_login_client_secret' => '${SECRET_NEXTCLOUD_OAUTH_CLIENT_SECRET}',
+            'oidc_login_button_text' => 'Log in with Authelia',
+            'oidc_login_hide_password_form' => true,
+            'oidc_login_use_id_token' => true,
+            'oidc_login_attributes' => array (
+              'id' => 'preferred_username',
+              'name' => 'name',
+              'mail' => 'email',
+              'groups' => 'groups',
+            ),
+            'oidc_login_scope' => 'openid profile email groups',
+          );
       extraEnv:
         - name: APACHE_DISABLE_REWRITE_IP
           value: "1"
         - name: REDIS_HOST
-          value: redis-lb.default.svc.cluster.local
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-secret
+              key: REDIS_HOST
         - name: REDIS_HOST_PORT
-          value: "6379"
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-secret
+              key: REDIS_PORT
         - name: REDIS_HOST_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: redis-credentials
-              key: redis-password
+              name: nextcloud-secret
+              key: REDIS_PASSWORD
         - name: PASSWORD_SALT
           valueFrom:
             secretKeyRef:
-              name: nextcloud-credentials
+              name: nextcloud-secret
               key: PASSWORD_SALT
         - name: SECRET
           valueFrom:
             secretKeyRef:
-              name: nextcloud-credentials
+              name: nextcloud-secret
               key: SECRET
         - name: INSTANCE_ID
           valueFrom:
             secretKeyRef:
-              name: nextcloud-credentials
+              name: nextcloud-secret
               key: INSTANCE_ID
         - name: UPDATER_SECRET
           valueFrom:
             secretKeyRef:
-              name: nextcloud-credentials
+              name: nextcloud-secret
               key: UPDATER_SECRET
+      extraInitContainers:
+        - name: init-db
+          image: ghcr.io/onedr0p/postgres-init:14.10@sha256:71ddc70edccf201d6a521fe6216bc58d8c7c856a1ef96c4d4fbe9f548818ea4d
+          envFrom: &envFrom
+            - secretRef:
+                name: nextcloud-secret
+        - name: minio-init-bucket
+          image: ghcr.io/qlonik/minio-init-bucket:RELEASE.2024-06-12T14-34-03Z@sha256:c6b15ae3a93b09573e850c42b1411fca7444dd5118b55f1c1e3e0b8825b61652
+          envFrom: *envFrom
     persistence:
       enabled: true
       existingClaim: nextcloud-main
@@ -88,13 +149,13 @@ spec:
     externalDatabase:
       enabled: true
       type: postgresql
-      host: postgres-rw.default.svc.cluster.local
-      database: nextcloud
       existingSecret:
         enabled: true
-        secretName: nextcloud-credentials
-        usernameKey: POSTGRES_USERNAME
-        passwordKey: POSTGRES_PASSWORD
+        secretName: nextcloud-secret
+        hostKey: INIT_POSTGRES_HOST
+        usernameKey: INIT_POSTGRES_USER
+        passwordKey: INIT_POSTGRES_PASS
+        databaseKey: INIT_POSTGRES_DBNAME
     redis:
       enabled: false
     cronjob:
