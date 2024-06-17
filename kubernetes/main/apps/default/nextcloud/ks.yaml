@@ -7,11 +7,11 @@ metadata:
 spec:
   dependsOn:
     - name: authelia
+    - name: cloudnative-pg-cluster-16
     - name: cluster-apps-glauth
-    - name: cluster-apps-cloudnative-pg-cluster
+    - name: cluster-apps-minio
     - name: csi-driver-nfs
     - name: rancher-local-path-provisioner
-    - name: cluster-apps-minio
     - name: redis-lb
     - name: volsync
   path: ./kubernetes/main/apps/default/nextcloud/app
