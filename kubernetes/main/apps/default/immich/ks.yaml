@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cluster-apps-cloudnative-pg-cluster
+    - name: cloudnative-pg-cluster-16-immich
     - name: redis
   path: ./kubernetes/main/apps/default/immich/app
   targetNamespace: default
