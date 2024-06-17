@@ -1,0 +1,82 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: pg-16-immich
+spec:
+  instances: 2
+  imageName: ghcr.io/tensorchord/cloudnative-pgvecto.rs:16.3@sha256:f1a19d4fc4073b0671a72ad34ef012aa20d21b3ddf5b4b0c9077d54450db679a
+  postgresql:
+    shared_preload_libraries:
+      - "vectors.so"
+    enableAlterSystem: true
+  primaryUpdateStrategy: unsupervised
+  storage:
+    size: 10Gi
+    storageClass: openebs-hostpath
+  superuserSecret:
+    name: pg-16-immich-superuser-secret
+  enableSuperuserAccess: true
+  monitoring:
+    enablePodMonitor: true
+
+  externalClusters:
+    - name: &active-cluster pg-16-immich-v0
+      barmanObjectStore: &barman-object-store
+        data:
+          compression: bzip2
+        wal:
+          compression: bzip2
+          maxParallel: 8
+        destinationPath: s3://postgres-backup/
+        endpointURL: http://minio.default.svc.cluster.local:9000
+        s3Credentials:
+          accessKeyId:
+            name: pg-16-immich-superuser-secret
+            key: s3-access-key-id
+          secretAccessKey:
+            name: pg-16-immich-superuser-secret
+            key: s3-secret-access-key
+  bootstrap:
+    initdb:
+      ## for empty new db
+      # The 'import' method does not work for immich, because of extensions
+      # and custom search_path. Need to manually dump and load the database.
+      # See
+      # https://github.com/immich-app/immich/blob/main/docs/docs/administration/backup-and-restore.md
+      # for some pointers.
+      #
+      # dump with:
+      # `pg_dump -U postgres -b --clean --if-exists -f immich_dump.sql immich`
+      # then edit the dumped file with:
+      # `sed "s/SELECT pg_catalog.set_config('search_path', '', false);/SELECT pg_catalog.set_config('search_path', 'public, pg_catalog', true);/g"`
+      # load with:
+      # `psql -U postgres -d immich < immich_dump.sql`
+      # lastly, needed to run last 3 line inside psql connected to imported
+      # database to grant privileges to immich user.
+      owner: immich
+      database: immich
+      secret:
+        name: pg-16-immich-secret
+      dataChecksums: true
+      postInitApplicationSQL:
+        - ALTER SYSTEM SET search_path TO "$user", public, vectors;
+        - SET search_path TO "$user", public, vectors;
+        - CREATE EXTENSION IF NOT EXISTS vectors;
+        - CREATE EXTENSION IF NOT EXISTS earthdistance WITH SCHEMA pg_catalog CASCADE;
+        - CREATE EXTENSION IF NOT EXISTS pg_trgm;
+        - CREATE EXTENSION IF NOT EXISTS unaccent;
+        - ALTER SCHEMA vectors OWNER TO immich;
+        - GRANT ALL PRIVILEGES ON DATABASE immich TO immich;
+        - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO immich;
+        - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA vectors TO immich;
+    ## for recovering the same version (e.g. cluster rebuild)
+    # recovery:
+    #   source: *active-cluster
+
+  backup:
+    retentionPolicy: 30d
+    barmanObjectStore:
+      <<: *barman-object-store
+      serverName: pg-16-immich-v1
