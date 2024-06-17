@@ -1,0 +1,11 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: &name pg-16
+spec:
+  schedule: "@every 6h"
+  immediate: true
+  backupOwnerReference: self
+  cluster:
+    name: *name

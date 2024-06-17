@@ -1,0 +1,65 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: pg-16
+spec:
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.3@sha256:5eb3af4a1c7fde601b5464f0f2c05e84f59f6cd80f5fcb2eb8baadb0b0587131
+  primaryUpdateStrategy: unsupervised
+  storage:
+    size: 10Gi
+    storageClass: openebs-hostpath
+  superuserSecret:
+    name: pg-16-superuser-secret
+  enableSuperuserAccess: true
+  monitoring:
+    enablePodMonitor: true
+
+  externalClusters:
+    - name: &migration-cluster postgres-14
+      connectionParameters:
+        # Use the correct IP or host name for the source database
+        host: postgres-rw.default.svc.cluster.local
+        user: postgres
+      password:
+        name: pg-16-superuser-secret
+        key: password
+    - name: &active-cluster pg-16-v0
+      barmanObjectStore: &barman-object-store
+        data:
+          compression: bzip2
+        wal:
+          compression: bzip2
+          maxParallel: 8
+        destinationPath: s3://postgres-backup/
+        endpointURL: http://minio.default.svc.cluster.local:9000
+        s3Credentials:
+          accessKeyId:
+            name: pg-16-superuser-secret
+            key: s3-access-key-id
+          secretAccessKey:
+            name: pg-16-superuser-secret
+            key: s3-secret-access-key
+  bootstrap:
+    initdb:
+      ## for empty new db
+      # owner: app
+      # database: app
+      ## for migrating between db or major versions
+      import:
+        type: monolith
+        databases: ["*"]
+        roles: ["*"]
+        source:
+          externalCluster: *migration-cluster
+    ## for recovering the same version (e.g. cluster rebuild)
+    # recovery:
+    #   source: *active-cluster
+
+  backup:
+    retentionPolicy: 30d
+    barmanObjectStore:
+      <<: *barman-object-store
+      serverName: pg-16-v1
