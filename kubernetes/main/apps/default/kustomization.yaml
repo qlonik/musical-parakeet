@@ -27,7 +27,6 @@ resources:
   - ./minio/ks.yaml
   - ./nextcloud/ks.yaml
   - ./nzbget/ks.yaml
-  - ./openldap/ks.yaml
   - ./paperless-ngx/ks.yaml
   - ./prowlarr/ks.yaml
   - ./qbittorrent/ks.yaml

@@ -31,7 +31,6 @@ resources:
   - ./nextcloud.yaml
   - ./node-feature-discovery.yaml
   - ./openebs.yaml
-  - ./openldap.yaml
   - ./piraeus.yaml
   - ./postfinance.yaml
   - ./prometheus-community.yaml
