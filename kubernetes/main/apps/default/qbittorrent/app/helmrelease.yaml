@@ -31,7 +31,7 @@ spec:
 
   values:
     controllers:
-      main:
+      qbittorrent:
         type: statefulset
 
         statefulset:
@@ -46,8 +46,6 @@ spec:
 
         annotations:
           reloader.stakater.com/auto: "true"
-          # configmap.reloader.stakater.com/reload: qbittorrent-scripts,qbittorrent-dnsdist
-          # secret.reloader.stakater.com/reload: qbittorrent-secret
 
         containers:
           main:
@@ -98,7 +96,7 @@ spec:
               SHADOWSOCKS: "on"
               DOT: "off"
               DNS_ADDRESS: "127.0.0.2"
-            envFrom:
+            envFrom: &envFrom
               - secretRef:
                   name: qbittorrent-secret
             probes: *probes
@@ -126,28 +124,7 @@ spec:
             image:
               repository: ghcr.io/qlonik/minio-init-bucket
               tag: RELEASE.2024-06-12T14-34-03Z@sha256:c6b15ae3a93b09573e850c42b1411fca7444dd5118b55f1c1e3e0b8825b61652
-            env:
-              MINIO_HOST: http://minio.default.svc.cluster.local:9000
-              MINIO_SUPER_ACCESS_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: minio-secret
-                    key: MINIO_ROOT_USER
-              MINIO_SUPER_SECRET_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: minio-secret
-                    key: MINIO_ROOT_PASSWORD
-              MINIO_BUCKET_NAME:
-                valueFrom:
-                  secretKeyRef:
-                    name: "qbittorrent-restic-secret"
-                    key: AWS_ACCESS_KEY_ID
-              MINIO_BUCKET_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: "qbittorrent-restic-secret"
-                    key: AWS_SECRET_ACCESS_KEY
+            envFrom: *envFrom
 
     defaultPodOptions:
       securityContext:
@@ -158,7 +135,7 @@ spec:
     service:
       main:
         primary: true
-        controller: main
+        controller: qbittorrent
         ports:
           http:
             primary: true
@@ -189,13 +166,13 @@ spec:
         server: nova.home.arpa
         path: /mnt/main/media/downloads/qbittorrent
         advancedMounts:
-          main:
+          qbittorrent:
             main:
               - path: /media/downloads/qbittorrent
       incomplete:
         type: emptyDir
         advancedMounts:
-          main:
+          qbittorrent:
             main:
               - path: /incomplete
       scripts:
@@ -203,7 +180,7 @@ spec:
         name: qbittorrent-scripts
         defaultMode: 0775
         advancedMounts:
-          main:
+          qbittorrent:
             main:
               - path: /scripts
                 readOnly: true
@@ -211,7 +188,7 @@ spec:
         type: configMap
         name: qbittorrent-dnsdist
         advancedMounts:
-          main:
+          qbittorrent:
             dnsdist:
               - path: /etc/dnsdist/dnsdist.conf
                 subPath: dnsdist.conf
@@ -219,7 +196,7 @@ spec:
       gluetun-data:
         type: emptyDir
         advancedMounts:
-          main:
+          qbittorrent:
             gluetun:
               - path: /tmp/gluetun
             port-forward:

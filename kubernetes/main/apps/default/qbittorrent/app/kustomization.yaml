@@ -2,9 +2,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ./restic-secret.sops.yaml
-  - ./secret.sops.yaml
   - ./volsync.yaml
 
 configMapGenerator:
@@ -16,9 +15,3 @@ configMapGenerator:
       - ./config/dnsdist.conf
 generatorOptions:
   disableNameSuffixHash: true
-
-labels:
-  - pairs:
-      app.kubernetes.io/name: qbittorrent
-      app.kubernetes.io/instance: qbittorrent
-      app.kubernetes.io/component: app

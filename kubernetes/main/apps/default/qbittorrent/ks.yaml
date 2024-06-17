@@ -35,6 +35,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+      app.kubernetes.io/part-of: qbittorrent
   prune: true
   sourceRef:
     kind: GitRepository

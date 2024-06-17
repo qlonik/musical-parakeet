@@ -12,9 +12,3 @@ generatorOptions:
   disableNameSuffixHash: true
   annotations:
     kustomize.toolkit.fluxcd.io/substitute: disabled
-
-labels:
-  - pairs:
-      app.kubernetes.io/name: qbittorrent
-      app.kubernetes.io/instance: qbittorrent
-      app.kubernetes.io/component: tools
