@@ -6,10 +6,10 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cluster-apps-cloudnative-pg-cluster
-    - name: maddy
-    - name: cluster-apps-minio
+    - name: cloudnative-pg-cluster-16
     - name: cluster-apps-glauth
+    - name: cluster-apps-minio
+    - name: maddy
     - name: volsync
   path: ./kubernetes/main/apps/default/mealie/app
   targetNamespace: default
