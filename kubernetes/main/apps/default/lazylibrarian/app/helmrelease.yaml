@@ -57,7 +57,7 @@ spec:
                     {{- $filtered = append $filtered $item -}}
                   {{- end -}}
                 {{- end -}}
-                {{- $filtered | join "|" | quote -}}
+                {{- $filtered | join "|" -}}
             resources:
               requests:
                 cpu: 10m

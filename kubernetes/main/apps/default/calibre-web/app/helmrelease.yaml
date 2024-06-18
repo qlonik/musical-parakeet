@@ -59,7 +59,7 @@ spec:
                     {{- $filtered = append $filtered $item -}}
                   {{- end -}}
                 {{- end -}}
-                {{- $filtered | join "|" | quote -}}
+                {{- $filtered | join "|" -}}
             probes:
               liveness:
                 enabled: true
