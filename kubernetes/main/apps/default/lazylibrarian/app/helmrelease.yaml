@@ -106,14 +106,12 @@ spec:
         path: /mnt/main/media/ebooks
         globalMounts:
           - path: /books/ebooks
-            readOnly: true
       audiobooks:
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/audiobooks
         globalMounts:
           - path: /books/audiobooks
-            readOnly: true
       downloads:
         type: nfs
         server: nova.home.arpa
