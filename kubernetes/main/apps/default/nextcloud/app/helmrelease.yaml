@@ -59,6 +59,7 @@ spec:
             ),
             'overwrite.cli.url' => 'https://' . getenv('NEXTCLOUD_TRUSTED_DOMAINS'),
             'ldapProviderFactory' => 'OCA\\User_LDAP\\LDAPProviderFactory',
+            'hide_login_form' => true,
           );
         reverse-proxy.config.php: |-
           <?php
