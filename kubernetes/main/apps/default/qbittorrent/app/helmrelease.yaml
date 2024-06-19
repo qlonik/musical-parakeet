@@ -144,10 +144,11 @@ spec:
     ingress:
       main:
         className: internal
-        # annotations:
-        #   nginx.ingress.kubernetes.io/configuration-snippet: |
-        #     sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_DOMAIN}/css/base/qbittorrent/nord.css"></head>';
-        #     sub_filter_once on;
+        annotations:
+          auth.home.arpa/enabled: "true"
+          # nginx.ingress.kubernetes.io/configuration-snippet: |
+          #   sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_DOMAIN}/css/base/qbittorrent/nord.css"></head>';
+          #   sub_filter_once on;
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
