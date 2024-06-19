@@ -117,7 +117,21 @@ spec:
         server: nova.home.arpa
         path: /mnt/main/media/downloads/lazylibrarian
         globalMounts:
-          - path: /downloads
+          - path: /downloads/lazylibrarian
+      downloads-sabnzbd:
+        type: nfs
+        server: nova.home.arpa
+        path: /mnt/main/media/downloads/sabnzbd
+        globalMounts:
+          - path: /downloads/sabnzbd
+            readOnly: true
+      downloads-qbittorrent:
+        type: nfs
+        server: nova.home.arpa
+        path: /mnt/main/media/downloads/qbittorrent
+        globalMounts:
+          - path: /downloads/qbittorrent
+            readOnly: true
       patches:
         type: configMap
         name: lazylibrarian-fix-bug
