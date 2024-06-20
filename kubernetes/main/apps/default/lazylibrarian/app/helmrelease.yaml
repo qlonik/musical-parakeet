@@ -106,12 +106,6 @@ spec:
         path: /mnt/main/media/ebooks
         globalMounts:
           - path: /books/ebooks
-      audiobooks:
-        type: nfs
-        server: nova.home.arpa
-        path: /mnt/main/media/audiobooks
-        globalMounts:
-          - path: /books/audiobooks
       downloads:
         type: nfs
         server: nova.home.arpa
