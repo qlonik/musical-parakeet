@@ -132,3 +132,14 @@ spec:
         globalMounts:
           - path: /downloads/qbittorrent
             readOnly: true
+      patches:
+        type: configMap
+        name: patch-lazylibrarian-code
+        advancedMounts:
+          main:
+            main:
+              - path: /etc/s6-overlay/s6-rc.d/patch-lazylibrarian-code
+                readOnly: true
+              - path: /etc/s6-overlay/s6-rc.d/init-lazylibrarian-config/dependencies.d/patch-lazylibrarian-code
+                subPath: dep
+                readOnly: true
