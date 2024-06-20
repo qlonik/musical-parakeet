@@ -45,9 +45,6 @@ spec:
               AUTHELIA_TELEMETRY_METRICS_ENABLED: "true"
               X_AUTHELIA_CONFIG: /config/configuration.yaml
               X_AUTHELIA_CONFIG_FILTERS: template
-            envFrom: &envFrom
-              - secretRef:
-                  name: authelia-credentials
             probes:
               liveness: &probe
                 enabled: true
@@ -71,7 +68,9 @@ spec:
             image:
               repository: ghcr.io/onedr0p/postgres-init
               tag: 16.3@sha256:8ba3204f6b293dd168766009aae2ce4fa986a29b931c2d30ac1b30238ac750b8
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: authelia-secret
     defaultPodOptions:
       securityContext:
         runAsUser: 568
@@ -132,4 +131,10 @@ spec:
         globalMounts:
           - path: /config/configuration.yaml
             subPath: configuration.yaml
+            readOnly: true
+      authelia-secret:
+        type: secret
+        name: authelia-secret
+        globalMounts:
+          - path: /var/run/secrets/authelia-secret
             readOnly: true
