@@ -28,17 +28,8 @@ spec:
   values:
     controllers:
       radarr:
-        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteMany
-              size: 5Gi
-              storageClass: truenas-nfs-main
-              globalMounts:
-                - path: /config
         containers:
           main:
             image:
@@ -99,7 +90,20 @@ spec:
           - hosts:
               - *host
     persistence:
-      music:
+      config:
+        type: persistentVolumeClaim
+        storageClass: truenas-nfs-main
+        accessMode: ReadWriteMany
+        size: 5Gi
+        dataSourceRef:
+          kind: ReplicationDestination
+          apiGroup: volsync.backube
+          name: radarr-dst
+        advancedMounts:
+          radarr:
+            main:
+              - path: /config
+      movies:
         type: nfs
         server: nova.home.arpa
         path: /mnt/main/media/movies

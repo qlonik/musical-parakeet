@@ -4,7 +4,7 @@ kind: ReplicationSource
 metadata:
   name: prowlarr
 spec:
-  sourcePVC: config-prowlarr-0
+  sourcePVC: prowlarr-config
   trigger:
     schedule: "0 * * * *"
   restic:
@@ -12,8 +12,8 @@ spec:
     copyMethod: Snapshot
     pruneIntervalDays: 7
     volumeSnapshotClassName: truenas-nfs-main
-    cacheStorageClassName: local-path # truenas-nfs-main
-    cacheAccessModes: ["ReadWriteOnce"] # ["ReadWriteMany"]
+    cacheStorageClassName: openebs-hostpath
+    cacheAccessModes: ["ReadWriteOnce"]
     cacheCapacity: 4Gi
     storageClassName: truenas-nfs-main
     accessModes: ["ReadWriteMany"]
@@ -25,3 +25,26 @@ spec:
       hourly: 24
       daily: 7
       weekly: 5
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/volsync.backube/replicationdestination_v1alpha1.json
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: prowlarr-dst
+spec:
+  trigger:
+    manual: restore-once
+  restic:
+    repository: prowlarr-restic-secret
+    copyMethod: Snapshot # must be Snapshot
+    volumeSnapshotClassName: truenas-nfs-main
+    cacheStorageClassName: openebs-hostpath
+    cacheAccessModes: ["ReadWriteOnce"]
+    cacheCapacity: 4Gi
+    storageClassName: truenas-nfs-main
+    accessModes: ["ReadWriteOnce"]
+    capacity: 1Gi
+    moverSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568

@@ -4,7 +4,7 @@ kind: ReplicationSource
 metadata:
   name: lidarr
 spec:
-  sourcePVC: config-lidarr-0
+  sourcePVC: lidarr-config
   trigger:
     schedule: "0 * * * *"
   restic:
@@ -12,9 +12,9 @@ spec:
     copyMethod: Snapshot
     pruneIntervalDays: 7
     volumeSnapshotClassName: truenas-nfs-main
-    cacheStorageClassName: local-path # truenas-nfs-main
-    cacheAccessModes: ["ReadWriteOnce"] # ["ReadWriteMany"]
-    cacheCapacity: 4Gi
+    cacheStorageClassName: openebs-hostpath
+    cacheAccessModes: ["ReadWriteOnce"]
+    cacheCapacity: 8Gi
     storageClassName: truenas-nfs-main
     accessModes: ["ReadWriteMany"]
     moverSecurityContext:
@@ -25,3 +25,26 @@ spec:
       hourly: 24
       daily: 7
       weekly: 5
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/volsync.backube/replicationdestination_v1alpha1.json
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: lidarr-dst
+spec:
+  trigger:
+    manual: restore-once
+  restic:
+    repository: lidarr-restic-secret
+    copyMethod: Snapshot # must be Snapshot
+    volumeSnapshotClassName: truenas-nfs-main
+    cacheStorageClassName: openebs-hostpath
+    cacheAccessModes: ["ReadWriteOnce"]
+    cacheCapacity: 8Gi
+    storageClassName: truenas-nfs-main
+    accessModes: ["ReadWriteOnce"]
+    capacity: 5Gi
+    moverSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568

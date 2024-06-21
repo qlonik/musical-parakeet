@@ -25,17 +25,8 @@ spec:
   values:
     controllers:
       readarr-audio:
-        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteMany
-              size: 1Gi
-              storageClass: truenas-nfs-main
-              globalMounts:
-                - path: /config
         containers:
           main:
             image:
@@ -108,6 +99,19 @@ spec:
           - hosts:
               - *host
     persistence:
+      config:
+        type: persistentVolumeClaim
+        storageClass: truenas-nfs-main
+        accessMode: ReadWriteMany
+        size: 1Gi
+        dataSourceRef:
+          kind: ReplicationDestination
+          apiGroup: volsync.backube
+          name: readarr-audio-dst
+        advancedMounts:
+          readarr-audio:
+            main:
+              - path: /config
       books:
         type: nfs
         server: nova.home.arpa
