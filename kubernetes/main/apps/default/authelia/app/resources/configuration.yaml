@@ -165,3 +165,14 @@ identity_providers:
         authorization_policy: one_factor
         pre_configured_consent_duration: 1y
         userinfo_signed_response_alg: none
+      - client_name: Audiobookshelf
+        client_id: '{{ secret "/var/run/secrets/authelia-secret/oidc-audiobookshelf-client-id" }}'
+        client_secret: '{{ secret "/var/run/secrets/authelia-secret/oidc-audiobookshelf-secret-hash" }}'
+        public: false
+        redirect_uris:
+          - "https://audiobookshelf.${SECRET_DOMAIN}/auth/openid/callback"
+          - "https://audiobookshelf.${SECRET_DOMAIN}/auth/openid/mobile-redirect"
+        scopes: ["openid", "profile", "email", "groups"]
+        authorization_policy: one_factor
+        pre_configured_consent_duration: 1y
+        userinfo_signed_response_alg: none
