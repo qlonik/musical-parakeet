@@ -84,41 +84,46 @@ server:
 theme: auto
 
 access_control:
-  default_policy: one_factor
+  default_policy: deny
   networks:
     - name: internal
       networks: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
   rules:
     - domain:
-        - "traefik.nova.${SECRET_DOMAIN}"
         - "scrutiny.${SECRET_DOMAIN}"
-      policy: two_factor
       subject: ["group:admin"]
-
-    - domain: "nova.${SECRET_DOMAIN}"
-      resources:
-        - "^/cabin"
-        - "^/cockpit"
-        - "^/openmediavault"
-        - "^/portainer"
-        - "^/glances"
-        - "^/ldap-ui"
-      policy: two_factor
-      subject: ["group:admin"]
-
-    - domain: "snipeit.nova.${SECRET_DOMAIN}"
       policy: two_factor
 
     - domain:
-        - "radarr.${SECRET_DOMAIN}"
-        - "sonarr.${SECRET_DOMAIN}"
+        - "lazylibrarian.${SECRET_DOMAIN}"
         - "lidarr.${SECRET_DOMAIN}"
-        - "readarr.${SECRET_DOMAIN}"
         - "prowlarr.${SECRET_DOMAIN}"
-      policy: one_factor
+        - "qbittorrent.${SECRET_DOMAIN}"
+        - "radarr.${SECRET_DOMAIN}"
+        - "readarr.${SECRET_DOMAIN}"
+        - "sabnzbd.${SECRET_DOMAIN}"
+        - "sonarr.${SECRET_DOMAIN}"
+        - "ytdl.${SECRET_DOMAIN}"
       subject: ["group:admin"]
+      policy: one_factor
 
-    - domain: "bookmarks.${SECRET_DOMAIN}"
+    - domain:
+        - "data-importer.${SECRET_DOMAIN}"
+        - "firefly-iii.${SECRET_DOMAIN}"
+        - "paperless.${SECRET_DOMAIN}"
+      subject: ["group:user"]
+      policy: two_factor
+
+    - domain:
+        - "bookmarks.${SECRET_DOMAIN}"
+        - "books.${SECRET_DOMAIN}"
+        - "calibre.${SECRET_DOMAIN}"
+        - "grocy.${SECRET_DOMAIN}"
+      subject: ["group:user"]
+      policy: one_factor
+
+    - domain:
+        - "bookmarks.${SECRET_DOMAIN}"
       resources:
         - "^/api"
         - "^/feeds"
