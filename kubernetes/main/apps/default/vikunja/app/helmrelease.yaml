@@ -40,15 +40,6 @@ spec:
             env:
               PUID: 0
               PGID: 0
-              VIKUNJA_SERVICE_PUBLICURL: https://vikunja.${SECRET_DOMAIN}
-              VIKUNJA_CACHE_ENABLED: true
-              VIKUNJA_CACHE_TYPE: redis
-              VIKUNJA_REDIS_ENABLED: true
-              VIKUNJA_REDIS_DB: 12
-              VIKUNJA_REDIS_HOST: redis-lb.default.svc.cluster.local:6379
-            envFrom: &envFrom
-              - secretRef:
-                  name: vikunja-credentials
             probes:
               liveness: &probe
                 enabled: true
@@ -70,7 +61,9 @@ spec:
             image:
               repository: ghcr.io/onedr0p/postgres-init
               tag: 16.3@sha256:8ba3204f6b293dd168766009aae2ce4fa986a29b931c2d30ac1b30238ac750b8
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: vikunja-secret
     service:
       main:
         controller: vikunja
@@ -95,8 +88,8 @@ spec:
               - *host
     persistence:
       config:
-        type: configMap
-        name: vikunja-config
+        type: secret
+        name: vikunja-secret
         globalMounts:
           - path: /etc/vikunja/config.yaml
             subPath: config.yaml
