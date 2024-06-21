@@ -2,12 +2,14 @@
 
 Some services configure email notifications as runtime configuration via UI,
 rather than through config files. So those might not be found via config file
-search. Services that are known to use maddy and were configured via web ui:
+search.
 
-- `TrueNAS` server
-
-Services that use maddy via config files:
+1. Configured via config files:
 
 - `authelia`
-- `nextcloud`
 - `mealie`
+- `nextcloud`
+
+2. Configured via web UI:
+
+- `TrueNAS` server
