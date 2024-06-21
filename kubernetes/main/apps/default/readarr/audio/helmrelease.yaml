@@ -41,6 +41,7 @@ spec:
               READARR__AUTH__METHOD: External
               READARR__AUTH__REQUIRED: DisabledForLocalAddresses
               READARR__LOG__ANALYTICSENABLED: "False"
+              READARR__LOG__DBENABLED: "False"
               READARR__LOG__LEVEL: info
             envFrom: &envFrom
               - secretRef:
