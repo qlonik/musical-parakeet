@@ -9,6 +9,7 @@ search.
 - `authelia`
 - `mealie`
 - `nextcloud`
+- `vikunja`
 
 2. Configured via web UI:
 
