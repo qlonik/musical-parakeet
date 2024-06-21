@@ -60,7 +60,7 @@ spec:
               LDAP_ENABLE_STARTTLS: "false"
               LDAP_BASE_DN: dc=home,dc=arpa
               LDAP_QUERY_BIND: cn=search,ou=svcacct,ou=users,dc=home,dc=arpa
-              LDAP_USER_FILTER: "(&(memberOf=ou=person,ou=groups,dc=home,dc=arpa)(objectClass=posixAccount))"
+              LDAP_USER_FILTER: "(&(memberOf=ou=user,ou=groups,dc=home,dc=arpa)(objectClass=posixAccount))"
               LDAP_ADMIN_FILTER: "(&(memberOf=ou=admin,ou=groups,dc=home,dc=arpa)(objectClass=inetOrgPerson))"
               LDAP_ID_ATTRIBUTE: cn
               LDAP_NAME_ATTRIBUTE: uid
