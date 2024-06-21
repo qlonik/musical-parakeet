@@ -36,8 +36,12 @@ spec:
               TZ: ${TIMEZONE}
               READARR__SERVER__URLBASE: /audio
               READARR__APP__INSTANCENAME: Audiobooks
+              READARR__APP__LAUNCHBROWSER: "False"
+              READARR__APP__THEME: dark
               READARR__AUTH__METHOD: External
               READARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              READARR__LOG__ANALYTICSENABLED: "False"
+              READARR__LOG__LEVEL: info
             envFrom: &envFrom
               - secretRef:
                   name: readarr-audio-secret

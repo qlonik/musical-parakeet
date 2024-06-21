@@ -38,8 +38,12 @@ spec:
             env:
               TZ: ${TIMEZONE}
               LIDARR__APP__INSTANCENAME: Lidarr
+              LIDARR__APP__LAUNCHBROWSER: "False"
+              LIDARR__APP__THEME: dark
               LIDARR__AUTH__METHOD: External
               LIDARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              LIDARR__LOG__ANALYTICSENABLED: "False"
+              LIDARR__LOG__LEVEL: info
             envFrom: &envFrom
               - secretRef:
                   name: lidarr-secret
