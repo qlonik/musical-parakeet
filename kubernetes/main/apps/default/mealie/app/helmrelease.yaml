@@ -65,6 +65,14 @@ spec:
               LDAP_ID_ATTRIBUTE: cn
               LDAP_NAME_ATTRIBUTE: uid
               LDAP_MAIL_ATTRIBUTE: mail
+
+              OIDC_AUTH_ENABLED: "true"
+              OIDC_SIGNUP_ENABLED: "true"
+              OIDC_CONFIGURATION_URL: "https://auth.${SECRET_DOMAIN}/.well-known/openid-configuration"
+              OIDC_AUTO_REDIRECT: "false"
+              OIDC_PROVIDER_NAME: Authelia
+              OIDC_ADMIN_GROUP: admin # from "ou=admin,ou=users"
+              OIDC_USER_GROUP: user # from "ou=user,ou=users"
             envFrom: &envFrom
               - secretRef:
                   name: mealie-secret
