@@ -129,6 +129,10 @@ made on flux issue to support this feature natively in flux.
 > These steps can be scripted. But I don't see why Flux couldn't do the same.
 > Because it is what it already does.
 
+## How to debug network requests going through nginx
+
+See [debugging network requests](./debug/debugging-network-requests.md).
+
 ## How to debug/query LDAP server
 
 Note, the host, base dn, user, password and query might be different, based on
