@@ -44,7 +44,7 @@ spec:
       - name: errors
       - # Serves a /health endpoint on :8080, required for livenessProbe
         name: health
-        configBlock: |-
+        configBlock: |
           lameduck 5s
       - # Serves a /ready endpoint on :8181, required for readinessProbe
         name: ready

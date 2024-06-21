@@ -44,7 +44,7 @@ spec:
     - kustomize:
         patches:
           # specify service account instead of default
-          - patch: |-
+          - patch: |
               apiVersion: not-used
               kind: not-used
               metadata:
@@ -60,7 +60,7 @@ spec:
               name: device-plugin-amd-gpu-labeller-daemonset
 
           # clean-up unneeded cluster roles and bindings
-          - patch: |-
+          - patch: |
               $patch: delete
               apiVersion: not-used
               kind: not-used
@@ -69,7 +69,7 @@ spec:
             target:
               group: rbac.authorization.k8s.io
               kind: ClusterRoleBinding
-          - patch: |-
+          - patch: |
               $patch: delete
               apiVersion: not-used
               kind: not-used

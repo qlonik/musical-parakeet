@@ -46,7 +46,7 @@ spec:
           port: 2525
           secure: ""
       configs:
-        main-config.config.php: |-
+        main-config.config.php: |
           <?php
           $CONFIG = array (
             'passwordsalt' => getenv('PASSWORD_SALT'),
@@ -61,7 +61,7 @@ spec:
             'ldapProviderFactory' => 'OCA\\User_LDAP\\LDAPProviderFactory',
             'hide_login_form' => true,
           );
-        reverse-proxy.config.php: |-
+        reverse-proxy.config.php: |
           <?php
           $CONFIG = array (
             'trusted_proxies' => array (
@@ -73,7 +73,7 @@ spec:
             'overwriteprotocol' => 'https',
             'overwritehost' => getenv('NEXTCLOUD_TRUSTED_DOMAINS'),
           );
-        oidc-login.config.php: |-
+        oidc-login.config.php: |
           <?php
           $CONFIG = array (
             'allow_user_to_change_display_name' => false,
@@ -185,7 +185,7 @@ spec:
           GET,PUT,POST,DELETE,PATCH,OPTIONS,HEAD,CONNECT,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK,TRACE
         nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
         nginx.ingress.kubernetes.io/proxy-body-size: 4G
-        nginx.ingress.kubernetes.io/server-snippet: |-
+        nginx.ingress.kubernetes.io/server-snippet: |
           server_tokens off;
           proxy_hide_header X-Powered-By;
 

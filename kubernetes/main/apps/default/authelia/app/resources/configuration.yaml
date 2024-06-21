@@ -129,7 +129,7 @@ identity_providers:
     hmac_secret: '{{ secret "/var/run/secrets/authelia-secret/oidc-hmac-secret" }}'
     jwks:
       - algorithm: RS256
-        key: |-
+        key: |
           {{- fileContent "/var/run/secrets/authelia-secret/oidc-jwks-0-key" | nindent 10 }}
     cors:
       endpoints: ["authorization", "token", "revocation", "introspection"]
