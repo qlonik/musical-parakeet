@@ -79,8 +79,8 @@ spec:
             'allow_user_to_change_display_name' => false,
             'lost_password_link' => 'disabled',
             'oidc_login_provider_url' => 'https://auth.${SECRET_DOMAIN}',
-            'oidc_login_client_id' => 'nextcloud',
-            'oidc_login_client_secret' => '${SECRET_NEXTCLOUD_OAUTH_CLIENT_SECRET}',
+            'oidc_login_client_id' => getenv('OIDC_CLIENT_ID'),
+            'oidc_login_client_secret' => getenv('OIDC_CLIENT_SECRET'),
             'oidc_login_button_text' => 'Log in with Authelia',
             'oidc_login_hide_password_form' => true,
             'oidc_login_use_id_token' => true,
@@ -130,6 +130,16 @@ spec:
             secretKeyRef:
               name: nextcloud-secret
               key: UPDATER_SECRET
+        - name: OIDC_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-secret
+              key: OIDC_CLIENT_ID
+        - name: OIDC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-secret
+              key: OIDC_CLIENT_SECRET
       extraInitContainers:
         - name: init-db
           image: ghcr.io/onedr0p/postgres-init:16.3@sha256:8ba3204f6b293dd168766009aae2ce4fa986a29b931c2d30ac1b30238ac750b8
