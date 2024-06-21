@@ -120,7 +120,7 @@ spec:
         server: nova.home.arpa
         path: /mnt/main/media/downloads/sabnzbd
         globalMounts:
-          - path: /downloads/sabnzbd
+          - path: /media/downloads/sabnzbd
       incomplete:
         type: emptyDir
         globalMounts:
