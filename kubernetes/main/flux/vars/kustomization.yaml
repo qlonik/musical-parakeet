@@ -4,4 +4,3 @@ resources:
   - ./cluster-settings.yaml
   - ./cluster-settings-user.yaml
   - ./cluster-secrets.sops.yaml
-  - ./cluster-secrets-user.sops.yaml
