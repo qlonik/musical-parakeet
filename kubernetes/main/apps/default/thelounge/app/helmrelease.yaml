@@ -38,6 +38,11 @@ spec:
               TZ: ${TIMEZONE}
               # https://github.com/thelounge/thelounge/issues/2656
               THELOUNGE_HOME: /config/thelounge
+              LDAP_SEARCH_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: thelounge-secret
+                    key: LDAP_SEARCH_PASS
             probes:
               liveness:
                 enabled: true
@@ -95,3 +100,11 @@ spec:
         tls:
           - hosts:
               - *host
+    persistence:
+      config-file:
+        type: secret
+        name: thelounge-secret
+        globalMounts:
+          - path: /config/thelounge/config.js
+            subPath: config.js
+            readOnly: true
