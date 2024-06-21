@@ -153,3 +153,15 @@ identity_providers:
         authorization_policy: one_factor
         pre_configured_consent_duration: 1y
         userinfo_signed_response_alg: none
+      - client_name: Immich
+        client_id: '{{ secret "/var/run/secrets/authelia-secret/oidc-immich-client-id" }}'
+        client_secret: '{{ secret "/var/run/secrets/authelia-secret/oidc-immich-secret-hash" }}'
+        public: false
+        redirect_uris:
+          - "https://immich.${SECRET_DOMAIN}/auth/login"
+          - "https://immich.${SECRET_DOMAIN}/user-settings"
+          - "app.immich:/"
+        scopes: ["openid", "profile", "email"]
+        authorization_policy: one_factor
+        pre_configured_consent_duration: 1y
+        userinfo_signed_response_alg: none
