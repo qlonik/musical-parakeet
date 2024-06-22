@@ -1,6 +1,8 @@
 # Volsync
 
-Comes with PVC, which it backs up.
+1. Comes with PVC, which it backs up.
+2. Make sure fluxtomization name matches helmrelease name.
+3. Ensure minio bucket is created in advance.
 
 ## Usage
 
