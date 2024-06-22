@@ -93,12 +93,3 @@ spec:
           http:
             primary: true
             port: *port
-    persistence:
-      upload:
-        type: persistentVolumeClaim
-        storageClass: nfs-zfs-main
-        accessMode: ReadWriteOnce
-        size: 2Gi
-        retain: true
-        globalMounts:
-          - path: /var/www/html/storage/upload
