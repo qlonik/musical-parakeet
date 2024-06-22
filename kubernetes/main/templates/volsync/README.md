@@ -42,21 +42,23 @@ Comes with PVC, which it backs up.
 
 4. Inside the `substitute` object these variables are supported:
 
-   | Variable                    | Required | Default value        |
-   | --------------------------- | -------- | -------------------- |
-   | APP                         | ✅       |                      |
-   | PVC_NAME_PREFIX             | ❌       | `""`                 |
-   | PVC_NAME_SUFFIX             | ❌       | `""`                 |
-   | PVC_CAPACITY                | ✅       |                      |
-   | PVC_STORAGECLASS            | ❌       | `"truenas-nfs-main"` |
-   | PVC_ACCESSMODE              | ❌       | `"ReadWriteOnce"`    |
-   | VOLSYNC_COPYMETHOD          | ❌       | `"Snapshot"`         |
-   | VOLSYNC_SNAPSHOTCLASS       | ❌       | `"truenas-nfs-main"` |
-   | VOLSYNC_CACHE_SNAPSHOTCLASS | ❌       | `"openebs-hostpath"` |
-   | VOLSYNC_CACHE_ACCESSMODE    | ❌       | `"ReadWriteOnce"`    |
-   | VOLSYNC_CACHE_CAPACITY      | ❌       | `"4Gi"`              |
-   | VOLSYNC_REPO_EXTRA_SUBPATH  | ❌       | `""`                 |
+   | Variable                    | Required | Default value                     |
+   | --------------------------- | -------- | --------------------------------- |
+   | APP                         | ✅       |                                   |
+   | PVC_NAME_PREFIX             | ❌       | `""`                              |
+   | PVC_NAME_SUFFIX             | ❌       | `""`                              |
+   | PVC_CAPACITY                | ✅       |                                   |
+   | PVC_STORAGECLASS            | ❌       | `"truenas-nfs-main"`              |
+   | PVC_ACCESSMODE              | ❌       | `"ReadWriteOnce"`                 |
+   | VOLSYNC_COPYMETHOD          | ❌       | `"Snapshot"`                      |
+   | VOLSYNC_SNAPSHOTCLASS       | ❌       | `"truenas-nfs-main"`              |
+   | VOLSYNC_CACHE_SNAPSHOTCLASS | ❌       | `"openebs-hostpath"`              |
+   | VOLSYNC_CACHE_ACCESSMODE    | ❌       | `"ReadWriteOnce"`                 |
+   | VOLSYNC_CACHE_CAPACITY      | ❌       | `"4Gi"`                           |
+   | MINIO_REPO_EXTRA_SUBPATH    | ❌       | `""`                              |
+   | MINIO_USER_KEY              | ❌       | `"${APP//-/_}_restic_minio_user"` |
+   | MINIO_PASS_KEY              | ❌       | `"${APP//-/_}_restic_minio_pass"` |
 
-   Note, `VOLSYNC_REPO_EXTRA_SUBPATH` should not start with `/`. It adds an
-   extra subpath to backup location in minio, which allows to have multiple
-   volsync backups going into the same bucket.
+   Note, `MINIO_REPO_EXTRA_SUBPATH` should not start with `/`. It adds an extra
+   subpath to backup location in minio, which allows to have multiple volsync
+   backups going into the same bucket.
