@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cluster-apps-nextcloud
+  name: &app nextcloud
   namespace: flux-system
 spec:
   dependsOn:
@@ -19,6 +19,15 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  postBuild:
+    substitute:
+      APP: *app
+      PVC_NAME_SUFFIX: "-main-conf"
+      PVC_CAPACITY: 5Gi
+      VOLSYNC_CACHE_CAPACITY: 10Gi
+      VOLSYNC_MOVER_UID: "33"
+      VOLSYNC_MOVER_GID: "33"
+      VOLSYNC_MOVER_FSID: "33"
   prune: true
   sourceRef:
     kind: GitRepository
