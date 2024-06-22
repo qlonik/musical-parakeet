@@ -5,4 +5,5 @@ resources:
   - ./configmap-patch.yaml
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ./volsync.yaml
+components:
+  - ../../../../templates/volsync
