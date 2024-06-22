@@ -147,11 +147,8 @@ spec:
           - hosts:
               - *host
     persistence:
-      upload:
+      uploads:
         type: persistentVolumeClaim
-        storageClass: nfs-zfs-main
-        accessMode: ReadWriteOnce
-        size: 2Gi
-        retain: true
+        existingClaim: firefly-iii-uploads
         globalMounts:
           - path: /var/www/html/storage/upload
