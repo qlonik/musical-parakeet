@@ -1,0 +1,81 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/external-secrets.io/externalsecret_v1beta1.json
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: "${APP}-volsync"
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: store-k8s
+  target:
+    name: "${APP}-volsync-secret"
+    template:
+      engineVersion: v2
+      data:
+        RESTIC_REPOSITORY: "s3:{{ .MINIO_URL }}/{{ .${APP//-/_}_restic_minio_user }}/${VOLSYNC_REPO_EXTRA_SUBPATH}"
+        RESTIC_PASSWORD: "{{ .${APP//-/_}_restic_pass }}"
+        AWS_ACCESS_KEY_ID: "{{ .${APP//-/_}_restic_minio_user }}"
+        AWS_SECRET_ACCESS_KEY: "{{ .${APP//-/_}_restic_minio_pass }}"
+  dataFrom:
+    - extract:
+        key: everything
+    - extract:
+        key: service-hosts
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/volsync.backube/replicationsource_v1alpha1.json
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: "${APP}"
+spec:
+  sourcePVC: "${PVC_NAME_PREFIX}${APP}${PVC_NAME_SUFFIX}"
+  trigger:
+    schedule: "0 * * * *"
+  restic:
+    repository: "${APP}-volsync-secret"
+    copyMethod: "${VOLSYNC_COPYMETHOD:-Snapshot}"
+
+    volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:-truenas-nfs-main}"
+    storageClassName: "${PVC_STORAGECLASS:-truenas-nfs-main}"
+    accessModes: ["${PVC_ACCESSMODE:-ReadWriteOnce}"]
+
+    cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:-openebs-hostpath}"
+    cacheAccessModes: ["${VOLSYNC_CACHE_ACCESSMODE:-ReadWriteOnce}"]
+    cacheCapacity: "${VOLSYNC_CACHE_CAPACITY:-4Gi}"
+
+    pruneIntervalDays: 7
+    retain:
+      hourly: 24
+      daily: 7
+      weekly: 5
+    moverSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/volsync.backube/replicationdestination_v1alpha1.json
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: "${APP}-dst"
+spec:
+  trigger:
+    manual: restore-once
+  restic:
+    repository: "${APP}-volsync-secret"
+    copyMethod: Snapshot # must be Snapshot
+
+    volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:-truenas-nfs-main}"
+    storageClassName: "${PVC_STORAGECLASS:-truenas-nfs-main}"
+    accessModes: ["${PVC_ACCESSMODE:-ReadWriteOnce}"]
+    capacity: "${PVC_CAPACITY}"
+
+    cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:-openebs-hostpath}"
+    cacheAccessModes: ["${VOLSYNC_CACHE_ACCESSMODE:-ReadWriteOnce}"]
+    cacheCapacity: "${VOLSYNC_CACHE_CAPACITY:-4Gi}"
+
+    moverSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
