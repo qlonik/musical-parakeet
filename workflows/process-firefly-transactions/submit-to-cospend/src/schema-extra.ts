@@ -11,9 +11,9 @@ export function addBrandedKeys<
     ? `error: Key '${keyof S.Schema.Type<Struct> &
         GetExtraKeys<Pairs>}' is already in Type`
     : Types.Has<S.Schema.Encoded<Struct>, GetExtraKeys<Pairs>> extends true
-      ? `error: Key '${keyof S.Schema.Encoded<Struct> &
-          GetExtraKeys<Pairs>}' is already in Encode`
-      : Brand,
+    ? `error: Key '${keyof S.Schema.Encoded<Struct> &
+        GetExtraKeys<Pairs>}' is already in Encode`
+    : Brand,
   struct: Struct,
   ...keyPairs: Pairs
 ): AddBrandedKeys<Brand, Struct, Pairs> {
@@ -46,9 +46,7 @@ type MergeResult<
   Brand extends string,
   Struct extends S.Schema.Any,
   Result extends [unknown, S.Struct.Fields],
-> = Types.Simplify<
-  { [_ in Brand]: S.extend<Struct, S.Struct<Result[1]>> } & Result[0]
->;
+> = { [_ in Brand]: S.extend<Struct, S.Struct<Result[1]>> } & Result[0];
 
 type CollectPairs<
   Brand extends string,
@@ -73,7 +71,7 @@ type CollectPairs<
         },
       ]
     >
-  : [Types.Simplify<Result[0]>, Types.Simplify<Result[1]>];
+  : Result;
 
 function capitalize(s: string): string {
   if (Str.isEmpty(s)) return s;
