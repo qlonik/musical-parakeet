@@ -31,14 +31,6 @@ spec:
     controllers:
       jellyfin:
         type: statefulset
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteMany
-              size: 10Gi
-              storageClass: truenas-nfs-main
-              globalMounts:
-                - path: /config
         containers:
           main:
             image:
@@ -108,6 +100,14 @@ spec:
           - hosts:
               - *host
     persistence:
+      config:
+        # stateful data
+        type: persistentVolumeClaim
+        existingClaim: jellyfin-conf
+        advancedMounts:
+          jellyfin:
+            main:
+              - path: /config
       movies:
         type: nfs
         server: nova.home.arpa

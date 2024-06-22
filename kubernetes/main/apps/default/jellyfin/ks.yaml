@@ -15,6 +15,12 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  postBuild:
+    substitute:
+      APP: *app
+      PVC_NAME_SUFFIX: "-conf"
+      PVC_CAPACITY: 10Gi
+      VOLSYNC_CACHE_CAPACITY: 15Gi
   prune: true
   sourceRef:
     kind: GitRepository
@@ -22,4 +28,4 @@ spec:
   wait: true
   interval: 30m
   retryInterval: 1m
-  timeout: 5m
+  timeout: 30m
