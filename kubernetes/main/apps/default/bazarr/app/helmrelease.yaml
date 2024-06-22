@@ -29,15 +29,6 @@ spec:
     controllers:
       main:
         type: statefulset
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteMany
-              size: 1Gi
-              storageClass: truenas-nfs-main
-              advancedMounts:
-                main:
-                  - path: /config
         containers:
           main:
             image:
@@ -122,6 +113,14 @@ spec:
           - hosts:
               - *host
     persistence:
+      config:
+        # stateful data
+        type: persistentVolumeClaim
+        existingClaim: bazarr-conf
+        advancedMounts:
+          main:
+            main:
+              - path: /config
       media-movies:
         type: nfs
         server: nova.home.arpa
