@@ -29,15 +29,6 @@ spec:
     controllers:
       jellyseerr:
         type: statefulset
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteMany
-              size: 1Gi
-              storageClass: truenas-nfs-main
-              advancedMounts:
-                main:
-                  - path: /app/config
         containers:
           main:
             image:
@@ -111,6 +102,14 @@ spec:
           - hosts:
               - *host
     persistence:
+      config:
+        # stateful data
+        type: persistentVolumeClaim
+        existingClaim: jellyseerr-conf
+        advancedMounts:
+          jellyseerr:
+            main:
+              - path: /app/config
       tmp:
         type: emptyDir
         globalMounts:
