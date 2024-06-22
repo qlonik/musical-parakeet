@@ -14,7 +14,7 @@ spec:
       engineVersion: v2
       data:
         RESTIC_REPOSITORY: "s3:{{ .MINIO_URL }}/{{ .${MINIO_USER_KEY:-${APP//-/_}_restic_minio_user} }}/${MINIO_REPO_EXTRA_SUBPATH}"
-        RESTIC_PASSWORD: "{{ .${APP//-/_}_restic_pass }}"
+        RESTIC_PASSWORD: "{{ .${RESTIC_PASS_KEY:-${APP//-/_}_restic_pass} }}"
         AWS_ACCESS_KEY_ID: "{{ .${MINIO_USER_KEY:-${APP//-/_}_restic_minio_user} }}"
         AWS_SECRET_ACCESS_KEY: "{{ .${MINIO_PASS_KEY:-${APP//-/_}_restic_minio_pass} }}"
   dataFrom:

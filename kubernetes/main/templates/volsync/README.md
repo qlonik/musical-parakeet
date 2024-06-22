@@ -60,6 +60,7 @@
    | MINIO_REPO_EXTRA_SUBPATH    | ❌       | `""`                              |
    | MINIO_USER_KEY              | ❌       | `"${APP//-/_}_restic_minio_user"` |
    | MINIO_PASS_KEY              | ❌       | `"${APP//-/_}_restic_minio_pass"` |
+   | RESTIC_PASS_KEY             | ❌       | `"${APP//-/_}_restic_pass"`       |
 
    Note, `MINIO_REPO_EXTRA_SUBPATH` should not start with `/`. It adds an extra
    subpath to backup location in minio, which allows to have multiple volsync
