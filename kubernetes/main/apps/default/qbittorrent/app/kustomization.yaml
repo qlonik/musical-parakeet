@@ -4,7 +4,8 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ./volsync.yaml
+components:
+  - ../../../../templates/volsync
 
 configMapGenerator:
   - name: qbittorrent-scripts

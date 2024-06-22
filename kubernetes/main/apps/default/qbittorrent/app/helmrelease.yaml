@@ -34,16 +34,6 @@ spec:
       qbittorrent:
         type: statefulset
 
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteMany
-              size: 1Gi
-              storageClass: truenas-nfs-main
-              advancedMounts:
-                main:
-                  - path: /config
-
         annotations:
           reloader.stakater.com/auto: "true"
 
@@ -162,6 +152,14 @@ spec:
               - *host
 
     persistence:
+      config:
+        # stateful data
+        type: persistentVolumeClaim
+        existingClaim: qbittorrent-conf
+        advancedMounts:
+          qbittorrent:
+            main:
+              - path: /config
       downloads:
         type: nfs
         server: nova.home.arpa
