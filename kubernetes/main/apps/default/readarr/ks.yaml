@@ -15,6 +15,14 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  postBuild:
+    substitute:
+      APP: *app
+      PVC_NAME_SUFFIX: "-conf"
+      PVC_CAPACITY: 1Gi
+      MINIO_REPO_EXTRA_SUBPATH: ebook
+      MINIO_USER_KEY: readarr_restic_minio_user
+      MINIO_PASS_KEY: readarr_restic_minio_pass
   prune: true
   sourceRef:
     kind: GitRepository
