@@ -29,14 +29,6 @@ spec:
         type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteMany
-              size: 1Gi
-              storageClass: truenas-nfs-main
-              globalMounts:
-                - path: /config
         containers:
           main:
             image:
@@ -103,6 +95,14 @@ spec:
           - hosts:
               - *host
     persistence:
+      config:
+        # stateful data
+        type: persistentVolumeClaim
+        existingClaim: audiobookshelf-conf
+        advancedMounts:
+          audiobookshelf:
+            main:
+              - path: /config
       ebooks:
         type: nfs
         server: nova.home.arpa
