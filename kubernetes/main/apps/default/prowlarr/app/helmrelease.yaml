@@ -102,13 +102,7 @@ spec:
     persistence:
       config:
         type: persistentVolumeClaim
-        storageClass: truenas-nfs-main
-        accessMode: ReadWriteMany
-        size: 1Gi
-        dataSourceRef:
-          kind: ReplicationDestination
-          apiGroup: volsync.backube
-          name: prowlarr-dst
+        existingClaim: prowlarr-conf
         advancedMounts:
           prowlarr:
             main:
