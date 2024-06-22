@@ -14,7 +14,6 @@ resources:
   - ./firefly-iii/ks.yaml
   - ./glauth/ks.yaml
   - ./grocy/ks.yaml
-  - ./heimdall/ks.yaml
   - ./homepage/ks.yaml
   - ./immich/ks.yaml
   - ./jellyfin/ks.yaml
