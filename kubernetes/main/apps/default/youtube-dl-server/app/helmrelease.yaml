@@ -29,14 +29,6 @@ spec:
     controllers:
       youtube-dl-server:
         type: statefulset
-        statefulset:
-          volumeClaimTemplates:
-            - name: data
-              accessMode: ReadWriteMany
-              size: 1Gi
-              storageClass: truenas-nfs-main
-              globalMounts:
-                - path: /youtube-dl/
         containers:
           main:
             image:
@@ -88,6 +80,14 @@ spec:
           - hosts:
               - *host
     persistence:
+      data:
+        # stateful data
+        type: persistentVolumeClaim
+        existingClaim: youtube-dl-server-data
+        advancedMounts:
+          youtube-dl-server:
+            main:
+              - path: /youtube-dl
       config:
         type: configMap
         name: youtube-dl-server-config

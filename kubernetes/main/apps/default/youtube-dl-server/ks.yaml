@@ -13,6 +13,14 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  postBuild:
+    substitute:
+      APP: *app
+      PVC_NAME_SUFFIX: "-data"
+      PVC_CAPACITY: 1Gi
+      RESTIC_PASS_KEY: ydl_restic_pass
+      MINIO_USER_KEY: ydl_restic_minio_user
+      MINIO_PASS_KEY: ydl_restic_minio_pass
   prune: true
   sourceRef:
     kind: GitRepository
