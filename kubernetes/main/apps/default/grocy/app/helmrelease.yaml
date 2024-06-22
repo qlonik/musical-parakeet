@@ -29,15 +29,6 @@ spec:
     controllers:
       grocy:
         type: statefulset
-        statefulset:
-          volumeClaimTemplates:
-            - name: config
-              accessMode: ReadWriteMany
-              size: 1Gi
-              storageClass: truenas-nfs-main
-              advancedMounts:
-                main:
-                  - path: /config
         containers:
           main:
             image:
@@ -116,6 +107,14 @@ spec:
           - hosts:
               - *host
     persistence:
+      config:
+        # stateful data
+        type: persistentVolumeClaim
+        existingClaim: grocy-conf
+        advancedMounts:
+          grocy:
+            main:
+              - path: /config
       viewcache:
         type: emptyDir
         globalMounts:
