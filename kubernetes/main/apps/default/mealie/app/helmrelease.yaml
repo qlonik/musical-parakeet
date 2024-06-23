@@ -136,10 +136,9 @@ spec:
               - *host
     persistence:
       data:
-        nameOverride: api-data
         type: persistentVolumeClaim
-        storageClass: truenas-nfs-main
-        accessMode: ReadWriteMany
-        size: 1Gi
-        globalMounts:
-          - path: /app/data
+        existingClaim: mealie-data
+        advancedMounts:
+          main:
+            main:
+              - path: /app/data
