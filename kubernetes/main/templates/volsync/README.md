@@ -57,6 +57,9 @@
    | VOLSYNC_CACHE_SNAPSHOTCLASS | ❌       | `"openebs-hostpath"`              |
    | VOLSYNC_CACHE_ACCESSMODE    | ❌       | `"ReadWriteOnce"`                 |
    | VOLSYNC_CACHE_CAPACITY      | ❌       | `"4Gi"`                           |
+   | VOLSYNC_MOVER_UID           | ❌       | `"568"`                           |
+   | VOLSYNC_MOVER_GID           | ❌       | `"568"`                           |
+   | VOLSYNC_MOVER_FSID          | ❌       | `"568"`                           |
    | RESTIC_REPO_EXTRA_SUBPATH   | ❌       | `""`                              |
    | RESTIC_PASS_KEY             | ❌       | `"${APP//-/_}_restic_pass"`       |
    | MINIO_USER_KEY              | ❌       | `"${APP//-/_}_restic_minio_user"` |

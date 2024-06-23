@@ -50,9 +50,9 @@ spec:
       daily: 7
       weekly: 5
     moverSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
+      runAsUser: "${VOLSYNC_MOVER_UID:-568}"
+      runAsGroup: "${VOLSYNC_MOVER_GID:-568}"
+      fsGroup: "${VOLSYNC_MOVER_FSID:-568}"
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/volsync.backube/replicationdestination_v1alpha1.json
 apiVersion: volsync.backube/v1alpha1
@@ -76,6 +76,6 @@ spec:
     cacheCapacity: "${VOLSYNC_CACHE_CAPACITY:-4Gi}"
 
     moverSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
+      runAsUser: "${VOLSYNC_MOVER_UID:-568}"
+      runAsGroup: "${VOLSYNC_MOVER_GID:-568}"
+      fsGroup: "${VOLSYNC_MOVER_FSID:-568}"
