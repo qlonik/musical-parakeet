@@ -143,11 +143,3 @@ spec:
         size: 1Gi
         globalMounts:
           - path: /app/data
-      backups:
-        nameOverride: api-backups
-        type: persistentVolumeClaim
-        storageClass: truenas-nfs-main
-        accessMode: ReadWriteMany
-        size: 1Gi
-        globalMounts:
-          - path: /app/data/backups

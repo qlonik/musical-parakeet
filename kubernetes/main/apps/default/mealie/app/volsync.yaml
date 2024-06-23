@@ -25,30 +25,3 @@ spec:
       hourly: 24
       daily: 7
       weekly: 5
----
-apiVersion: volsync.backube/v1alpha1
-kind: ReplicationSource
-metadata:
-  name: mealie-backups
-spec:
-  sourcePVC: mealie-api-backups
-  trigger:
-    schedule: "0 * * * *"
-  restic:
-    repository: mealie-backups-restic-secret
-    copyMethod: Snapshot
-    pruneIntervalDays: 7
-    volumeSnapshotClassName: truenas-nfs-main
-    cacheStorageClassName: local-path # truenas-nfs-main
-    cacheAccessModes: ["ReadWriteOnce"] # ["ReadWriteMany"]
-    cacheCapacity: 4Gi
-    storageClassName: truenas-nfs-main
-    accessModes: ["ReadWriteMany"]
-    moverSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-    retain:
-      hourly: 24
-      daily: 7
-      weekly: 5
