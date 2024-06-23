@@ -33,22 +33,6 @@ spec:
         type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
-        statefulset:
-          volumeClaimTemplates:
-            - name: data
-              accessMode: ReadWriteMany
-              size: 1Gi
-              storageClass: truenas-nfs-main
-              advancedMounts:
-                main:
-                  - path: /usr/src/paperless/data
-            - name: media
-              accessMode: ReadWriteMany
-              size: 1Gi
-              storageClass: truenas-nfs-main
-              advancedMounts:
-                main:
-                  - path: /usr/src/paperless/media
         containers:
           main:
             image:
@@ -151,19 +135,18 @@ spec:
           - hosts:
               - *host
     persistence:
-      export:
-        type: nfs
-        server: nova.home.arpa
-        path: /mnt/main/appdata/paperless-ngx/export
+      data:
+        type: persistentVolumeClaim
+        existingClaim: paperless-ngx-data
         advancedMounts:
           paperless-ngx:
             main:
+              # stateful data
+              - path: /usr/src/paperless/data
+                subPath: data
+              - path: /usr/src/paperless/media
+                subPath: media
               - path: /usr/src/paperless/export
-      consume:
-        type: nfs
-        server: nova.home.arpa
-        path: /mnt/main/appdata/paperless-ngx/consume
-        advancedMounts:
-          paperless-ngx:
-            main:
+                subPath: export
               - path: /usr/src/paperless/consume
+                subPath: consume
