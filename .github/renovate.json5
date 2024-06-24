@@ -77,7 +77,7 @@
   "packageRules": [
     // automerge
     {
-      "description": "Auto merge Github Actions",
+      "description": ["Auto merge Github Actions"],
       "matchManagers": ["github-actions"],
       "automerge": true,
       "automergeType": "branch",
@@ -85,7 +85,7 @@
       "matchUpdateTypes": ["minor", "patch"]
     },
     {
-      "description": "Auto-merge container digests updates for trusted containers",
+      "description": ["Auto-merge container digests updates for trusted containers"],
       "matchDatasources": ["docker"],
       "automerge": true,
       "automergeType": "branch",
@@ -99,7 +99,7 @@
     },
     // groups
     {
-      "description": "Flux Group",
+      "description": ["Flux Group"],
       "groupName": "Flux",
       "matchPackagePatterns": ["fluxcd"],
       "matchDatasources": ["docker", "github-tags"],
@@ -110,7 +110,7 @@
       "separateMinorPatch": true
     },
     {
-      "description": "System Upgrade Controller Group",
+      "description": ["System Upgrade Controller Group"],
       "groupName": "System Upgrade Controller",
       "matchPackagePatterns": ["rancher/system-upgrade-controller"],
       "matchDatasources": ["docker", "github-releases"],
@@ -120,7 +120,7 @@
       "separateMinorPatch": true
     },
     {
-      "description": "Actions Runner Controller Group",
+      "description": ["Actions Runner Controller Group"],
       "groupName": "Actions Runner Controller",
       "matchPackageNames": [
         "actions-runner-controller-charts/gha-runner-scale-set-controller",
@@ -134,7 +134,7 @@
       "separateMinorPatch": true
     },
     {
-      "description": "Immich Group",
+      "description": ["Immich Group"],
       "groupName": "Immich",
       "matchPackagePatterns": ["immich-app"],
       "matchDatasources": ["docker"],
@@ -144,7 +144,7 @@
       "separateMinorPatch": true
     },
     {
-      "description": "Minio Group",
+      "description": ["Minio Group"],
       "groupName": "Minio",
       "matchPackagePatterns": ["minio"],
       "matchDatasources": ["docker"],
@@ -154,7 +154,7 @@
       "separateMinorPatch": true
     },
     {
-      "description": "Vikunja Group",
+      "description": ["Vikunja Group"],
       "groupName": "Vikunja",
       "matchPackagePatterns": ["vikunja"],
       "matchDatasources": ["docker"],
@@ -164,7 +164,7 @@
       "separateMinorPatch": true
     },
     {
-      "description": "effect-ts Group",
+      "description": ["effect-ts Group"],
       "groupName": "effect-ts",
       "matchPackageNames": ["effect"],
       "matchPackagePrefixes": ["@effect"],
@@ -174,7 +174,7 @@
       }
     },
     {
-      "description": "K8s CSI Group",
+      "description": ["K8s CSI Group"],
       "groupName": "sig-storage",
       "matchPackagePatterns": ["registry.k8s.io/sig-storage/csi-"],
       "matchDatasources": ["docker"],
@@ -183,7 +183,7 @@
       }
     },
     {
-      "description": "calibre Group",
+      "description": ["calibre Group"],
       "groupName": "calibre",
       "matchPackagePatterns": [
         "ghcr.io/linuxserver/calibre",
@@ -197,7 +197,7 @@
       "separateMinorPatch": true
     },
     {
-      "description": "@tsconfig bases Group",
+      "description": ["@tsconfig bases Group"],
       "groupName": "tsconfig-bases",
       "matchPackagePrefixes": ["@tsconfig"],
       "matchDatasources": ["npm"],
@@ -207,13 +207,13 @@
     },
     // custom versioning
     {
-      "description": "Use custom versioning for firefly-iii",
+      "description": ["Use custom versioning for firefly-iii"],
       "matchDatasources": ["docker"],
       "versioning": "regex:^version-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
       "matchPackageNames": ["fireflyiii/core", "fireflyiii/data-importer"]
     },
     {
-      "description": "Use custom versioning for linuxserver.io containers",
+      "description": ["Use custom versioning for linuxserver.io containers"],
       "matchDatasources": ["docker"],
       "versioning": "regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?(?:-ls(?<build>\\d+))?$",
       "matchPackagePatterns": ["^ghcr.io\\/linuxserver\\/"],
@@ -223,19 +223,19 @@
       ]
     },
     {
-      "description": "Custom versioning for linuxserver.io mods",
+      "description": ["Custom versioning for linuxserver.io mods"],
       "matchDatasources": ["docker"],
       "versioning": "regex:^(?<compatibility>.+?)(-v(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))?)?$",
       "matchPackageNames": ["ghcr.io/linuxserver/mods"]
     },
     {
-      "description": "Use custom versioning for k0s/k3s",
+      "description": ["Use custom versioning for k0s/k3s"],
       "matchDatasources": ["github-releases"],
       "versioning": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?<compatibility>\\+k.s)\\.?(?<build>\\d+)$",
       "matchPackagePatterns": ["k0s", "k3s"]
     },
     {
-      "description": "Use custom versioning for minio",
+      "description": ["Use custom versioning for minio"],
       "matchDatasources": ["docker"],
       "versioning": "regex:^RELEASE\\.(?<major>\\d+)-(?<minor>\\d+)-(?<patch>\\d+)T.*Z$",
       "matchPackagePatterns": ["minio"]
@@ -379,7 +379,7 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Process various other dependencies",
+      "description": ["Process various other dependencies"],
       "fileMatch": [
         "(^|/).taskfiles/.+\\.ya?ml$",
         "(^|/)ansible/.+\\.ya?ml(\\.j2)?$",

@@ -1,4 +1,3 @@
-#% if addon_discord_template_notifier.enabled %#
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -51,4 +50,3 @@ spec:
           - path: /data/config.toml
             subPath: config.toml
             readOnly: true
-#% endif %#
