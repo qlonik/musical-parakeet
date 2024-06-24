@@ -26,7 +26,7 @@ spec:
     keepHistory: false
   values:
     controllers:
-      main:
+      homepage:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -57,11 +57,9 @@ spec:
                 memory: 1G
     service:
       main:
-        primary: true
-        controller: main
+        controller: homepage
         ports:
           http:
-            primary: true
             port: 3000
     ingress:
       main:

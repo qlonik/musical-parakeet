@@ -23,8 +23,6 @@ spec:
   uninstall:
     keepHistory: false
   dependsOn:
-    - name: minio
-      namespace: default
     - name: snapshot-controller
       namespace: storage
   values:

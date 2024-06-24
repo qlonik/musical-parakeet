@@ -50,11 +50,10 @@
             flush: true
             ip_version: ipv6
           loop: ["filter", "nat", "mangle", "raw"]
-        - name: Networking | Delete CNI directories
+        - name: Networking | Delete CNI directory
           ansible.builtin.file:
-            path: "{{ item }}"
+            path: /etc/cni/net.d
             state: absent
-          loop: ["/var/lib/cni", "/etc/cni/net.d"]
 
     - name: Check to see if k3s-killall.sh exits
       ansible.builtin.stat:

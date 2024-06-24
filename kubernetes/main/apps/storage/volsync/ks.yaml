@@ -6,7 +6,6 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cluster-apps-minio
     - name: snapshot-controller
   path: ./kubernetes/main/apps/storage/volsync/app
   targetNamespace: storage
@@ -17,7 +16,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
-  wait: true
+  wait: false
   interval: 30m
   retryInterval: 1m
   timeout: 5m
