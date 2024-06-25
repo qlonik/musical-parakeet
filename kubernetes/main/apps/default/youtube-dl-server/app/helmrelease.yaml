@@ -67,7 +67,6 @@ spec:
         className: internal
         annotations:
           auth.home.arpa/enabled: "true"
-          hajimari.io/icon: mdi:filmstrip
         hosts:
           - host: &host "ytdl.${SECRET_DOMAIN}"
             paths:

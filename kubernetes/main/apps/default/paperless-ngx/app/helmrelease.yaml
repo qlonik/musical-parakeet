@@ -122,7 +122,6 @@ spec:
         className: internal
         annotations:
           auth.home.arpa/enabled: "true"
-          hajimari.io/icon: file-multiple
         hosts:
           - host: &host "paperless.${SECRET_DOMAIN}"
             paths:

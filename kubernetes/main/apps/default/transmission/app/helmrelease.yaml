@@ -134,8 +134,6 @@ spec:
     ingress:
       main:
         className: internal
-        annotations:
-          hajimari.io/icon: mdi:download
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:

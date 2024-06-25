@@ -173,8 +173,6 @@ spec:
         className: internal
         annotations:
           auth.home.arpa/enabled: "true"
-          hajimari.io/enable: "true"
-          hajimari.io/icon: harddisk
         hosts:
           - host: &host "scrutiny.${SECRET_DOMAIN}"
             paths:

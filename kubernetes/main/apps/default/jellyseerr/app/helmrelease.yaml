@@ -89,7 +89,6 @@ spec:
           nginx.ingress.kubernetes.io/configuration-snippet: |
             # sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_DOMAIN}/css/base/jellyseerr/nord.css"></head>';
             # sub_filter_once on;
-          hajimari.io/icon: mdi:download
         hosts:
           - host: &host "seer.${SECRET_DOMAIN}"
             paths:

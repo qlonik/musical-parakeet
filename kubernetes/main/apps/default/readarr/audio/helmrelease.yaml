@@ -91,7 +91,6 @@ spec:
         className: internal
         annotations:
           auth.home.arpa/enabled: "true"
-          hajimari.io/icon: mdi:headphones
         hosts:
           - host: &host "readarr.${SECRET_DOMAIN}"
             paths:
