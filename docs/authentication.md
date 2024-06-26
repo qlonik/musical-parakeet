@@ -70,5 +70,6 @@ through config files. So those might not be found via config file search.
    - thelounge
 
 2. Configured via web UI:
+   - calibre-web
    - jellyfin
    - nextcloud
