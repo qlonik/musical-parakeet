@@ -83,6 +83,17 @@ spec:
         className: external
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Audiobookshelf
+          gethomepage.dev/icon: audiobookshelf.svg
+          gethomepage.dev/description: Audiobooks, podcasts and e-books
+          gethomepage.dev/group: Media
+          gethomepage.dev/siteMonitor: &internalUrl "http://{{ .Release.Name }}.default.svc.cluster.local"
+          gethomepage.dev/widget.type: audiobookshelf
+          gethomepage.dev/widget.fields: |-
+            ["books", "podcasts"]
+          gethomepage.dev/widget.url: *internalUrl
+          gethomepage.dev/widget.key: "{{ `{{HOMEPAGE_VAR_AUDIOBOOKSHELF_API_TOKEN}}` }}"
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:

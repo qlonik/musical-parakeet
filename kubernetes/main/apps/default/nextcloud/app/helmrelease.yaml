@@ -214,6 +214,15 @@ spec:
           location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
             deny all;
           }
+        gethomepage.dev/enabled: "true"
+        gethomepage.dev/name: Nextcloud
+        gethomepage.dev/icon: nextcloud.svg
+        gethomepage.dev/description: Personal cloud
+        gethomepage.dev/group: Various
+        gethomepage.dev/siteMonitor: &externalUrl "https://cloud.${SECRET_DOMAIN}"
+        gethomepage.dev/widget.type: nextcloud
+        gethomepage.dev/widget.url: *externalUrl
+        gethomepage.dev/widget.key: "{{ `{{HOMEPAGE_VAR_NEXTCLOUD_API_TOKEN}}` }}"
       tls:
         - hosts:
             - *host

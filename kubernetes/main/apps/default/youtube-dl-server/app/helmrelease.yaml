@@ -67,6 +67,12 @@ spec:
         className: internal
         annotations:
           auth.home.arpa/enabled: "true"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: YoutubeDL
+          gethomepage.dev/icon: youtubedl.svg
+          gethomepage.dev/description: Youtube downloader
+          gethomepage.dev/group: Downloads
+          gethomepage.dev/siteMonitor: "http://{{ .Release.Name }}.default.svc.cluster.local:8080"
         hosts:
           - host: &host "ytdl.${SECRET_DOMAIN}"
             paths:

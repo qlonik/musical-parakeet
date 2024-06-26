@@ -78,6 +78,12 @@ spec:
         className: internal
         annotations:
           auth.home.arpa/enabled: "true"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Lazylibrarian
+          gethomepage.dev/icon: lazylibrarian.png
+          gethomepage.dev/description: E-Books downloads
+          gethomepage.dev/group: Media Mgmt
+          gethomepage.dev/siteMonitor: "http://{{ .Release.Name }}.default.svc.cluster.local:5299/config"
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:

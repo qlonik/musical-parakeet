@@ -116,6 +116,9 @@ spec:
           gethomepage.dev/name: Prometheus
           gethomepage.dev/group: Observability
           gethomepage.dev/widget.type: prometheus
+          gethomepage.dev/widget.url: http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090
+          gethomepage.dev/pod-selector: >-
+            app.kubernetes.io/instance in (kube-prometheus-stack)
         pathType: Prefix
         hosts:
           - "prometheus.${SECRET_DOMAIN}"

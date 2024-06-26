@@ -120,6 +120,15 @@ spec:
         annotations:
           auth.home.arpa/enabled: "true"
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Firefly
+          gethomepage.dev/icon: firefly.png
+          gethomepage.dev/description: Financials
+          gethomepage.dev/group: Various
+          gethomepage.dev/siteMonitor: "http://{{ .Release.Name }}.default.svc.cluster.local:8080"
+          gethomepage.dev/pod-selector: >-
+            app.kubernetes.io/instance in (firefly-iii),
+            app.kubernetes.io/component in (firefly-iii)
         hosts:
           - host: &host "firefly-iii.${SECRET_DOMAIN}"
             paths:

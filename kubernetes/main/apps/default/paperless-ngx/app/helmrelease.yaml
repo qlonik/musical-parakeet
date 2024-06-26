@@ -122,6 +122,12 @@ spec:
         className: internal
         annotations:
           auth.home.arpa/enabled: "true"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Paperless
+          gethomepage.dev/icon: paperless-ngx.svg
+          gethomepage.dev/description: Electronic documents manager
+          gethomepage.dev/group: Various
+          gethomepage.dev/siteMonitor: "http://{{ .Release.Name }}.default.svc.cluster.local:8000"
         hosts:
           - host: &host "paperless.${SECRET_DOMAIN}"
             paths:

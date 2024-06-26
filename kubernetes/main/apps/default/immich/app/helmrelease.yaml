@@ -131,6 +131,15 @@ spec:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
           # proxy-body-size is set to 0 to remove the body limit on file uploads
           nginx.ingress.kubernetes.io/proxy-body-size: "0"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Immich
+          gethomepage.dev/icon: immich.svg
+          gethomepage.dev/description: Photos
+          gethomepage.dev/group: Media
+          gethomepage.dev/siteMonitor: &internalUrl "http://{{ .Release.Name }}.default.svc.cluster.local:3001"
+          gethomepage.dev/widget.type: immich
+          gethomepage.dev/widget.url: *internalUrl
+          gethomepage.dev/widget.key: "{{ `{{HOMEPAGE_VAR_IMMICH_API_KEY}}` }}"
         hosts:
           - host: &host "immich.${SECRET_DOMAIN}"
             paths:

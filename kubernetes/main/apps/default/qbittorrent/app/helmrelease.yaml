@@ -136,6 +136,14 @@ spec:
         className: internal
         annotations:
           auth.home.arpa/enabled: "true"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Qbittorrent
+          gethomepage.dev/icon: qbittorrent.svg
+          gethomepage.dev/description: Torrents downloader
+          gethomepage.dev/group: Downloads
+          gethomepage.dev/siteMonitor: &internalUrl "http://{{ .Release.Name }}.default.svc.cluster.local:8080"
+          gethomepage.dev/widget.type: qbittorrent
+          gethomepage.dev/widget.url: *internalUrl
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:

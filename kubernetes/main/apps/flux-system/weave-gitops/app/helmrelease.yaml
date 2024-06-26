@@ -32,9 +32,9 @@ spec:
       className: internal
       annotations:
         gethomepage.dev/enabled: "true"
-        gethomepage.dev/group: Home
         gethomepage.dev/name: Weave-gitops
         gethomepage.dev/icon: flux-cd.png
+        gethomepage.dev/group: Observability
       hosts:
         - host: &host "gitops.${SECRET_DOMAIN}"
           paths:

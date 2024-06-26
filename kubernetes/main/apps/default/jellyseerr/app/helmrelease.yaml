@@ -86,6 +86,15 @@ spec:
         className: external
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Jellyseerr
+          gethomepage.dev/icon: jellyseerr.svg
+          gethomepage.dev/description: Request movies and shows
+          gethomepage.dev/group: Media
+          gethomepage.dev/siteMonitor: &internalUrl "http://{{ .Release.Name }}.default.svc.cluster.local:5055"
+          gethomepage.dev/widget.type: jellyseerr
+          gethomepage.dev/widget.url: *internalUrl
+          gethomepage.dev/widget.key: "{{ `{{HOMEPAGE_VAR_JELLYSEERR_API_KEY}}` }}"
         hosts:
           - host: &host "seer.${SECRET_DOMAIN}"
             paths:

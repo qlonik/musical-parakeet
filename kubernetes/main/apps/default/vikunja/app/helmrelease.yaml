@@ -80,6 +80,12 @@ spec:
         className: external
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Vikunja
+          gethomepage.dev/icon: vikunja.svg
+          gethomepage.dev/description: Todos
+          gethomepage.dev/group: Various
+          gethomepage.dev/siteMonitor: "http://{{ .Release.Name }}.default.svc.cluster.local:3456"
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:

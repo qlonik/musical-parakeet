@@ -6,8 +6,77 @@ metadata:
   labels:
     app.kubernetes.io/name: homepage
 data:
+  settings.yaml: |
+    title: Dashboard
+    theme: dark
+    color: slate
+    headerStyle: clean
+    useEqualHeights: false
+    layout:
+      - Media:
+          style: row
+          columns: 3
+          icon: mdi-multimedia
+      - Various:
+          style: row
+          columns: 3
+          icon: mdi-home-analytics
+      - Media Mgmt:
+          style: row
+          columns: 4
+          icon: mdi-movie-cog
+      - Downloads:
+          style: row
+          columns: 3
+          icon: mdi-download
+      - Network:
+          style: row
+          columns: 3
+          icon: mdi-server
+      - Observability:
+          style: column
+          icon: mdi-chart-line
+  custom.css: |
+    #information-widgets-right {
+      justify-content: center !important;
+
+      .information-widget-datetime {
+        width: 100% !important;
+        > div {
+          justify-content: center !important;
+        }
+      }
+
+      .information-widget-search {
+        width: 50% !important;
+        max-width: 30em !important;
+      }
+    }
+  services.yaml: |
+    - Network:
+        - Cloudflared:
+            href: https://dash.cloudflare.com
+            icon: cloudflare-zero-trust.png
+            description: Cloudflared Tunnel
+            widget:
+              type: cloudflared
+              accountid: "{{HOMEPAGE_VAR_CLOUDFLARED_ACCOUNTID}}"
+              tunnelid: "{{HOMEPAGE_VAR_CLOUDFLARED_TUNNELID}}"
+              key: "{{HOMEPAGE_VAR_CLOUDFLARED_API_TOKEN}}"
+  widgets.yaml: |
+    - datetime:
+        locale: en-GB
+        text_size: 4xl
+        format:
+          dateStyle: medium
+          timeStyle: medium
+          hourCycle: h23
+    - search:
+        provider: "duckduckgo"
+        focus: false
+        target: _blank
   bookmarks.yaml: |
-    - Communitcate:
+    - Communicate:
         - Discord:
             - icon: discord.png
               href: https://discord.com/app
@@ -25,53 +94,7 @@ data:
               href: https://kubesearch.dev
         - flux-cluster-template:
             - icon: github.png
-              href: https://github.com/onedr0p/flux-cluster-template
+              href: https://github.com/onedr0p/cluster-template
   docker.yaml: ""
   kubernetes.yaml: |
     mode: cluster
-  services.yaml: |
-    - Network:
-        - Cloudflared:
-            href: https://dash.cloudflare.com
-            icon: cloudflare-zero-trust.png
-            description: Cloudflared Tunnel
-            widget:
-              type: cloudflared
-              accountid: "{{HOMEPAGE_VAR_CLOUDFLARED_ACCOUNTID}}"
-              tunnelid: "{{HOMEPAGE_VAR_CLOUDFLARED_TUNNELID}}"
-              key: "{{HOMEPAGE_VAR_CLOUDFLARED_API_TOKEN}}"
-  settings.yaml: |
-    title: Dashboard
-    theme: dark
-    color: slate
-    headerStyle: clean
-    layout:
-      Home:
-        style: column
-        icon: mdi-home-analytics
-      Network:
-        style: row
-        columns: 3
-        icon: mdi-server
-      Observability:
-        style: column
-        icon: mdi-chart-line
-  widgets.yaml: |
-    - resources:
-        backend: kubernetes
-        cpu: true
-        expanded: true
-        memory: true
-    - search:
-        provider: ["duckduckgo"]
-        focus: false
-        target: _blank
-    - greeting:
-        text_size: xl
-        text: "Welcome!"
-    - datetime:
-        text_size: l
-        format:
-          dateStyle: long
-          timeStyle: short
-          hourCycle: h23

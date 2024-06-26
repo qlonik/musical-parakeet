@@ -91,6 +91,15 @@ spec:
         className: internal
         annotations:
           auth.home.arpa/enabled: "true"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Readarr Audiobooks
+          gethomepage.dev/icon: readarr.svg
+          gethomepage.dev/description: Audiobooks management
+          gethomepage.dev/group: Media Mgmt
+          gethomepage.dev/siteMonitor: &internalUrl "http://{{ .Release.Name }}.default.svc.cluster.local:8787"
+          gethomepage.dev/widget.type: readarr
+          gethomepage.dev/widget.url: *internalUrl
+          gethomepage.dev/widget.key: "{{ `{{HOMEPAGE_VAR_READARR_AUDIO_API_KEY}}` }}"
         hosts:
           - host: &host "readarr.${SECRET_DOMAIN}"
             paths:

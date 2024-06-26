@@ -92,6 +92,14 @@ spec:
         className: internal
         annotations:
           auth.home.arpa/enabled: "true"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Calibre
+          gethomepage.dev/icon: calibre.svg
+          gethomepage.dev/description: E-Books metadata management
+          gethomepage.dev/group: Media Mgmt
+          gethomepage.dev/siteMonitor: "http://{{ .Release.Name }}.default.svc.cluster.local:8080"
+          gethomepage.dev/pod-selector: >-
+            app.kubernetes.io/instance in (calibre)
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
