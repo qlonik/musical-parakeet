@@ -144,16 +144,6 @@
       "separateMinorPatch": true
     },
     {
-      "description": ["Minio Group"],
-      "groupName": "Minio",
-      "matchPackagePatterns": ["minio"],
-      "matchDatasources": ["docker"],
-      "group": {
-        "commitMessageTopic": "{{{groupName}}} group"
-      },
-      "separateMinorPatch": true
-    },
-    {
       "description": ["Vikunja Group"],
       "groupName": "Vikunja",
       "matchPackagePatterns": ["vikunja"],
