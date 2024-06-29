@@ -98,7 +98,7 @@ spec:
           minio-init-bucket:
             image:
               repository: ghcr.io/qlonik/minio-init-bucket
-              tag: RELEASE.2024-06-12T14-34-03Z@sha256:c6b15ae3a93b09573e850c42b1411fca7444dd5118b55f1c1e3e0b8825b61652
+              tag: RELEASE.2024-06-24T19-40-33Z@sha256:56f224ebf055de665e97a336b3759555cc5b38846e65ca66bc88f06c0887ed04
             envFrom:
               - secretRef:
                   name: transmission-secret
