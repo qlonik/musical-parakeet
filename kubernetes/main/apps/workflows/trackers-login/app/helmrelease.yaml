@@ -1,0 +1,78 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: trackers-login
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.6.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      trackers-login:
+        type: cronjob
+        cronjob:
+          schedule: "@monthly"
+          timeZone: "${TIMEZONE}"
+          successfulJobsHistory: 2
+          failedJobsHistory: 2
+          concurrencyPolicy: Forbid
+        containers:
+          app:
+            image:
+              repository: ghcr.io/puppeteer/puppeteer
+              tag: 24.1.0@sha256:e5381e2ee590f78b3e23e5500f6082c8820a9c6c5eb8ac95da185629b1b2f574
+            args:
+              - node
+              - /home/pptruser/app/script.mjs
+            env:
+              XDG_CONFIG_HOME: /tmp/.config/chromium
+              XDG_CACHE_HOME: /tmp/.cache/chromium
+            envFrom:
+              - secretRef:
+                  name: trackers-login-secret
+            resources:
+              requests:
+                cpu: 100m
+                memory: 500Mi
+              limits:
+                memory: 2Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+                add: ["SYS_ADMIN"]
+              seccompProfile: { type: RuntimeDefault }
+    defaultPodOptions:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        fsGroup: 65534
+        fsGroupChangePolicy: "OnRootMismatch"
+    persistence:
+      app:
+        type: configMap
+        name: trackers-login-script
+        globalMounts:
+          - path: /home/pptruser/app
+            readOnly: true
+      tmp:
+        type: emptyDir
