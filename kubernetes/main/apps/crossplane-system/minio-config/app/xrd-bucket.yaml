@@ -18,6 +18,16 @@ spec:
           properties:
             spec:
               type: object
+              required:
+                - providerConfigRef
+              properties:
+                providerConfigRef:
+                  type: object
+                  required:
+                    - name
+                  properties:
+                    name:
+                      type: string
             status:
               type: object
               properties:

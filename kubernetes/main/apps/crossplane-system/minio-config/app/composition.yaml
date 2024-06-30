@@ -17,8 +17,11 @@ spec:
           forProvider:
             bucketDeletionPolicy: DeleteIfEmpty
           providerConfigRef:
-            name: minio-config
+            name: ""
       patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.providerConfigRef.name
+          toFieldPath: spec.providerConfigRef.name
         - type: FromCompositeFieldPath
           fromFieldPath: metadata.name
           toFieldPath: spec.forProvider.bucketName
@@ -33,8 +36,11 @@ spec:
           forProvider:
             allowBucket: ""
           providerConfigRef:
-            name: minio-config
+            name: ""
       patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.providerConfigRef.name
+          toFieldPath: spec.providerConfigRef.name
         - type: FromCompositeFieldPath
           fromFieldPath: metadata.name
           toFieldPath: metadata.name
@@ -57,7 +63,7 @@ spec:
             policies:
               - ""
           providerConfigRef:
-            name: minio-config
+            name: ""
           writeConnectionSecretToRef:
             namespace: crossplane-system
             name: ""
@@ -67,6 +73,9 @@ spec:
         - name: AWS_SECRET_ACCESS_KEY
           fromConnectionSecretKey: AWS_SECRET_ACCESS_KEY
       patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.providerConfigRef.name
+          toFieldPath: spec.providerConfigRef.name
         - type: FromCompositeFieldPath
           fromFieldPath: metadata.name
           toFieldPath: spec.forProvider.userName
