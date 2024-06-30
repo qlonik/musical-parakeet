@@ -94,7 +94,7 @@ spec:
               - fromFieldPath: metadata.uid
             strategy: string
             string:
-              fmt: "%s-%s-secret"
+              fmt: "minio-secret-%s-%s"
         - type: ToCompositeFieldPath
           fromFieldPath: status.atProvider.userName
           toFieldPath: status.atProvider.userName
