@@ -1,0 +1,11 @@
+---
+apiVersion: minio.home.arpa/v1alpha1
+kind: Bucket
+metadata:
+  name: attic-cache
+spec:
+  providerConfigRef:
+    name: minio-config
+  writeConnectionSecretToRef:
+    name: attic-cache-minio-secret
+    namespace: external-secrets
