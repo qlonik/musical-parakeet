@@ -18,6 +18,11 @@ spec:
             bucketDeletionPolicy: DeleteIfEmpty
           providerConfigRef:
             name: ""
+      connectionDetails:
+        - name: bucket_name
+          fromFieldPath: status.atProvider.bucketName
+        - name: minio_endpoint
+          fromFieldPath: status.endpoint
       patches:
         - type: FromCompositeFieldPath
           fromFieldPath: spec.providerConfigRef.name
