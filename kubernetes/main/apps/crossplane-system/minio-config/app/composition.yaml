@@ -68,10 +68,8 @@ spec:
             namespace: crossplane-system
             name: ""
       connectionDetails:
-        - name: AWS_ACCESS_KEY_ID
-          fromConnectionSecretKey: AWS_ACCESS_KEY_ID
-        - name: AWS_SECRET_ACCESS_KEY
-          fromConnectionSecretKey: AWS_SECRET_ACCESS_KEY
+        - fromConnectionSecretKey: AWS_ACCESS_KEY_ID
+        - fromConnectionSecretKey: AWS_SECRET_ACCESS_KEY
       patches:
         - type: FromCompositeFieldPath
           fromFieldPath: spec.providerConfigRef.name
