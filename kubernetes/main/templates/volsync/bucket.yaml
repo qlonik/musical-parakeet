@@ -1,0 +1,11 @@
+---
+apiVersion: minio.home.arpa/v1alpha1
+kind: Bucket
+metadata:
+  name: "${APP}"
+spec:
+  providerConfigRef:
+    name: minio-config
+  writeConnectionSecretToRef:
+    name: "${APP}-minio-secret"
+    namespace: external-secrets

@@ -44,26 +44,24 @@
 
 4. Inside the `substitute` object these variables are supported:
 
-   | Variable                    | Required | Default value                     |
-   | --------------------------- | -------- | --------------------------------- |
-   | APP                         | ✅       |                                   |
-   | PVC_NAME_PREFIX             | ❌       | `""`                              |
-   | PVC_NAME_SUFFIX             | ❌       | `""`                              |
-   | PVC_CAPACITY                | ✅       |                                   |
-   | PVC_STORAGECLASS            | ❌       | `"longhorn"`                      |
-   | PVC_ACCESSMODE              | ❌       | `"ReadWriteOnce"`                 |
-   | VOLSYNC_COPYMETHOD          | ❌       | `"Snapshot"`                      |
-   | VOLSYNC_SNAPSHOTCLASS       | ❌       | `"longhorn"`                      |
-   | VOLSYNC_CACHE_SNAPSHOTCLASS | ❌       | `"longhorn-cache"`                |
-   | VOLSYNC_CACHE_ACCESSMODE    | ❌       | `"ReadWriteOnce"`                 |
-   | VOLSYNC_CACHE_CAPACITY      | ❌       | `"4Gi"`                           |
-   | VOLSYNC_MOVER_UID           | ❌       | `"568"`                           |
-   | VOLSYNC_MOVER_GID           | ❌       | `"568"`                           |
-   | VOLSYNC_MOVER_FSID          | ❌       | `"568"`                           |
-   | RESTIC_REPO_EXTRA_SUBPATH   | ❌       | `""`                              |
-   | RESTIC_PASS_KEY             | ❌       | `"${APP//-/_}_restic_pass"`       |
-   | MINIO_USER_KEY              | ❌       | `"${APP//-/_}_restic_minio_user"` |
-   | MINIO_PASS_KEY              | ❌       | `"${APP//-/_}_restic_minio_pass"` |
+   | Variable                    | Required | Default value               |
+   | --------------------------- | -------- | --------------------------- |
+   | APP                         | ✅       |                             |
+   | PVC_NAME_PREFIX             | ❌       | `""`                        |
+   | PVC_NAME_SUFFIX             | ❌       | `""`                        |
+   | PVC_CAPACITY                | ✅       |                             |
+   | PVC_STORAGECLASS            | ❌       | `"longhorn"`                |
+   | PVC_ACCESSMODE              | ❌       | `"ReadWriteOnce"`           |
+   | VOLSYNC_COPYMETHOD          | ❌       | `"Snapshot"`                |
+   | VOLSYNC_SNAPSHOTCLASS       | ❌       | `"longhorn"`                |
+   | VOLSYNC_CACHE_SNAPSHOTCLASS | ❌       | `"longhorn-cache"`          |
+   | VOLSYNC_CACHE_ACCESSMODE    | ❌       | `"ReadWriteOnce"`           |
+   | VOLSYNC_CACHE_CAPACITY      | ❌       | `"4Gi"`                     |
+   | VOLSYNC_MOVER_UID           | ❌       | `"568"`                     |
+   | VOLSYNC_MOVER_GID           | ❌       | `"568"`                     |
+   | VOLSYNC_MOVER_FSID          | ❌       | `"568"`                     |
+   | RESTIC_REPO_EXTRA_SUBPATH   | ❌       | `""`                        |
+   | RESTIC_PASS_KEY             | ❌       | `"${APP//-/_}_restic_pass"` |
 
    Note, `RESTIC_REPO_EXTRA_SUBPATH` should not start with `/`. It adds an extra
    subpath to backup location in minio, which allows to have multiple volsync

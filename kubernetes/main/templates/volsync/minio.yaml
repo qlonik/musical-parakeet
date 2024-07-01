@@ -13,15 +13,15 @@ spec:
     template:
       engineVersion: v2
       data:
-        RESTIC_REPOSITORY: "s3:{{ .MINIO_URL }}/{{ .${MINIO_USER_KEY:-${APP//-/_}_restic_minio_user} }}/${RESTIC_REPO_EXTRA_SUBPATH}"
+        RESTIC_REPOSITORY: "s3:http://{{ .minio_endpoint }}/{{ .bucket_name }}/${RESTIC_REPO_EXTRA_SUBPATH}"
         RESTIC_PASSWORD: "{{ .${RESTIC_PASS_KEY:-${APP//-/_}_restic_pass} }}"
-        AWS_ACCESS_KEY_ID: "{{ .${MINIO_USER_KEY:-${APP//-/_}_restic_minio_user} }}"
-        AWS_SECRET_ACCESS_KEY: "{{ .${MINIO_PASS_KEY:-${APP//-/_}_restic_minio_pass} }}"
+        AWS_ACCESS_KEY_ID: "{{ .AWS_ACCESS_KEY_ID }}"
+        AWS_SECRET_ACCESS_KEY: "{{ .AWS_SECRET_ACCESS_KEY }}"
   dataFrom:
     - extract:
         key: everything
     - extract:
-        key: service-hosts
+        key: "${APP}-minio-secret"
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/volsync.backube/replicationsource_v1alpha1.json
 apiVersion: volsync.backube/v1alpha1

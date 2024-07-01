@@ -20,9 +20,6 @@ spec:
       APP: *app
       PVC_NAME_SUFFIX: "-conf"
       PVC_CAPACITY: 1Gi
-      RESTIC_REPO_EXTRA_SUBPATH: ebook
-      MINIO_USER_KEY: readarr_restic_minio_user
-      MINIO_PASS_KEY: readarr_restic_minio_pass
   prune: true
   sourceRef:
     kind: GitRepository
@@ -52,9 +49,6 @@ spec:
       APP: *app
       PVC_NAME_SUFFIX: "-conf"
       PVC_CAPACITY: 1Gi
-      RESTIC_REPO_EXTRA_SUBPATH: audio
-      MINIO_USER_KEY: readarr_restic_minio_user
-      MINIO_PASS_KEY: readarr_restic_minio_pass
   prune: true
   sourceRef:
     kind: GitRepository
