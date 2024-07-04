@@ -43,7 +43,7 @@ spec:
     volumeSnapshotClasses:
       - name: truenas-nfs-main
         parameters:
-          detachedSnapshots: "false"
+          detachedSnapshots: "true"
     driver:
       existingConfigSecret: democratic-csi-freenas-api-nfs-provisioner-driver-config
       config:
