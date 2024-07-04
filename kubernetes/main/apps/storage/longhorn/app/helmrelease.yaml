@@ -1,0 +1,60 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: longhorn
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: longhorn
+      version: 1.6.2
+      sourceRef:
+        kind: HelmRepository
+        name: longhorn
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    defaultSettings:
+      createDefaultDiskLabeledNodes: true
+      defaultDataLocality: "best-effort"
+      replicaAutoBalance: "best-effort"
+      storageMinimalAvailablePercentage: 5
+      storageReservedPercentageForDefaultDisk: 10
+      defaultLonghornStaticStorageClass: longhorn-static
+      nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+      concurrentAutomaticEngineUpgradePerNodeLimit: 3
+      orphanAutoDeletion: true
+    persistence:
+      defaultClass: false
+      defaultClassReplicaCount: 1
+    csi:
+      attacherReplicaCount: &replicas 1
+      provisionerReplicaCount: *replicas
+      resizerReplicaCount: *replicas
+      snapshotterReplicaCount: *replicas
+    longhornUI:
+      replicas: *replicas
+    ingress:
+      enabled: true
+      ingressClassName: internal
+      host: longhorn.${SECRET_DOMAIN}
+      tls: true
+      annotations:
+        auth.home.arpa/enabled: "true"
+        gethomepage.dev/enabled: "true"
+        gethomepage.dev/icon: longhorn.png
+        gethomepage.dev/name: Longhorn
+        gethomepage.dev/group: Storage
+    metrics:
+      serviceMonitor:
+        enabled: true

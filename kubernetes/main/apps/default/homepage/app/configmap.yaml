@@ -36,6 +36,9 @@ data:
       - Observability:
           style: column
           icon: mdi-chart-line
+    providers:
+      longhorn:
+        url: http://longhorn-frontend.storage.svc.cluster.local
   custom.css: |
     #information-widgets-right {
       justify-content: center !important;
@@ -75,6 +78,11 @@ data:
         provider: "duckduckgo"
         focus: false
         target: _blank
+    - longhorn:
+        expanded: true
+        total: true
+        labels: true
+        nodes: true
   bookmarks.yaml: |
     - Communicate:
         - Discord:
