@@ -30,6 +30,7 @@
               - apt-transport-https
               - ca-certificates
               - conntrack
+              - cryptsetup
               - curl
               - dirmngr
               - gdisk
