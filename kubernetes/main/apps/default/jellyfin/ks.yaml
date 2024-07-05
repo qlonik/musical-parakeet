@@ -19,10 +19,7 @@ spec:
     substitute:
       APP: *app
       PVC_NAME_SUFFIX: "-conf"
-      PVC_STORAGECLASS: longhorn
       PVC_CAPACITY: 10Gi
-      VOLSYNC_SNAPSHOTCLASS: longhorn
-      VOLSYNC_CACHE_SNAPSHOTCLASS: longhorn-cache
       VOLSYNC_CACHE_CAPACITY: 15Gi
   prune: true
   sourceRef:

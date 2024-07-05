@@ -50,11 +50,11 @@
    | PVC_NAME_PREFIX             | ❌       | `""`                              |
    | PVC_NAME_SUFFIX             | ❌       | `""`                              |
    | PVC_CAPACITY                | ✅       |                                   |
-   | PVC_STORAGECLASS            | ❌       | `"truenas-nfs-main"`              |
+   | PVC_STORAGECLASS            | ❌       | `"longhorn"`                      |
    | PVC_ACCESSMODE              | ❌       | `"ReadWriteOnce"`                 |
    | VOLSYNC_COPYMETHOD          | ❌       | `"Snapshot"`                      |
-   | VOLSYNC_SNAPSHOTCLASS       | ❌       | `"truenas-nfs-main"`              |
-   | VOLSYNC_CACHE_SNAPSHOTCLASS | ❌       | `"openebs-hostpath"`              |
+   | VOLSYNC_SNAPSHOTCLASS       | ❌       | `"longhorn"`                      |
+   | VOLSYNC_CACHE_SNAPSHOTCLASS | ❌       | `"longhorn-cache"`                |
    | VOLSYNC_CACHE_ACCESSMODE    | ❌       | `"ReadWriteOnce"`                 |
    | VOLSYNC_CACHE_CAPACITY      | ❌       | `"4Gi"`                           |
    | VOLSYNC_MOVER_UID           | ❌       | `"568"`                           |
