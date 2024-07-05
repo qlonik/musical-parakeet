@@ -97,9 +97,7 @@
             - immich
             - minio
             - nextcloud
-            - paperless-ngx
             - pvcs
-            - vikunja
 
         - name: Change ownership of some datasets within appdata
           ansible.builtin.command:
@@ -113,9 +111,7 @@
             - [immich, { user: apps, group: apps }]
             - [minio, { user: apps, group: apps }]
             - [nextcloud, { user: www-data, group: www-data }]
-            - [paperless-ngx, { user: apps, group: apps }]
             - [pvcs, { mode: "777" }]
-            - [vikunja, { user: apps, group: apps }]
 
         - name: Share appdata over NFS for k8s
           arensb.truenas.sharing_nfs:
