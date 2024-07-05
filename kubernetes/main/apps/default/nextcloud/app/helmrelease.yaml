@@ -151,7 +151,7 @@ spec:
           envFrom: *envFrom
     persistence:
       enabled: true
-      existingClaim: nextcloud-main-conf
+      existingClaim: nextcloud-main
       nextcloudData:
         enabled: true
         existingClaim: nextcloud-data

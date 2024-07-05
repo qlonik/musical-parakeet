@@ -22,8 +22,11 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      PVC_NAME_SUFFIX: "-main-conf"
+      PVC_NAME_SUFFIX: "-main"
+      PVC_STORAGECLASS: longhorn
       PVC_CAPACITY: 5Gi
+      VOLSYNC_SNAPSHOTCLASS: longhorn
+      VOLSYNC_CACHE_SNAPSHOTCLASS: longhorn-cache
       VOLSYNC_CACHE_CAPACITY: 10Gi
       VOLSYNC_MOVER_UID: "33"
       VOLSYNC_MOVER_GID: "33"

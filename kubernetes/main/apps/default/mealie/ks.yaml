@@ -20,7 +20,10 @@ spec:
     substitute:
       APP: *app
       PVC_NAME_SUFFIX: "-data"
+      PVC_STORAGECLASS: longhorn
       PVC_CAPACITY: 1Gi
+      VOLSYNC_SNAPSHOTCLASS: longhorn
+      VOLSYNC_CACHE_SNAPSHOTCLASS: longhorn-cache
   prune: true
   sourceRef:
     kind: GitRepository
