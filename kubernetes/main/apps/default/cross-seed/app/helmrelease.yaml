@@ -88,7 +88,7 @@ spec:
 
     persistence:
       config:
-        existingClaim: config-qbittorrent-0
+        existingClaim: qbittorrent-conf
         globalMounts:
           - path: /config
       config-file:
