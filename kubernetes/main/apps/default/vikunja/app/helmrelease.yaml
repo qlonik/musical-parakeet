@@ -37,9 +37,6 @@ spec:
             image:
               repository: docker.io/vikunja/vikunja
               tag: 0.24.0@sha256:0b852eb7f258afce86cee91a71a479f07601dd989a1618fa0fd4ac44c26e0012
-            env:
-              PUID: 0
-              PGID: 0
             probes:
               liveness: &probe
                 enabled: true
@@ -49,7 +46,9 @@ spec:
               startup:
                 enabled: false
             securityContext:
-              allowPrivilegeEscalation: true
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 10m
@@ -69,6 +68,13 @@ spec:
               repository: ghcr.io/qlonik/minio-init-bucket
               tag: RELEASE.2024-06-12T14-34-03Z@sha256:c6b15ae3a93b09573e850c42b1411fca7444dd5118b55f1c1e3e0b8825b61652
             envFrom: *envFrom
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        runAsNonRoot: true
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
     service:
       main:
         controller: vikunja
