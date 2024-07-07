@@ -34,5 +34,6 @@ k3s_server:
   kubelet-arg:
     - "image-gc-high-threshold=55"
     - "image-gc-low-threshold=50"
+    - max-pods=200
     # https://github.com/k3s-io/k3s/issues/1264#issuecomment-1037316446
     - "node-status-update-frequency=4s"
