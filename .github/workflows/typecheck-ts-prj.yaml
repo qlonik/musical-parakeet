@@ -94,3 +94,11 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+
+      - name: Typecheck
+        run: |
+          if [[ $(jq '.scripts.typecheck' package.json) != "null" ]]; then
+            pnpm run typecheck
+          else
+            pnpm exec tsc --noEmit
+          fi
