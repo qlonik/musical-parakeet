@@ -1,0 +1,54 @@
+---
+name: Typecheck TS projects
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths: ["workflows/**"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  PROJECTS: |
+    - workflows/process-firefly-transactions/submit-to-cospend
+
+jobs:
+  changed-projects:
+    name: Changed projects
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Default Branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get Changed Projects
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: workflows/**
+
+      - name: List All Changed Clusters
+        run: echo "${{ steps.changed-files.outputs.all_changed_and_modified_files }}"
+
+      - name: Determine changed projects
+        id: changed-projects
+        uses: actions/github-script@v7
+        env:
+          CHANGED_FILES: "${{ steps.changed-files.outputs.all_changed_and_modified_files }}"
+        with:
+          # language=JS
+          script: |
+            console.log('hello world');
+            console.log(context);
+            console.log(Object.keys(global))
+            console.log(process.env.CHANGED_FILES)
+            return true
+
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
