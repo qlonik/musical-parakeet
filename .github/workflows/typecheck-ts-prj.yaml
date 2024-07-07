@@ -1,0 +1,114 @@
+---
+name: Typecheck TS projects
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths: ["workflows/**"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  PROJECT_PATHS: |
+    [
+      "workflows/process-firefly-transactions/submit-to-cospend"
+    ]
+
+jobs:
+  changed-projects:
+    name: Changed projects
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.changed-projects.outputs.result }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: workflows/**
+          matrix: true
+
+      - name: Determine changed projects
+        id: changed-projects
+        uses: actions/github-script@v7
+        env:
+          CHANGED_FILES: "${{ steps.changed-files.outputs.all_changed_and_modified_files }}"
+        with:
+          # language=javascript
+          script: |
+            /** @type {Set<string>} */
+            const result = new Set()
+
+            /** @type {Array<string>} */
+            const projectPaths = JSON.parse(process.env.PROJECT_PATHS)
+            /** @type {Array<string>} */
+            const changedFiles = JSON.parse(process.env.CHANGED_FILES)
+
+            for (const path of changedFiles) {
+              for (const project of projectPaths) {
+                if (path.startsWith(project)) {
+                  result.add(project)
+                }
+              }
+            }
+
+            return [...result.values()]
+
+      - name: List all changed projects
+        run: echo '${{ steps.changed-projects.outputs.result }}' | jq
+
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    needs: [changed-projects]
+    strategy:
+      matrix:
+        path: ${{ fromJSON(needs.changed-projects.outputs.matrix) }}
+      max-parallel: 4
+      fail-fast: false
+    defaults:
+      run:
+        working-directory: "${{ matrix.path }}"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+          cache-dependency-path: "${{ matrix.path }}/pnpm-lock.yaml"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Typecheck
+        run: |
+          if [[ $(jq '.scripts.typecheck' package.json) != "null" ]]; then
+            echo "running \`typecheck\` script defined in project"
+            pnpm run typecheck
+          fi
+
+  # Summarize matrix https://github.community/t/status-check-for-a-matrix-jobs/127354/7
+  typecheck-success:
+    if: ${{ always() }}
+    name: Successful projects typecheck
+    runs-on: ubuntu-latest
+    needs: [typecheck]
+    steps:
+      - if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
+        name: Check matrix status
+        run: exit 1
