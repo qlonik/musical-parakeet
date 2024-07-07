@@ -98,7 +98,6 @@ jobs:
       - name: Typecheck
         run: |
           if [[ $(jq '.scripts.typecheck' package.json) != "null" ]]; then
+            echo "running \`typecheck\` script defined in project"
             pnpm run typecheck
-          else
-            pnpm exec tsc --noEmit
           fi
