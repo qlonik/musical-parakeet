@@ -62,7 +62,7 @@ jobs:
             return [...result.values()]
 
       - name: List all changed projects
-        run: echo "${{ steps.changed-projects.outputs.result }}" | jq
+        run: echo '${{ steps.changed-projects.outputs.result }}' | jq
 
   typecheck:
     name: Typecheck
