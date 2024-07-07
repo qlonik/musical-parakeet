@@ -19,35 +19,42 @@ jobs:
     name: Changed projects
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.changed-projects.outputs.project_list }}
+      matrix: ${{ steps.changed-projects.outputs.result }}
     steps:
-      - name: Checkout Default Branch
+      - name: Checkout default branch
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Get Changed Projects
+      - name: Get changed projects
         id: changed-files
         uses: tj-actions/changed-files@v44
         with:
           files: workflows/**
           matrix: true
 
-      - name: List All Changed Clusters
+      - name: List all changed files
         run: echo "${{ steps.changed-files.outputs.all_changed_and_modified_files }}"
 
       - name: Determine changed projects
         id: changed-projects
         uses: actions/github-script@v7
         env:
+          PROJECT_PATHS: "${{ env.PROJECTS }}"
           CHANGED_FILES: "${{ steps.changed-files.outputs.all_changed_and_modified_files }}"
         with:
           # language=JS
           script: |
-            console.log('hello world');
-            console.log(context);
-            console.log(...arguments)
+            const result = new Set()
+
+            const changedFiles = JSON.parse(process.env.CHANGED_FILES)
+
+            // console.log('hello world');
+            // console.log(context);
+            // console.log(...arguments)
             console.log(process.env.CHANGED_FILES)
+            console.log(process.env.PROJECTS)
+            console.log(process.env.PROJECT_PATHS)
             return true
 
   typecheck:
