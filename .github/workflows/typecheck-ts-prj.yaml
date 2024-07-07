@@ -31,6 +31,7 @@ jobs:
         uses: tj-actions/changed-files@v44
         with:
           files: workflows/**
+          matrix: true
 
       - name: List All Changed Clusters
         run: echo "${{ steps.changed-files.outputs.all_changed_and_modified_files }}"
@@ -45,7 +46,7 @@ jobs:
           script: |
             console.log('hello world');
             console.log(context);
-            console.log(...parameters)
+            console.log(...arguments)
             console.log(process.env.CHANGED_FILES)
             return true
 
