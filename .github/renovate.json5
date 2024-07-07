@@ -39,19 +39,13 @@
     ]
   },
   "kustomize": {
-    "fileMatch": [
-      "(^|/)kustomization\\.ya?ml(\\.j2)?$"
-    ]
+    "fileMatch": ["(^|/)kustomization\\.ya?ml(\\.j2)?$"]
   },
   "pip_requirements": {
-    "fileMatch": [
-      "(^|/)[\\w-]*requirements(-\\w+)?\\.(txt|pip)(\\.j2)?$"
-    ]
+    "fileMatch": ["(^|/)[\\w-]*requirements(-\\w+)?\\.(txt|pip)(\\.j2)?$"]
   },
   "ansible-galaxy": {
-    "fileMatch": [
-      "(^|/)(galaxy|requirements)(\\.ansible)?\\.ya?ml(\\.j2)?$"
-    ]
+    "fileMatch": ["(^|/)(galaxy|requirements)(\\.ansible)?\\.ya?ml(\\.j2)?$"]
   },
   "nix": {
     "enabled": true
@@ -85,7 +79,9 @@
       "matchUpdateTypes": ["minor", "patch"]
     },
     {
-      "description": ["Auto-merge container digests updates for trusted containers"],
+      "description": [
+        "Auto-merge container digests updates for trusted containers"
+      ],
       "matchDatasources": ["docker"],
       "automerge": true,
       "automergeType": "branch",

@@ -1,0 +1,2 @@
+**/*.sops.yaml
+**/pnpm-lock.yaml

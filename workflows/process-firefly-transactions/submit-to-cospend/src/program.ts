@@ -60,8 +60,8 @@ function getTransactionConfigurationInput(
     RA.map((tag) => {
       const content = tag.slice(tag_prefix.length);
       const i = content.indexOf(field_separator);
-      return i === -1
-        ? ([content, true] as const)
+      return i === -1 ?
+          ([content, true] as const)
         : ([
             content.slice(0, i),
             content.slice(i + field_separator.length, content.length),
@@ -83,14 +83,14 @@ function loadCospendProjectIfNeeded(project: ProjectId, tid: string) {
     ),
     T.filterOrElse(RA.isEmptyArray, (foundBills) =>
       Unify.unify(
-        foundBills.length === 1
-          ? mkFoundBill(
-              "found one matching bill submitted to cospend. No need to process it again",
-            )
-          : mkError(
-              tid,
-              "found more than one matching bill submitted to cospend. Refusing to process this bill",
-            ),
+        foundBills.length === 1 ?
+          mkFoundBill(
+            "found one matching bill submitted to cospend. No need to process it again",
+          )
+        : mkError(
+            tid,
+            "found more than one matching bill submitted to cospend. Refusing to process this bill",
+          ),
       ),
     ),
     T.zipRight(getCospendProjectDescription(project), { concurrent: true }),
@@ -165,16 +165,16 @@ const processTransaction = (
 
     const payer = allUsersMap[payerUsername];
     const payed_for =
-      payFor && payFor !== "all"
-        ? allUsersMap[payFor]
-        : RA.map(active_members, (m) => m.id.toString()).join(",");
+      payFor && payFor !== "all" ?
+        allUsersMap[payFor]
+      : RA.map(active_members, (m) => m.id.toString()).join(",");
 
     if (payer == null || payed_for == null) {
       return yield* mkError(
         tid,
-        payer == null
-          ? '"cospend_payer_username" field does not match any known project member'
-          : 'unknown "pay-for" target',
+        payer == null ?
+          '"cospend_payer_username" field does not match any known project member'
+        : 'unknown "pay-for" target',
       );
     }
 

@@ -27,15 +27,15 @@ const wrapAxiosInstance = (axios: AxiosInstance): WrappedAxios => ({
         }),
       ),
       T.catchAll((error) =>
-        Axios.isAxiosError(error)
-          ? new NetworkError({ error })
-          : pipe(
-              Axios.isCancel(error)
-                ? "cancellation was thrown"
-                : "something unknown was thrown",
-              (_) => T.logError(_, Cause.fail(error)),
-              T.zipRight(T.die(error)),
-            ),
+        Axios.isAxiosError(error) ?
+          new NetworkError({ error })
+        : pipe(
+            Axios.isCancel(error) ?
+              "cancellation was thrown"
+            : "something unknown was thrown",
+            (_) => T.logError(_, Cause.fail(error)),
+            T.zipRight(T.die(error)),
+          ),
       ),
     ),
 });

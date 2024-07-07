@@ -24,13 +24,12 @@ export const ghaLogger = Logger.make(
 function getFormatterFunction(
   logLevel: LogLevel.LogLevel,
 ): (message: string, annotations: Record<string, unknown>) => string {
-  return LogLevel.lessThanEqual(logLevel, LogLevel.Debug)
-    ? debug
-    : LogLevel.lessThanEqual(logLevel, LogLevel.Info)
-      ? notice
-      : LogLevel.lessThanEqual(logLevel, LogLevel.Warning)
-        ? warning
-        : error;
+  return (
+    LogLevel.lessThanEqual(logLevel, LogLevel.Debug) ? debug
+    : LogLevel.lessThanEqual(logLevel, LogLevel.Info) ? notice
+    : LogLevel.lessThanEqual(logLevel, LogLevel.Warning) ? warning
+    : error
+  );
 }
 
 function serializeUnknown(u: unknown): string {

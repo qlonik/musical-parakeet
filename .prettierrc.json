@@ -1,0 +1,18 @@
+{
+  "trailingComma": "all",
+  "experimentalTernaries": true,
+  "overrides": [
+    {
+      "files": ["*.md", "workflows/*.yaml"],
+      "options": {
+        "proseWrap": "always"
+      }
+    },
+    {
+      "files": [".github/renovate.json5"],
+      "options": {
+        "parser": "json"
+      }
+    }
+  ]
+}

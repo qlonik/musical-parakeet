@@ -7,13 +7,13 @@ export function addBrandedKeys<
   const Struct extends S.Schema.Any,
   const Pairs extends ReadonlyArray<readonly [string, S.Schema.AnyNoContext]>,
 >(
-  brand: Types.Has<S.Schema.Type<Struct>, GetExtraKeys<Pairs>> extends true
-    ? `error: Key '${keyof S.Schema.Type<Struct> &
-        GetExtraKeys<Pairs>}' is already in Type`
-    : Types.Has<S.Schema.Encoded<Struct>, GetExtraKeys<Pairs>> extends true
-    ? `error: Key '${keyof S.Schema.Encoded<Struct> &
-        GetExtraKeys<Pairs>}' is already in Encode`
-    : Brand,
+  brand: Types.Has<S.Schema.Type<Struct>, GetExtraKeys<Pairs>> extends true ?
+    `error: Key '${keyof S.Schema.Type<Struct> &
+      GetExtraKeys<Pairs>}' is already in Type`
+  : Types.Has<S.Schema.Encoded<Struct>, GetExtraKeys<Pairs>> extends true ?
+    `error: Key '${keyof S.Schema.Encoded<Struct> &
+      GetExtraKeys<Pairs>}' is already in Encode`
+  : Brand,
   struct: Struct,
   ...keyPairs: Pairs
 ): AddBrandedKeys<Brand, Struct, Pairs> {
@@ -52,14 +52,19 @@ type CollectPairs<
   Brand extends string,
   Pairs extends ReadonlyArray<readonly [string, S.Schema.AnyNoContext]>,
   Result extends [unknown, S.Struct.Fields] = [{}, {}],
-> = Pairs extends readonly [
-  readonly [
-    infer IdKey extends string,
-    infer IdSchema extends S.Schema.AnyNoContext,
-  ],
-  ...infer Rest extends ReadonlyArray<readonly [string, S.Schema.AnyNoContext]>,
-]
-  ? CollectPairs<
+> =
+  Pairs extends (
+    readonly [
+      readonly [
+        infer IdKey extends string,
+        infer IdSchema extends S.Schema.AnyNoContext,
+      ],
+      ...infer Rest extends ReadonlyArray<
+        readonly [string, S.Schema.AnyNoContext]
+      >,
+    ]
+  ) ?
+    CollectPairs<
       Brand,
       Rest,
       [

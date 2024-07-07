@@ -3,7 +3,9 @@
 ## Nginx Ingress
 
 It is possible to see raw headers of incoming requests, by using lua plugins.
-Refer to [plugin readme](https://github.com/kubernetes/ingress-nginx/tree/main/rootfs/etc/nginx/lua/plugins) for extra details.
+Refer to
+[plugin readme](https://github.com/kubernetes/ingress-nginx/tree/main/rootfs/etc/nginx/lua/plugins)
+for extra details.
 
 Apply patch similar to the following to add a custom plugin to ingress-nginx:
 
