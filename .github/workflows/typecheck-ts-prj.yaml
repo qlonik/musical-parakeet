@@ -35,9 +35,6 @@ jobs:
           files: workflows/**
           matrix: true
 
-      - name: List all changed files
-        run: echo "${{ steps.changed-files.outputs.all_changed_and_modified_files }}"
-
       - name: Determine changed projects
         id: changed-projects
         uses: actions/github-script@v7
@@ -63,6 +60,9 @@ jobs:
             }
 
             return [...result.values()]
+
+      - name: List all changed projects
+        run: echo "${{ steps.changed-projects.outputs.result }}" | jq
 
   typecheck:
     name: Typecheck
