@@ -18,6 +18,8 @@ jobs:
   changed-projects:
     name: Changed projects
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.changed-projects.outputs.project_list }}
     steps:
       - name: Checkout Default Branch
         uses: actions/checkout@v4
@@ -43,12 +45,18 @@ jobs:
           script: |
             console.log('hello world');
             console.log(context);
-            console.log(Object.keys(global))
+            console.log(...parameters)
             console.log(process.env.CHANGED_FILES)
             return true
 
   typecheck:
     name: Typecheck
     runs-on: ubuntu-latest
+    needs: ["changed-projects"]
+    strategy:
+      matrix:
+        paths: ${{ fromJSON(needs.changed-projects.outputs.matrix) }}
+      max-parallel: 4
+      fail-fast: false
     steps:
       - uses: actions/checkout@v4
