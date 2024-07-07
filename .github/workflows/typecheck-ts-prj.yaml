@@ -44,12 +44,15 @@ jobs:
         env:
           CHANGED_FILES: "${{ steps.changed-files.outputs.all_changed_and_modified_files }}"
         with:
-          # language=typescript
+          # language=javascript
           script: |
-            const result = new Set<string>()
+            /** @type {Set<string>} */
+            const result = new Set()
 
-            const projectPaths: string[] = JSON.parse(process.env.PROJECT_PATHS)
-            const changedFiles: string[] = JSON.parse(process.env.CHANGED_FILES)
+            /** @type {Array<string>} */
+            const projectPaths = JSON.parse(process.env.PROJECT_PATHS)
+            /** @type {Array<string>} */
+            const changedFiles = JSON.parse(process.env.CHANGED_FILES)
 
             for (const path of changedFiles) {
               for (const project of projectPaths) {
