@@ -18,6 +18,18 @@ vars:
   ts: '{{now | date "150405"}}'
 
 tasks:
+  suspend:
+    desc: Suspends Volsync
+    summary: |
+      Args:
+        cluster: Cluster to run command against (required)
+    cmds:
+      - flux --context {{.cluster}} suspend ks volsync
+      - flux --context {{.cluster}} suspend hr -n storage volsync
+      - kubectl --context {{.cluster}} -n storage scale deployment volsync --replicas 0
+    env: *task-vars
+    requires:
+      vars: ["cluster"]
 
   list:
     desc: List all snapshots taken by restic for a given ReplicationSource (ex. task vs:list rsrc=plex [namespace=default])
