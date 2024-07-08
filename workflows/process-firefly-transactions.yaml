@@ -14,7 +14,7 @@
 # }
 # ```
 # It should conform to the `PROCESS_FIREFLY_TRANSACTIONS` schema definition in
-# `workflows/process-firefly-transactions/submit-to-cospend/src/schema.ts`.
+# `workflows/process-firefly-transactions/submit-to-cospend/src/model/program-inputs.ts`.
 # The current secret value is saved in
 # `workflows/process-firefly-transactions/secret.sops.yaml`.
 #
@@ -30,7 +30,7 @@
 # ```
 # All possible keys and values are described by `transactionConfigurationInputS`
 # schema definition in
-# `workflows/process-firefly-transactions/submit-to-cospend/src/schema.ts`.
+# `workflows/process-firefly-transactions/submit-to-cospend/src/model/program-inputs.ts`.
 #
 # Each transaction is processed by the script in
 # `workflows/process-firefly-transactions/submit-to-cospend/`. It expects to
@@ -39,8 +39,8 @@
 # You should use username and application password of a user that permissions to
 # create transactions in cospend project. The script also expects `input` env
 # var, which is a JSON string describing loaded transaction. The `input` object
-# should conform to the `TransactionInput` schema defined in
-# `workflows/process-firefly-transactions/submit-to-cospend/src/schema.ts`.
+# should conform to the `fireflyTransactionInputS` schema defined in
+# `workflows/process-firefly-transactions/submit-to-cospend/src/model/program-inputs.ts`.
 #
 # To test this workflow, perform the following steps:
 # - Comment out `run_install` configuration to pnpm in this workflow.
