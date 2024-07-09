@@ -60,9 +60,4 @@
    | VOLSYNC_MOVER_UID           | ❌       | `"568"`                     |
    | VOLSYNC_MOVER_GID           | ❌       | `"568"`                     |
    | VOLSYNC_MOVER_FSID          | ❌       | `"568"`                     |
-   | RESTIC_REPO_EXTRA_SUBPATH   | ❌       | `""`                        |
    | RESTIC_PASS_KEY             | ❌       | `"${APP//-/_}_restic_pass"` |
-
-   Note, `RESTIC_REPO_EXTRA_SUBPATH` should not start with `/`. It adds an extra
-   subpath to backup location in minio, which allows to have multiple volsync
-   backups going into the same bucket.

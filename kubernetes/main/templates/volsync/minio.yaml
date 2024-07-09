@@ -13,7 +13,7 @@ spec:
     template:
       engineVersion: v2
       data:
-        RESTIC_REPOSITORY: "s3:http://{{ .minio_endpoint }}/{{ .bucket_name }}/${RESTIC_REPO_EXTRA_SUBPATH}"
+        RESTIC_REPOSITORY: "s3:http://{{ .minio_endpoint }}/{{ .bucket_name }}"
         RESTIC_PASSWORD: "{{ .${RESTIC_PASS_KEY:-${APP//-/_}_restic_pass} }}"
         AWS_ACCESS_KEY_ID: "{{ .AWS_ACCESS_KEY_ID }}"
         AWS_SECRET_ACCESS_KEY: "{{ .AWS_SECRET_ACCESS_KEY }}"
