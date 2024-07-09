@@ -40,7 +40,7 @@ spec:
               AUDIOBOOKSHELF_GID: 568
               CONFIG_PATH: /config
               METADATA_PATH: /config/metadata
-            envFrom: &envFrom
+            envFrom:
               - secretRef:
                   name: audiobookshelf-secret
             probes:
@@ -64,12 +64,6 @@ spec:
                 memory: 100Mi
               limits:
                 memory: 500Mi
-        initContainers:
-          minio-init-bucket:
-            image:
-              repository: ghcr.io/qlonik/minio-init-bucket
-              tag: RELEASE.2024-06-12T14-34-03Z@sha256:c6b15ae3a93b09573e850c42b1411fca7444dd5118b55f1c1e3e0b8825b61652
-            envFrom: *envFrom
     service:
       main:
         controller: audiobookshelf

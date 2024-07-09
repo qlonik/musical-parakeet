@@ -6,7 +6,6 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cluster-apps-minio
     - name: cluster-apps-glauth
     - name: volsync
     - name: device-plugin-amd-gpu

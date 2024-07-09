@@ -26,8 +26,6 @@ spec:
   dependsOn:
     - name: authelia
       namespace: default
-    - name: minio
-      namespace: default
     - name: redis-lb
       namespace: default
     - name: glauth
@@ -143,12 +141,9 @@ spec:
       extraInitContainers:
         - name: init-db
           image: ghcr.io/onedr0p/postgres-init:16.3@sha256:8ba3204f6b293dd168766009aae2ce4fa986a29b931c2d30ac1b30238ac750b8
-          envFrom: &envFrom
+          envFrom:
             - secretRef:
                 name: nextcloud-secret
-        - name: minio-init-bucket
-          image: ghcr.io/qlonik/minio-init-bucket:RELEASE.2024-06-12T14-34-03Z@sha256:c6b15ae3a93b09573e850c42b1411fca7444dd5118b55f1c1e3e0b8825b61652
-          envFrom: *envFrom
     persistence:
       enabled: true
       existingClaim: nextcloud-main

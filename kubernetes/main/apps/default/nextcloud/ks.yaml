@@ -9,7 +9,6 @@ spec:
     - name: authelia
     - name: cloudnative-pg-cluster-16
     - name: cluster-apps-glauth
-    - name: cluster-apps-minio
     - name: csi-driver-nfs
     - name: rancher-local-path-provisioner
     - name: redis-lb

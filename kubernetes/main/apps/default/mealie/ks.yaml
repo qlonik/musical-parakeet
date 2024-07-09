@@ -8,7 +8,6 @@ spec:
   dependsOn:
     - name: cloudnative-pg-cluster-16
     - name: cluster-apps-glauth
-    - name: cluster-apps-minio
     - name: maddy
     - name: volsync
   path: ./kubernetes/main/apps/default/mealie/app

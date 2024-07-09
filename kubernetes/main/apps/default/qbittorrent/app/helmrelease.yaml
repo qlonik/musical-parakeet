@@ -24,8 +24,6 @@ spec:
   uninstall:
     keepHistory: false
   dependsOn:
-    - name: minio
-      namespace: default
     - name: volsync
       namespace: storage
 
@@ -86,7 +84,7 @@ spec:
               SHADOWSOCKS: "on"
               DOT: "off"
               DNS_ADDRESS: "127.0.0.2"
-            envFrom: &envFrom
+            envFrom:
               - secretRef:
                   name: qbittorrent-secret
             probes: *probes
@@ -108,13 +106,6 @@ spec:
               QBITTORRENT_SERVER: localhost
               QBITTORRENT_PORT: *port
               PORT_FORWARDED: /tmp/gluetun/forwarded_port
-
-        initContainers:
-          minio-init-bucket:
-            image:
-              repository: ghcr.io/qlonik/minio-init-bucket
-              tag: RELEASE.2024-06-12T14-34-03Z@sha256:c6b15ae3a93b09573e850c42b1411fca7444dd5118b55f1c1e3e0b8825b61652
-            envFrom: *envFrom
 
     defaultPodOptions:
       securityContext:

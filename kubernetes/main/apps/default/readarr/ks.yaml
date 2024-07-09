@@ -8,7 +8,6 @@ spec:
   dependsOn:
     - name: cloudnative-pg-cluster-16
     - name: calibre
-    - name: cluster-apps-minio
     - name: volsync
   path: ./kubernetes/main/apps/default/readarr/ebook
   targetNamespace: default
@@ -37,7 +36,6 @@ metadata:
 spec:
   dependsOn:
     - name: cloudnative-pg-cluster-16
-    - name: cluster-apps-minio
     - name: volsync
   path: ./kubernetes/main/apps/default/readarr/audio
   targetNamespace: default

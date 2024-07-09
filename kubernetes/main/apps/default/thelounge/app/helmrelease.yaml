@@ -63,14 +63,6 @@ spec:
                 memory: 128Mi
               limits:
                 memory: 512Mi
-        initContainers:
-          minio-init-bucket:
-            image:
-              repository: ghcr.io/qlonik/minio-init-bucket
-              tag: RELEASE.2024-06-12T14-34-03Z@sha256:c6b15ae3a93b09573e850c42b1411fca7444dd5118b55f1c1e3e0b8825b61652
-            envFrom:
-              - secretRef:
-                  name: thelounge-secret
     defaultPodOptions:
       securityContext:
         runAsUser: 568
