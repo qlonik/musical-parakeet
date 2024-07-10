@@ -120,6 +120,7 @@ access_control:
         - "books.${SECRET_DOMAIN}"
         - "calibre.${SECRET_DOMAIN}"
         - "grocy.${SECRET_DOMAIN}"
+        - "navidrome.${SECRET_DOMAIN}"
       subject: ["group:user"]
       policy: one_factor
 
@@ -128,6 +129,13 @@ access_control:
       resources:
         - "^/api"
         - "^/feeds"
+      policy: bypass
+
+    - domain:
+        - "navidrome.${SECRET_DOMAIN}"
+      resources:
+        - "^/rest([/?].*)?$"
+        - "^/share([/?].*)?$"
       policy: bypass
 
 identity_providers:

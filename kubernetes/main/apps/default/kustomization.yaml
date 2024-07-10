@@ -24,6 +24,7 @@ resources:
   - ./maddy/ks.yaml
   - ./mealie/ks.yaml
   - ./minio/ks.yaml
+  - ./navidrome/ks.yaml
   - ./nextcloud/ks.yaml
   - ./paperless-ngx/ks.yaml
   - ./prowlarr/ks.yaml
