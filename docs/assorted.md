@@ -2,6 +2,15 @@
 
 ## Generate a new secret value
 
+Authelia can generate random values:
+
+```shell
+docker run --rm authelia/authelia:latest authelia crypto rand --length 128 --charset rfc3986
+```
+
+If that does not work, can also use the older method below. The command prints
+base64 encoded-value, followed by the actual secret value.
+
 ```shell
 LENGTH=128
 tr -cd '[:alnum:]' < /dev/urandom \
@@ -12,8 +21,6 @@ tr -cd '[:alnum:]' < /dev/urandom \
   | base64 --wrap 0               \
   ; echo
 ```
-
-The command prints base64 encoded-value, followed by the actual secret value.
 
 ## (Postgresql) List all tables sorted by the number of rows
 
