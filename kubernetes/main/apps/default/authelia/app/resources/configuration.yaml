@@ -90,6 +90,20 @@ access_control:
       networks: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
   rules:
     - domain:
+        - "bookmarks.${SECRET_DOMAIN}"
+      resources:
+        - "^/api"
+        - "^/feeds"
+      policy: bypass
+
+    - domain:
+        - "navidrome.${SECRET_DOMAIN}"
+      resources:
+        - "^/rest([/?].*)?$"
+        - "^/share([/?].*)?$"
+      policy: bypass
+
+    - domain:
         - "longhorn.${SECRET_DOMAIN}"
         - "scrutiny.${SECRET_DOMAIN}"
       subject: ["group:admin"]
@@ -123,20 +137,6 @@ access_control:
         - "navidrome.${SECRET_DOMAIN}"
       subject: ["group:user"]
       policy: one_factor
-
-    - domain:
-        - "bookmarks.${SECRET_DOMAIN}"
-      resources:
-        - "^/api"
-        - "^/feeds"
-      policy: bypass
-
-    - domain:
-        - "navidrome.${SECRET_DOMAIN}"
-      resources:
-        - "^/rest([/?].*)?$"
-        - "^/share([/?].*)?$"
-      policy: bypass
 
 identity_providers:
   oidc:
