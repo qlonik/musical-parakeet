@@ -33,7 +33,7 @@ spec:
           main:
             image:
               repository: ghcr.io/qlonik/actionsflow-webhook
-              tag: rolling@sha256:1a8a812be9b193b8b2ab3ed03255f67ce26800ff97bf1dc70457a6326025c859
+              tag: rolling@sha256:125eb1a9018a8ee8acbf2955729a30c166ba2667f43e14f46944cea26902c9ad
             env:
               TZ: ${TIMEZONE}
             probes:
