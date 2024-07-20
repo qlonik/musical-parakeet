@@ -84,8 +84,8 @@ spec:
         containers:
           main:
             image:
-              repository: ghcr.io/onedr0p/alpine
-              tag: 3.19.1@sha256:3fbc581cb0fe29830376161ae026e2a765dcc11e1747477fe9ebf155720b8638
+              repository: quay.io/curl/curl
+              tag: 8.8.0@sha256:cf0674a0d7851174cd5324e83d8610614ec94646c101bce32870a1c118b25bf6
             args:
               - curl
               - "firefly-iii.default.svc.cluster.local:8080/api/v1/cron/$$(STATIC_CRON_TOKEN)"
