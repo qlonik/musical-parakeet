@@ -97,6 +97,17 @@ spec:
     ingress:
       main:
         className: internal
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Home assistant
+          gethomepage.dev/icon: home-assistant.svg
+          gethomepage.dev/group: Various
+          gethomepage.dev/siteMonitor: &internalUrl "http://{{ .Release.Name }}.default.svc.cluster.local:8123"
+          gethomepage.dev/widget.type: homeassistant
+          gethomepage.dev/widget.url: *internalUrl
+          gethomepage.dev/widget.key: "{{ `{{HOMEPAGE_VAR_HASS_ACCESS_TOKEN}}` }}"
+          gethomepage.dev/pod-selector: >-
+            app.kubernetes.io/instance in (home-assistant)
         hosts:
           - host: &host "hass.${SECRET_DOMAIN}"
             paths:
