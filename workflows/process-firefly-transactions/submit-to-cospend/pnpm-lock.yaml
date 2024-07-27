@@ -44,7 +44,7 @@ importers:
         version: 4.16.2
       typescript:
         specifier: ^5.3.3
-        version: 5.5.3
+        version: 5.5.4
 
 packages:
 
@@ -443,8 +443,8 @@ packages:
     resolution: {integrity: sha512-1h/Lnq9yajKY2PEbBadPXj3VxsDDu844OnaAo52UVmIzIvwwtBPIuNvkjuzBlTWpfJyUbG3ez0KSBibQkj4ojg==}
     engines: {node: '>=0.6.11 <=0.7.0 || >=0.7.3'}
 
-  typescript@5.5.3:
-    resolution: {integrity: sha512-/hreyEujaB0w76zKo6717l3L0o/qEUtRgdvUBvlkhoWeOVMjMuHNHk0BRBzikzuGDqNmPQbg5ifMEqsHLiIUcQ==}
+  typescript@5.5.4:
+    resolution: {integrity: sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -788,7 +788,7 @@ snapshots:
 
   tunnel@0.0.6: {}
 
-  typescript@5.5.3: {}
+  typescript@5.5.4: {}
 
   undici-types@5.26.5: {}
 
