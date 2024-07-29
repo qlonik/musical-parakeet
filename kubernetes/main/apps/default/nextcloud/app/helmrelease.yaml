@@ -50,32 +50,25 @@ spec:
             'passwordsalt' => getenv('PASSWORD_SALT'),
             'secret' => getenv('SECRET'),
             'instanceid' => getenv('INSTANCE_ID'),
+            'loglevel' => 0,
+            'theme' => '',
             'updater.secret' => getenv('UPDATER_SECRET'),
-            'trusted_domains' => array (
-              0 => 'localhost',
-              1 => getenv('NEXTCLOUD_TRUSTED_DOMAINS'),
+            'trusted_domains' => array_merge(
+              array (0 => 'localhost'),
+              array_filter(array_map('trim', explode(' ', getenv('NEXTCLOUD_TRUSTED_DOMAINS')))),
             ),
-            'overwrite.cli.url' => 'https://' . getenv('NEXTCLOUD_TRUSTED_DOMAINS'),
             'ldapProviderFactory' => 'OCA\\User_LDAP\\LDAPProviderFactory',
-            'hide_login_form' => true,
-          );
-        reverse-proxy.config.php: |
-          <?php
-          $CONFIG = array (
-            'trusted_proxies' => array (
-              0 => '127.0.0.1',
-              1 => '${CLUSTER_CIDR}',
-              2 => '${SERVICE_CIDR}',
+            // ignore max supported version for these apps
+            'app_install_overwrite' => array (
+              0 => 'oidc_login',
             ),
-            'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
-            'overwriteprotocol' => 'https',
-            'overwritehost' => getenv('NEXTCLOUD_TRUSTED_DOMAINS'),
           );
         oidc-login.config.php: |
           <?php
           $CONFIG = array (
             'allow_user_to_change_display_name' => false,
             'lost_password_link' => 'disabled',
+            'hide_login_form' => true,
             'oidc_login_provider_url' => 'https://auth.${SECRET_DOMAIN}',
             'oidc_login_client_id' => getenv('OIDC_CLIENT_ID'),
             'oidc_login_client_secret' => getenv('OIDC_CLIENT_SECRET'),
@@ -91,6 +84,12 @@ spec:
             'oidc_login_scope' => 'openid profile email groups',
           );
       extraEnv:
+        - name: OVERWRITEHOST
+          value: *host
+        - name: OVERWRITECLIURL
+          value: &externalUrl "https://cloud.${SECRET_DOMAIN}"
+        - name: TRUSTED_PROXIES
+          value: ${CLUSTER_CIDR} ${SERVICE_CIDR}
         - name: APACHE_DISABLE_REWRITE_IP
           value: "1"
         - name: REDIS_HOST
@@ -169,6 +168,8 @@ spec:
     startupProbe:
       enabled: true
       failureThreshold: 90
+    phpClientHttpsFix:
+      enabled: true
     ingress:
       enabled: true
       className: external
@@ -214,7 +215,7 @@ spec:
         gethomepage.dev/icon: nextcloud.svg
         gethomepage.dev/description: Personal cloud
         gethomepage.dev/group: Various
-        gethomepage.dev/siteMonitor: &externalUrl "https://cloud.${SECRET_DOMAIN}"
+        gethomepage.dev/siteMonitor: *externalUrl
         gethomepage.dev/widget.type: nextcloud
         gethomepage.dev/widget.url: *externalUrl
         gethomepage.dev/widget.key: "{{ `{{HOMEPAGE_VAR_NEXTCLOUD_API_TOKEN}}` }}"
