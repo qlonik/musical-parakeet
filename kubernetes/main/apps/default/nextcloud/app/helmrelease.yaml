@@ -143,6 +143,22 @@ spec:
           envFrom:
             - secretRef:
                 name: nextcloud-secret
+      extraSidecarContainers:
+        - name: nextcloud-logger
+          image: public.ecr.aws/docker/library/busybox:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              while ! test -f "/run/nextcloud/data/nextcloud.log"; do
+                echo "waiting for log file to appear..."
+                sleep 1
+              done
+              tail -n+1 -f /run/nextcloud/data/nextcloud.log
+          volumeMounts:
+            - name: nextcloud-data
+              mountPath: /run/nextcloud/data
+              subPath: data
     persistence:
       enabled: true
       existingClaim: nextcloud-main
