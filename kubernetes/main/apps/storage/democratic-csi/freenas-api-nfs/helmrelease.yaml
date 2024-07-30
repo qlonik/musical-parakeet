@@ -56,7 +56,7 @@ spec:
       externalProvisioner:
         image: registry.k8s.io/sig-storage/csi-provisioner:v5.0.1
       externalResizer:
-        image: registry.k8s.io/sig-storage/csi-resizer:v1.11.1
+        image: registry.k8s.io/sig-storage/csi-resizer:v1.11.2
       externalSnapshotter:
         image: registry.k8s.io/sig-storage/csi-snapshotter:v8.0.1
       driver:
