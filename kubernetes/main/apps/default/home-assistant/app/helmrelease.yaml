@@ -101,8 +101,9 @@ spec:
             port: 12321
     ingress:
       main:
-        className: internal
+        className: external
         annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Home assistant
           gethomepage.dev/icon: home-assistant.svg
