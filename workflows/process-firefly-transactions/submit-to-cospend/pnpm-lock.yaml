@@ -38,7 +38,7 @@ importers:
         version: 1.8.4
       '@types/node':
         specifier: ^20.11.24
-        version: 20.14.14
+        version: 20.14.15
       tsx:
         specifier: ^4.7.1
         version: 4.16.5
@@ -304,8 +304,8 @@ packages:
   '@types/common-tags@1.8.4':
     resolution: {integrity: sha512-S+1hLDJPjWNDhcGxsxEbepzaxWqURP/o+3cP4aa2w7yBXgdcmKGQtZzP8JbyfOd0m+33nh+8+kvxYE2UJtBDkg==}
 
-  '@types/node@20.14.14':
-    resolution: {integrity: sha512-d64f00982fS9YoOgJkAMolK7MN8Iq3TDdVjchbYHdEmjth/DHowx82GnoA+tVUAN+7vxfYUgAzi+JXbKNd2SDQ==}
+  '@types/node@20.14.15':
+    resolution: {integrity: sha512-Fz1xDMCF/B00/tYSVMlmK7hVeLh7jE5f3B7X1/hmV0MJBwE27KlS7EvD/Yp+z1lm8mVhwV5w+n8jOZG8AfTlKw==}
 
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
@@ -411,8 +411,8 @@ packages:
   multipasta@0.2.3:
     resolution: {integrity: sha512-ck6FVWpay4fzG/qHn804fSGnVHUvTLljzKAUd9LE1Gw61aIxyU3PrAlOHQBFlP4sGvbWOmf7L1y32Dvlvq3KQg==}
 
-  multipasta@0.2.4:
-    resolution: {integrity: sha512-uS6VKZou4iDU4evtrNKGvRqgqkFtPdjG/ql9XDICfnzKEedgf0OZ+oEhM0ps0FL5IVFhkIzOBgLV/KpEEJMthw==}
+  multipasta@0.2.5:
+    resolution: {integrity: sha512-c8eMDb1WwZcE02WVjHoOmUVk7fnKU/RmUcosHACglrWAuPQsEJv+E8430sXj6jNc1jHw0zrS16aCjQh4BcEb4A==}
 
   node-addon-api@7.1.1:
     resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
@@ -515,7 +515,7 @@ snapshots:
       effect: 3.6.1
       find-my-way-ts: 0.1.5
       isows: 1.0.4(ws@8.18.0)
-      multipasta: 0.2.4
+      multipasta: 0.2.5
       path-browserify: 1.0.1
     transitivePeerDependencies:
       - ws
@@ -658,7 +658,7 @@ snapshots:
 
   '@types/common-tags@1.8.4': {}
 
-  '@types/node@20.14.14':
+  '@types/node@20.14.15':
     dependencies:
       undici-types: 5.26.5
 
@@ -766,7 +766,7 @@ snapshots:
 
   multipasta@0.2.3: {}
 
-  multipasta@0.2.4: {}
+  multipasta@0.2.5: {}
 
   node-addon-api@7.1.1: {}
 
