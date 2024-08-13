@@ -39,3 +39,4 @@ resources:
   - ./unpackerr/ks.yaml
   - ./vikunja/ks.yaml
   - ./youtube-dl-server/ks.yaml
+  - ./zigbee2mqtt/ks.yaml
