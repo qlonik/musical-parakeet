@@ -19,7 +19,7 @@ importers:
         version: 0.70.2(effect@3.6.1)
       axios:
         specifier: ^1.6.7
-        version: 1.7.3
+        version: 1.7.4
       common-tags:
         specifier: 1.8.1
         version: 1.8.1
@@ -310,8 +310,8 @@ packages:
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
-  axios@1.7.3:
-    resolution: {integrity: sha512-Ar7ND9pU99eJ9GpoGQKhKf58GpUOgnzuaB7ueNQ5BMi0p+LZ5oaEnfF999fAArcTIBwXTCHAmGcHOZJaWPq9Nw==}
+  axios@1.7.4:
+    resolution: {integrity: sha512-DukmaFRnY6AzAALSH4J2M3k6PkaC+MfaAGdEERRWcC9q3/TWQwLpHR8ZRLKTdQ3aBDL64EdluRDjJqKw+BPZEw==}
 
   braces@3.0.3:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
@@ -411,8 +411,8 @@ packages:
   multipasta@0.2.3:
     resolution: {integrity: sha512-ck6FVWpay4fzG/qHn804fSGnVHUvTLljzKAUd9LE1Gw61aIxyU3PrAlOHQBFlP4sGvbWOmf7L1y32Dvlvq3KQg==}
 
-  multipasta@0.2.4:
-    resolution: {integrity: sha512-uS6VKZou4iDU4evtrNKGvRqgqkFtPdjG/ql9XDICfnzKEedgf0OZ+oEhM0ps0FL5IVFhkIzOBgLV/KpEEJMthw==}
+  multipasta@0.2.5:
+    resolution: {integrity: sha512-c8eMDb1WwZcE02WVjHoOmUVk7fnKU/RmUcosHACglrWAuPQsEJv+E8430sXj6jNc1jHw0zrS16aCjQh4BcEb4A==}
 
   node-addon-api@7.1.1:
     resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
@@ -515,7 +515,7 @@ snapshots:
       effect: 3.6.1
       find-my-way-ts: 0.1.5
       isows: 1.0.4(ws@8.18.0)
-      multipasta: 0.2.4
+      multipasta: 0.2.5
       path-browserify: 1.0.1
     transitivePeerDependencies:
       - ws
@@ -664,7 +664,7 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  axios@1.7.3:
+  axios@1.7.4:
     dependencies:
       follow-redirects: 1.15.6
       form-data: 4.0.0
@@ -766,7 +766,7 @@ snapshots:
 
   multipasta@0.2.3: {}
 
-  multipasta@0.2.4: {}
+  multipasta@0.2.5: {}
 
   node-addon-api@7.1.1: {}
 
