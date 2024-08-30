@@ -33,7 +33,7 @@ spec:
           main:
             image:
               repository: ghcr.io/thelounge/thelounge
-              tag: 4.4.3@sha256:bbfc66310a5459b7d56758e297300fa0c082af29adb522103c148a7f901db6d4
+              tag: 4.4.3@sha256:72b9726e7e9a8bfa6f4cd65fe01b31af45489efac9cf26b8742fc7db3847c62f
             env:
               TZ: ${TIMEZONE}
               # https://github.com/thelounge/thelounge/issues/2656
