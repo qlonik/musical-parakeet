@@ -174,7 +174,7 @@ identity_providers:
         redirect_uris:
           - "https://immich.${SECRET_DOMAIN}/auth/login"
           - "https://immich.${SECRET_DOMAIN}/user-settings"
-          - "app.immich:/"
+          - "app.immich:///oauth-callback"
         scopes: ["openid", "profile", "email"]
         authorization_policy: one_factor
         pre_configured_consent_duration: 1y
