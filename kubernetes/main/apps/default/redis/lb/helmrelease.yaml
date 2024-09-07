@@ -35,7 +35,7 @@ spec:
           main:
             image:
               repository: public.ecr.aws/docker/library/haproxy
-              tag: 3.0.3-alpine@sha256:4b2c1d41d0448b9baf60186995279f71fb36552a31ff028434224d73f352b65e
+              tag: 3.0.4-alpine@sha256:40444dbcb81ca1d8aa048d57b379aeedbf7f22e7584164c82cec86d9d2deb3ba
             env:
               REDIS_PASSWORD:
                 valueFrom:
