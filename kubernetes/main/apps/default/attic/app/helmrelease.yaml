@@ -35,7 +35,7 @@ spec:
           main:
             image:
               repository: ghcr.io/zhaofengli/attic
-              tag: latest@sha256:d9e73ffbe38e18febb9bd6e98a4549e7ab22b54ecf371b1db0ffd20f0a3de951
+              tag: latest@sha256:be60d172991681a31fcb45efcd01f3e9f3fba2dc772d35560b16ee1644c7d782
             args:
               - --config
               - /config/server.toml
@@ -75,7 +75,7 @@ spec:
               - init-db
             image:
               repository: ghcr.io/zhaofengli/attic
-              tag: latest@sha256:d9e73ffbe38e18febb9bd6e98a4549e7ab22b54ecf371b1db0ffd20f0a3de951
+              tag: latest@sha256:be60d172991681a31fcb45efcd01f3e9f3fba2dc772d35560b16ee1644c7d782
             args:
               - --config
               - /config/server.toml
@@ -93,7 +93,7 @@ spec:
           main:
             image:
               repository: ghcr.io/zhaofengli/attic
-              tag: latest@sha256:d9e73ffbe38e18febb9bd6e98a4549e7ab22b54ecf371b1db0ffd20f0a3de951
+              tag: latest@sha256:be60d172991681a31fcb45efcd01f3e9f3fba2dc772d35560b16ee1644c7d782
             args:
               - --config
               - /config/server.toml
