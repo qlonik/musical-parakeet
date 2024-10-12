@@ -133,8 +133,8 @@ spec:
         initContainers:
           init-config:
             image:
-              repository: ghcr.io/onedr0p/alpine
-              tag: 3.19.1@sha256:3fbc581cb0fe29830376161ae026e2a765dcc11e1747477fe9ebf155720b8638
+              repository: public.ecr.aws/docker/library/alpine
+              tag: 3.20.3@sha256:beefdbd8a1da6d2915566fde36db9db0b524eb737fc57cd1367effd16dc0d06d
             args: # double "$$" escape flux substitutions
               - /bin/bash
               - -c
