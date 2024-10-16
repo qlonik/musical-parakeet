@@ -30,7 +30,7 @@ spec:
           main:
             image:
               repository: ghcr.io/linuxserver/calibre
-              tag: v7.19.0-ls305@sha256:9b7369f047476626d872e7748e11348a3a24ba5d90a7ff91df701ed056df9c00
+              tag: v7.19.0-ls307@sha256:4f7c21af85f8fe8d436fbff48a02ddbf4370c137beedbbbf71825e5aa0a58bc7
             env:
               TZ: ${TIMEZONE}
               PUID: 568
