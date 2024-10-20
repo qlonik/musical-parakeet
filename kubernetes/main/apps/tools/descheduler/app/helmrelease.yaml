@@ -41,6 +41,10 @@ spec:
                 nodeAffinityType:
                   - requiredDuringSchedulingIgnoredDuringExecution
             - name: RemovePodsViolatingNodeTaints
+              args:
+                namespaces:
+                  include:
+                    - default
             - name: RemovePodsViolatingTopologySpreadConstraint
               args:
                 constraints:
