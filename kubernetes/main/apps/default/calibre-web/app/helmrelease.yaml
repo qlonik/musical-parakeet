@@ -32,7 +32,7 @@ spec:
           main:
             image:
               repository: ghcr.io/linuxserver/calibre-web
-              tag: 0.6.23-ls293@sha256:58cf355693c24d776f7542baddb84fe6b7e8b3f8a48733eb50204dd036753601
+              tag: 0.6.23-ls297@sha256:64ee4f21d40c8f7f530413d3f9b2ff83896c671e9631a264035f5e6f67655bda
             env:
               TZ: ${TIMEZONE}
               PUID: 568
