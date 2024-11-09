@@ -192,7 +192,8 @@ identity_providers:
         userinfo_signed_response_alg: none
       - client_name: Mealie
         client_id: '{{ secret "/var/run/secrets/authelia-secret/oidc-mealie-client-id" }}'
-        public: true
+        client_secret: '{{ secret "/var/run/secrets/authelia-secret/oidc-mealie-secret-hash" }}'
+        public: false
         redirect_uris:
           - "https://recipes.${SECRET_DOMAIN}/login"
         scopes: ["openid", "profile", "email", "groups"]
