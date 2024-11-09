@@ -191,6 +191,19 @@
         "commitMessageTopic": "{{{groupName}}} group"
       }
     },
+    {
+      "description": ["Intel device plugins Group"],
+      "groupName": "Intel device plugins",
+      "matchPackageNames": [
+        "intel-device-plugins-gpu",
+        "intel-device-plugins-operator"
+      ],
+      "matchDatasources": ["helm"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "separateMinorPatch": true
+    },
     // custom versioning
     {
       "description": ["Use custom versioning for firefly-iii"],
