@@ -53,8 +53,8 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /server-info/ping
-                    port: &server-port 3001
+                    path: /api/server/ping
+                    port: &server-port 2283
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -136,7 +136,7 @@ spec:
           gethomepage.dev/icon: immich.svg
           gethomepage.dev/description: Photos
           gethomepage.dev/group: Media
-          gethomepage.dev/siteMonitor: &internalUrl "http://{{ .Release.Name }}.default.svc.cluster.local:3001"
+          gethomepage.dev/siteMonitor: &internalUrl "http://{{ .Release.Name }}.default.svc.cluster.local:2283"
           gethomepage.dev/widget.type: immich
           gethomepage.dev/widget.url: *internalUrl
           gethomepage.dev/widget.key: "{{ `{{HOMEPAGE_VAR_IMMICH_API_KEY}}` }}"
