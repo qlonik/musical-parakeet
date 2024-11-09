@@ -11,8 +11,6 @@ metadata:
       the `auth.home.arpa/enabled` annotation is `true` it
       applies the nginx auth annotations for use with Authelia.
 spec:
-  mutateExistingOnPolicyUpdate: true
-  generateExistingOnPolicyUpdate: true
   rules:
     - name: auth
       match:
@@ -28,6 +26,7 @@ spec:
               annotations:
                 auth.home.arpa/type: "basic"
       mutate:
+        mutateExistingOnPolicyUpdate: true
         targets:
           - apiVersion: "{{ request.object.apiVersion }}"
             kind: "{{ request.object.kind }}"
@@ -55,6 +54,7 @@ spec:
                 auth.home.arpa/enabled: "true"
                 auth.home.arpa/type: "basic"
       mutate:
+        mutateExistingOnPolicyUpdate: true
         targets:
           - apiVersion: "{{ request.object.apiVersion }}"
             kind: "{{ request.object.kind }}"
