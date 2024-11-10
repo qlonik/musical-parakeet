@@ -73,21 +73,34 @@ on:
               $nin: ["cospend:done"]
 
 jobs:
-  print:
-    name: Print
+  process:
+    name: Process Firefly transactions
     runs-on: ubuntu-latest
+    env:
+      workdir: workflows/process-firefly-transactions/submit-to-cospend/
+    defaults:
+      run:
+        working-directory: ${{ env.workdir }}
     steps:
-      - uses: pnpm/action-setup@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
           version: 9
-          run_install: |
-            - cwd: workflows/process-firefly-transactions/submit-to-cospend/
-              args: [--frozen-lockfile, --strict-peer-dependencies]
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+          cache-dependency-path: ${{ env.workdir }}/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --strict-peer-dependencies
+
       - name: Process a transaction
         env:
           input: ${{ toJSON(on.script.outputs) }}
           nc_user: ${{ fromJSON(secrets.PROCESS_FIREFLY_TRANSACTIONS).nc_user }}
           nc_password:
             ${{ fromJSON(secrets.PROCESS_FIREFLY_TRANSACTIONS).nc_password }}
-        working-directory: workflows/process-firefly-transactions/submit-to-cospend/
         run: pnpm start

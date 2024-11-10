@@ -88,12 +88,12 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: "pnpm"
-          cache-dependency-path: "${{ matrix.path }}/pnpm-lock.yaml"
+          node-version: lts/*
+          cache: pnpm
+          cache-dependency-path: ${{ matrix.path }}/pnpm-lock.yaml
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --strict-peer-dependencies
 
       - name: Typecheck
         run: |
