@@ -204,6 +204,16 @@
       },
       "separateMinorPatch": true
     },
+    {
+      "description": ["Volsync Group"],
+      "groupName": "volsync",
+      "matchPackagePatterns": ["volsync"],
+      "matchDatasources": ["helm", "docker"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "separateMinorPatch": true
+    },
     // custom versioning
     {
       "description": ["Use custom versioning for firefly-iii"],
