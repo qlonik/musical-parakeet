@@ -87,17 +87,17 @@
       "automergeType": "branch",
       "ignoreTests": true,
       "matchUpdateTypes": ["digest"],
-      "matchPackagePatterns": [
-        "ghcr.io/nginxinc",
-        "ghcr.io/onedr0p",
-        "public.ecr.aws/docker/library"
+      "matchPackageNames": [
+        "/ghcr.io/nginxinc/",
+        "/ghcr.io/onedr0p/",
+        "/public.ecr.aws/docker/library/"
       ]
     },
     // groups
     {
       "description": ["Flux Group"],
       "groupName": "Flux",
-      "matchPackagePatterns": ["fluxcd"],
+      "matchPackageNames": ["/fluxcd/"],
       "matchDatasources": ["docker", "github-tags"],
       "versioning": "semver",
       "group": {
@@ -108,7 +108,7 @@
     {
       "description": ["System Upgrade Controller Group"],
       "groupName": "System Upgrade Controller",
-      "matchPackagePatterns": ["rancher/system-upgrade-controller"],
+      "matchPackageNames": ["/rancher/system-upgrade-controller/"],
       "matchDatasources": ["docker", "github-releases"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
@@ -119,10 +119,10 @@
       "description": ["Actions Runner Controller Group"],
       "groupName": "Actions Runner Controller",
       "matchPackageNames": [
+        "/gha-runner-scale-set/",
         "actions-runner-controller-charts/gha-runner-scale-set-controller",
         "actions-runner-controller-charts/gha-runner-scale-set"
       ],
-      "matchPackagePatterns": ["gha-runner-scale-set"],
       "matchDatasources": ["helm", "docker"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
@@ -132,7 +132,7 @@
     {
       "description": ["Immich Group"],
       "groupName": "Immich",
-      "matchPackagePatterns": ["immich-app"],
+      "matchPackageNames": ["/immich-app/"],
       "matchDatasources": ["docker"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
@@ -142,7 +142,7 @@
     {
       "description": ["Vikunja Group"],
       "groupName": "Vikunja",
-      "matchPackagePatterns": ["vikunja"],
+      "matchPackageNames": ["/vikunja/"],
       "matchDatasources": ["docker"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
@@ -152,8 +152,7 @@
     {
       "description": ["effect-ts Group"],
       "groupName": "effect-ts",
-      "matchPackageNames": ["effect"],
-      "matchPackagePrefixes": ["@effect"],
+      "matchPackageNames": ["effect", "@effect{/,}**"],
       "matchDatasources": ["npm"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
@@ -162,7 +161,7 @@
     {
       "description": ["K8s CSI Group"],
       "groupName": "sig-storage",
-      "matchPackagePatterns": ["registry.k8s.io/sig-storage/csi-"],
+      "matchPackageNames": ["/registry.k8s.io/sig-storage/csi-/"],
       "matchDatasources": ["docker"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
@@ -171,9 +170,9 @@
     {
       "description": ["calibre Group"],
       "groupName": "calibre",
-      "matchPackagePatterns": [
-        "ghcr.io/linuxserver/calibre",
-        "ghcr.io/linuxserver/mods"
+      "matchPackageNames": [
+        "/ghcr.io/linuxserver/calibre/",
+        "/ghcr.io/linuxserver/mods/"
       ],
       "matchCurrentValue": "/^(universal-calibre-)?v\\d+/",
       "matchDatasources": ["docker"],
@@ -185,7 +184,7 @@
     {
       "description": ["@tsconfig bases Group"],
       "groupName": "tsconfig-bases",
-      "matchPackagePrefixes": ["@tsconfig"],
+      "matchPackageNames": ["@tsconfig{/,}**"],
       "matchDatasources": ["npm"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
@@ -207,7 +206,7 @@
     {
       "description": ["Volsync Group"],
       "groupName": "volsync",
-      "matchPackagePatterns": ["volsync"],
+      "matchPackageNames": ["/volsync/"],
       "matchDatasources": ["helm", "docker"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
@@ -225,10 +224,10 @@
       "description": ["Use custom versioning for linuxserver.io containers"],
       "matchDatasources": ["docker"],
       "versioning": "regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?(?:-ls(?<build>\\d+))?$",
-      "matchPackagePatterns": ["^ghcr.io\\/linuxserver\\/"],
-      "excludePackageNames": [
-        "ghcr.io/linuxserver/mods",
-        "ghcr.io/linuxserver/lazylibrarian"
+      "matchPackageNames": [
+        "/^ghcr.io/linuxserver//",
+        "!ghcr.io/linuxserver/mods",
+        "!ghcr.io/linuxserver/lazylibrarian"
       ]
     },
     {
@@ -241,13 +240,13 @@
       "description": ["Use custom versioning for k0s/k3s"],
       "matchDatasources": ["github-releases"],
       "versioning": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?<compatibility>\\+k.s)\\.?(?<build>\\d+)$",
-      "matchPackagePatterns": ["k0s", "k3s"]
+      "matchPackageNames": ["/k0s/", "/k3s/"]
     },
     {
       "description": ["Use custom versioning for minio"],
       "matchDatasources": ["docker"],
       "versioning": "regex:^RELEASE\\.(?<major>\\d+)-(?<minor>\\d+)-(?<patch>\\d+)T.*Z$",
-      "matchPackagePatterns": ["minio"]
+      "matchPackageNames": ["/minio/"]
     },
     // commit message topics
     {
