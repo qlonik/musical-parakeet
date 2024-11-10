@@ -1,6 +1,4 @@
-import * as S from "@effect/schema/Schema";
-import * as Str from "effect/String";
-import * as Types from "effect/Types";
+import { Schema as S, String as Str, Types } from "effect";
 
 export function addBrandedKeys<
   const Brand extends string,

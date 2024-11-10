@@ -1,9 +1,6 @@
-import { Data, Match } from "effect";
+import { Data, Match, ParseResult, pipe } from "effect";
 import { type AxiosError } from "axios";
-import { ParseError } from "@effect/schema/ParseResult";
-import { pipe } from "effect/Function";
 import * as os from "os";
-import { TreeFormatter } from "@effect/schema";
 
 export class UnknownError extends Data.TaggedError("UnknownError")<{
   error: unknown;
@@ -17,7 +14,7 @@ export class NetworkError<
 }> {}
 
 export const convertErrorToMessage = (
-  error: NetworkError<unknown, unknown> | ParseError,
+  error: NetworkError<unknown, unknown> | ParseResult.ParseError,
   type: string,
 ): string =>
   pipe(
@@ -33,7 +30,7 @@ export const convertErrorToMessage = (
         "invalid response from " +
         type +
         os.EOL +
-        TreeFormatter.formatError(error),
+        ParseResult.TreeFormatter.formatError(error),
     ),
     Match.exhaustive,
   );

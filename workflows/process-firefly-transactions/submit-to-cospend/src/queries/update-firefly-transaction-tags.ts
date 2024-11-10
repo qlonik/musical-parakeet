@@ -1,5 +1,12 @@
-import { ParseError } from "@effect/schema/ParseResult";
-import { Data, Effect as T, Request, RequestResolver, pipe } from "effect";
+import {
+  Data,
+  Effect as T,
+  Request,
+  RequestResolver,
+  ParseResult,
+  pipe,
+} from "effect";
+
 import {
   DataToSubmitForUpdate,
   FireflyTransactionId,
@@ -10,7 +17,9 @@ import { convertErrorToMessage, NetworkError } from "./errors.js";
 
 export class UpdateFireflyTransactionTagsError extends Data.TaggedError(
   "UpdateFireflyTransactionTagsError",
-)<{ error: NetworkError<unknown, DataToSubmitForUpdate> | ParseError }> {
+)<{
+  error: NetworkError<unknown, DataToSubmitForUpdate> | ParseResult.ParseError;
+}> {
   override get message() {
     return convertErrorToMessage(this.error, "UpdateFireflyTransactionTags");
   }
