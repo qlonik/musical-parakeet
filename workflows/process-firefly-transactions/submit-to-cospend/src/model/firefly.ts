@@ -1,5 +1,6 @@
+import { Schema as S } from "effect";
+
 import { IdStr } from "./generic.js";
-import * as S from "@effect/schema/Schema";
 
 export const FireflyPersonalAccessToken = S.String.pipe(
   S.brand("ff3-personal-access-token"),

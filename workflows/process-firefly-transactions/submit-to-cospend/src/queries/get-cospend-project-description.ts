@@ -1,7 +1,12 @@
-import { Schema as S } from "@effect/schema";
-import { ParseError } from "@effect/schema/ParseResult";
-import { Data, Effect as T, Request, RequestResolver } from "effect";
-import { pipe } from "effect/Function";
+import {
+  Data,
+  Effect as T,
+  Schema as S,
+  Request,
+  RequestResolver,
+  ParseResult,
+  pipe,
+} from "effect";
 
 import {
   CospendProjectDescriptionS,
@@ -13,7 +18,7 @@ import { convertErrorToMessage, NetworkError } from "./errors.js";
 
 export class GetCospendProjectDescriptionError extends Data.TaggedError(
   "GetCospendProjectDescriptionError",
-)<{ error: NetworkError | ParseError }> {
+)<{ error: NetworkError | ParseResult.ParseError }> {
   override get message() {
     return convertErrorToMessage(this.error, "GetCospendProjectDescription");
   }

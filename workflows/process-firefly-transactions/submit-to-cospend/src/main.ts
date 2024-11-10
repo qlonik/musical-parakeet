@@ -1,12 +1,11 @@
-import { pipe } from "effect/Function";
-import * as T from "effect/Effect";
+import { NodeRuntime } from "@effect/platform-node";
+import { Layer, Logger, Effect as T, pipe } from "effect";
+
 import {
   CospendApiServiceLive,
   FireflyApiServiceLive,
 } from "./queries/axios-instances.js";
 import { program } from "./program.js";
-import { Layer, Logger } from "effect";
-import { NodeRuntime } from "@effect/platform-node";
 import { ApplicationConfigFromEnvLive } from "./config.js";
 import { ghaLogger } from "./github-actions-logger.js";
 

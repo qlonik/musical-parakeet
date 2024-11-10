@@ -1,4 +1,4 @@
-import * as S from "@effect/schema/Schema";
+import { Schema as S } from "effect";
 
 export const Id = S.Number.pipe(
   // TODO(qlonik): `S.int()` adds a refinement which conflicts with

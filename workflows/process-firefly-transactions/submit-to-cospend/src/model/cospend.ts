@@ -1,4 +1,5 @@
-import * as S from "@effect/schema/Schema";
+import { Schema as S } from "effect";
+
 import { Id, IdStr } from "./generic.js";
 import { addBrandedKeys } from "../schema-extra.js";
 import { markdown } from "../template-tags.js";
@@ -73,8 +74,14 @@ export const { Project: CospendProjectDescriptionS, ProjectId } =
     S.Struct({
       active_members: S.Array(Member),
       members: S.Array(Member),
-      categories: S.Record(S.TemplateLiteral(CategoryId), Category),
-      paymentmodes: S.Record(S.TemplateLiteral(PaymentModeId), PaymentMode),
+      categories: S.Record({
+        key: S.TemplateLiteral(CategoryId),
+        value: Category,
+      }),
+      paymentmodes: S.Record({
+        key: S.TemplateLiteral(PaymentModeId),
+        value: PaymentMode,
+      }),
     }),
     ["id", IdStr],
   );

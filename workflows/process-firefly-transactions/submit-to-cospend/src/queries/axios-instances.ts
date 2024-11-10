@@ -3,8 +3,8 @@ import Axios, {
   type AxiosRequestConfig,
   type AxiosResponse,
 } from "axios";
-import { Cause, Context, Effect as T, Layer } from "effect";
-import { pipe } from "effect/Function";
+import { Cause, Context, Effect as T, Layer, pipe } from "effect";
+
 import { NetworkError } from "./errors.js";
 import { ApplicationConfigService } from "../config.js";
 

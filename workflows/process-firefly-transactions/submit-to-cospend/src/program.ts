@@ -1,27 +1,31 @@
-import * as T from "effect/Effect";
+import {
+  Effect as T,
+  Array as RA,
+  Unify,
+  Option as O,
+  Schema as S,
+  ParseResult,
+  Record as RR,
+  pipe,
+} from "effect";
+
 import {
   MemberUseridTo,
   PaymentModeNameTo,
   ProjectId,
 } from "./model/cospend.js";
-import { pipe } from "effect/Function";
 import {
   getCospendProjectBills,
   GetCospendProjectBillsError,
 } from "./queries/get-cospend-project-bills.js";
-import * as RA from "effect/Array";
 import {
   getCospendProjectDescription,
   GetCospendProjectDescriptionError,
 } from "./queries/get-cospend-project-description.js";
-import { TreeFormatter } from "@effect/schema";
-import * as Unify from "effect/Unify";
-import * as O from "effect/Option";
 import {
   createCospendProjectBill,
   CreateCospendProjectBillError,
 } from "./queries/create-cospend-project-bill.js";
-import * as S from "@effect/schema/Schema";
 import {
   FireflyTransactionInputId,
   transactionConfigurationInputS,
@@ -31,7 +35,6 @@ import {
   FireflyTransactionJournalTo,
 } from "./model/firefly.js";
 import { CospendApiService } from "./queries/axios-instances.js";
-import * as RR from "effect/Record";
 import { updateFireflyTransactionTags } from "./queries/update-firefly-transaction-tags.js";
 import { ApplicationConfigService } from "./config.js";
 
@@ -148,7 +151,7 @@ const processTransaction = (
         mkError(
           tid,
           "transaction configuration does not match schema:\n" +
-            TreeFormatter.formatError(error),
+            ParseResult.TreeFormatter.formatError(error),
         ),
       ),
     );

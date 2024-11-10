@@ -1,4 +1,5 @@
-import * as S from "@effect/schema/Schema";
+import { Schema as S } from "effect";
+
 import { addBrandedKeys } from "../schema-extra.js";
 import { IdStr } from "./generic.js";
 import {
@@ -11,7 +12,7 @@ import { FireflyPersonalAccessToken, FireflyTransaction } from "./firefly.js";
 
 export const transactionConfigurationInputS = S.Struct({
   project: ProjectId,
-  for: S.optional(S.Union(S.Literal("all"), MemberUserid), {
+  for: S.optionalWith(S.Union(S.Literal("all"), MemberUserid), {
     default: () => "all" as const,
   }),
   category: S.optional(CategoryName),
@@ -45,10 +46,10 @@ const PROCESS_FIREFLY_TRANSACTIONS = S.Struct({
   firefly_users: S.Array(
     S.Struct({
       pat: FireflyPersonalAccessToken,
-      accounts: S.Record(
-        S.String.annotations({ identifier: "ff3-account-id" }),
-        PaymentModeName,
-      ),
+      accounts: S.Record({
+        key: S.String.annotations({ identifier: "ff3-account-id" }),
+        value: PaymentModeName,
+      }),
       cospend_payer_username: MemberUserid,
     }),
   ),

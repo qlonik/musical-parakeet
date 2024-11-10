@@ -6,10 +6,11 @@ import {
   Context,
   Layer,
   Effect,
+  Schema as S,
+  ParseResult,
 } from "effect";
-import * as S from "@effect/schema/Schema";
+
 import { fireflyTransactionInputS } from "./model/program-inputs.js";
-import { TreeFormatter } from "@effect/schema";
 
 type GetConfigValue<Conf extends Config.Config<unknown>> =
   Conf extends Config.Config<infer R> ? R : never;
@@ -53,7 +54,7 @@ export const ApplicationConfig = Config.all({
         Either.mapLeft((error) =>
           ConfigError.InvalidData(
             ["input"],
-            TreeFormatter.formatErrorSync(error),
+            ParseResult.TreeFormatter.formatErrorSync(error),
           ),
         ),
       ),
