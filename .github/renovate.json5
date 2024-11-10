@@ -1,56 +1,57 @@
 {
-  $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  extends: [
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
     "config:recommended",
     "docker:enableMajor",
     ":disableRateLimiting",
     ":dependencyDashboard",
     ":semanticCommits",
     ":enablePreCommit",
-    ":automergeBranch",
+    ":automergeBranch"
   ],
-  dependencyDashboard: true,
-  dependencyDashboardTitle: "Renovate Dashboard 🤖",
-  suppressNotifications: ["prEditedNotification", "prIgnoreNotification"],
-  rebaseWhen: "conflicted",
-  schedule: ["on saturday"],
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+  "suppressNotifications": ["prEditedNotification", "prIgnoreNotification"],
+  "rebaseWhen": "conflicted",
+  "schedule": ["on saturday"],
   "pre-commit": {
-    enabled: true,
+    "enabled": true
   },
   "github-actions": {
-    fileMatch: ["(^|/)workflows/.+.ya?ml$"],
+    "fileMatch": ["(^|/)workflows/.+.ya?ml$"]
   },
-  flux: {
-    fileMatch: [
+  "flux": {
+    "fileMatch": [
       "(^|/)ansible/.+\\.ya?ml(\\.j2)?$",
-      "(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$",
-    ],
+      "(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$"
+    ]
   },
   "helm-values": {
-    fileMatch: [
+    "fileMatch": [
       "(^|/)ansible/.+\\.ya?ml(\\.j2)?$",
-      "(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$",
-    ],
+      "(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$"
+    ]
   },
-  kubernetes: {
-    fileMatch: [
+  "kubernetes": {
+    "fileMatch": [
       "(^|/)ansible/.+\\.ya?ml(\\.j2)?$",
-      "(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$",
-    ],
+      "(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$"
+    ]
   },
-  kustomize: {
-    fileMatch: ["(^|/)kustomization\\.ya?ml(\\.j2)?$"],
+  "kustomize": {
+    "fileMatch": ["(^|/)kustomization\\.ya?ml(\\.j2)?$"]
   },
-  pip_requirements: {
-    fileMatch: ["(^|/)[\\w-]*requirements(-\\w+)?\\.(txt|pip)(\\.j2)?$"],
+  "pip_requirements": {
+    "fileMatch": ["(^|/)[\\w-]*requirements(-\\w+)?\\.(txt|pip)(\\.j2)?$"]
   },
   "ansible-galaxy": {
-    fileMatch: ["(^|/)(galaxy|requirements)(\\.ansible)?\\.ya?ml(\\.j2)?$"],
+    "fileMatch": ["(^|/)(galaxy|requirements)(\\.ansible)?\\.ya?ml(\\.j2)?$"]
   },
-  nix: {
-    enabled: true,
+  "nix": {
+    "enabled": true
   },
-  ignorePaths: [
+  "ignorePaths": [
+    // default set
     "**/node_modules/**",
     "**/bower_components/**",
     "**/vendor/**",
@@ -59,343 +60,362 @@
     "**/test/**",
     "**/tests/**",
     "**/__fixtures__/**",
-    ".archive/**",
+    // custom extra
+    ".archive/**"
   ],
-  commitMessageTopic: "{{depName}}",
-  commitMessageExtra: "to {{newVersion}}",
-  commitMessageSuffix: "",
-  packageRules: [
+  // commit message topics
+  "commitMessageTopic": "{{depName}}",
+  "commitMessageExtra": "to {{newVersion}}",
+  "commitMessageSuffix": "",
+  // package rules
+  "packageRules": [
+    // automerge
     {
-      description: ["Auto merge Github Actions"],
-      matchManagers: ["github-actions"],
-      automerge: true,
-      automergeType: "branch",
-      ignoreTests: true,
-      matchUpdateTypes: ["minor", "patch"],
+      "description": ["Auto merge Github Actions"],
+      "matchManagers": ["github-actions"],
+      "automerge": true,
+      "automergeType": "branch",
+      "ignoreTests": true,
+      "matchUpdateTypes": ["minor", "patch"]
     },
     {
-      description: [
-        "Auto-merge container digests updates for trusted containers",
+      "description": [
+        "Auto-merge container digests updates for trusted containers"
       ],
-      matchDatasources: ["docker"],
-      automerge: true,
-      automergeType: "branch",
-      ignoreTests: true,
-      matchUpdateTypes: ["digest"],
-      matchPackageNames: [
-        "/ghcr.io/nginxinc/",
-        "/ghcr.io/onedr0p/",
-        "/public.ecr.aws/docker/library/",
-      ],
+      "matchDatasources": ["docker"],
+      "automerge": true,
+      "automergeType": "branch",
+      "ignoreTests": true,
+      "matchUpdateTypes": ["digest"],
+      "matchPackagePatterns": [
+        "ghcr.io/nginxinc",
+        "ghcr.io/onedr0p",
+        "public.ecr.aws/docker/library"
+      ]
     },
+    // groups
     {
-      description: ["Flux Group"],
-      groupName: "Flux",
-      matchDatasources: ["docker", "github-tags"],
-      versioning: "semver",
-      group: {
-        commitMessageTopic: "{{{groupName}}} group",
+      "description": ["Flux Group"],
+      "groupName": "Flux",
+      "matchPackagePatterns": ["fluxcd"],
+      "matchDatasources": ["docker", "github-tags"],
+      "versioning": "semver",
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
       },
-      separateMinorPatch: true,
-      matchPackageNames: ["/fluxcd/"],
+      "separateMinorPatch": true
     },
     {
-      description: ["System Upgrade Controller Group"],
-      groupName: "System Upgrade Controller",
-      matchDatasources: ["docker", "github-releases"],
-      group: {
-        commitMessageTopic: "{{{groupName}}} group",
+      "description": ["System Upgrade Controller Group"],
+      "groupName": "System Upgrade Controller",
+      "matchPackagePatterns": ["rancher/system-upgrade-controller"],
+      "matchDatasources": ["docker", "github-releases"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
       },
-      separateMinorPatch: true,
-      matchPackageNames: ["/rancher/system-upgrade-controller/"],
+      "separateMinorPatch": true
     },
     {
-      description: ["Actions Runner Controller Group"],
-      groupName: "Actions Runner Controller",
-      matchPackageNames: [
+      "description": ["Actions Runner Controller Group"],
+      "groupName": "Actions Runner Controller",
+      "matchPackageNames": [
         "actions-runner-controller-charts/gha-runner-scale-set-controller",
-        "actions-runner-controller-charts/gha-runner-scale-set",
-        "/gha-runner-scale-set/",
+        "actions-runner-controller-charts/gha-runner-scale-set"
       ],
-      matchDatasources: ["helm", "docker"],
-      group: {
-        commitMessageTopic: "{{{groupName}}} group",
+      "matchPackagePatterns": ["gha-runner-scale-set"],
+      "matchDatasources": ["helm", "docker"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
       },
-      separateMinorPatch: true,
+      "separateMinorPatch": true
     },
     {
-      description: ["Immich Group"],
-      groupName: "Immich",
-      matchDatasources: ["docker"],
-      group: {
-        commitMessageTopic: "{{{groupName}}} group",
+      "description": ["Immich Group"],
+      "groupName": "Immich",
+      "matchPackagePatterns": ["immich-app"],
+      "matchDatasources": ["docker"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
       },
-      separateMinorPatch: true,
-      matchPackageNames: ["/immich-app/"],
+      "separateMinorPatch": true
     },
     {
-      description: ["Vikunja Group"],
-      groupName: "Vikunja",
-      matchDatasources: ["docker"],
-      group: {
-        commitMessageTopic: "{{{groupName}}} group",
+      "description": ["Vikunja Group"],
+      "groupName": "Vikunja",
+      "matchPackagePatterns": ["vikunja"],
+      "matchDatasources": ["docker"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
       },
-      separateMinorPatch: true,
-      matchPackageNames: ["/vikunja/"],
+      "separateMinorPatch": true
     },
     {
-      description: ["effect-ts Group"],
-      groupName: "effect-ts",
-      matchPackageNames: ["effect", "@effect{/,}**"],
-      matchDatasources: ["npm"],
-      group: {
-        commitMessageTopic: "{{{groupName}}} group",
-      },
+      "description": ["effect-ts Group"],
+      "groupName": "effect-ts",
+      "matchPackageNames": ["effect"],
+      "matchPackagePrefixes": ["@effect"],
+      "matchDatasources": ["npm"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
     },
     {
-      description: ["K8s CSI Group"],
-      groupName: "sig-storage",
-      matchDatasources: ["docker"],
-      group: {
-        commitMessageTopic: "{{{groupName}}} group",
-      },
-      matchPackageNames: ["/registry.k8s.io/sig-storage/csi-/"],
+      "description": ["K8s CSI Group"],
+      "groupName": "sig-storage",
+      "matchPackagePatterns": ["registry.k8s.io/sig-storage/csi-"],
+      "matchDatasources": ["docker"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
     },
     {
-      description: ["calibre Group"],
-      groupName: "calibre",
-      matchCurrentValue: "/^(universal-calibre-)?v\\d+/",
-      matchDatasources: ["docker"],
-      group: {
-        commitMessageTopic: "{{{groupName}}} group",
-      },
-      separateMinorPatch: true,
-      matchPackageNames: [
-        "/ghcr.io/linuxserver/calibre/",
-        "/ghcr.io/linuxserver/mods/",
+      "description": ["calibre Group"],
+      "groupName": "calibre",
+      "matchPackagePatterns": [
+        "ghcr.io/linuxserver/calibre",
+        "ghcr.io/linuxserver/mods"
       ],
-    },
-    {
-      description: ["@tsconfig bases Group"],
-      groupName: "tsconfig-bases",
-      matchDatasources: ["npm"],
-      group: {
-        commitMessageTopic: "{{{groupName}}} group",
+      "matchCurrentValue": "/^(universal-calibre-)?v\\d+/",
+      "matchDatasources": ["docker"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
       },
-      matchPackageNames: ["@tsconfig{/,}**"],
+      "separateMinorPatch": true
     },
     {
-      description: ["Intel device plugins Group"],
-      groupName: "Intel device plugins",
-      matchPackageNames: [
+      "description": ["@tsconfig bases Group"],
+      "groupName": "tsconfig-bases",
+      "matchPackagePrefixes": ["@tsconfig"],
+      "matchDatasources": ["npm"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
+    },
+    {
+      "description": ["Intel device plugins Group"],
+      "groupName": "Intel device plugins",
+      "matchPackageNames": [
         "intel-device-plugins-gpu",
-        "intel-device-plugins-operator",
+        "intel-device-plugins-operator"
       ],
-      matchDatasources: ["helm"],
-      group: {
-        commitMessageTopic: "{{{groupName}}} group",
+      "matchDatasources": ["helm"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
       },
-      separateMinorPatch: true,
+      "separateMinorPatch": true
     },
     {
-      description: ["Volsync Group"],
-      groupName: "volsync",
-      matchDatasources: ["helm", "docker"],
-      group: {
-        commitMessageTopic: "{{{groupName}}} group",
+      "description": ["Volsync Group"],
+      "groupName": "volsync",
+      "matchPackagePatterns": ["volsync"],
+      "matchDatasources": ["helm", "docker"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
       },
-      separateMinorPatch: true,
-      matchPackageNames: ["/volsync/"],
+      "separateMinorPatch": true
+    },
+    // custom versioning
+    {
+      "description": ["Use custom versioning for firefly-iii"],
+      "matchDatasources": ["docker"],
+      "versioning": "regex:^version-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
+      "matchPackageNames": ["fireflyiii/core", "fireflyiii/data-importer"]
     },
     {
-      description: ["Use custom versioning for firefly-iii"],
-      matchDatasources: ["docker"],
-      versioning: "regex:^version-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
-      matchPackageNames: ["fireflyiii/core", "fireflyiii/data-importer"],
+      "description": ["Use custom versioning for linuxserver.io containers"],
+      "matchDatasources": ["docker"],
+      "versioning": "regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?(?:-ls(?<build>\\d+))?$",
+      "matchPackagePatterns": ["^ghcr.io\\/linuxserver\\/"],
+      "excludePackageNames": [
+        "ghcr.io/linuxserver/mods",
+        "ghcr.io/linuxserver/lazylibrarian"
+      ]
     },
     {
-      description: ["Use custom versioning for linuxserver.io containers"],
-      matchDatasources: ["docker"],
-      versioning: "regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?(?:-ls(?<build>\\d+))?$",
-      matchPackageNames: [
-        "/^ghcr.io\\/linuxserver\\//",
-        "!ghcr.io/linuxserver/mods",
-        "!ghcr.io/linuxserver/lazylibrarian",
-      ],
+      "description": ["Custom versioning for linuxserver.io mods"],
+      "matchDatasources": ["docker"],
+      "versioning": "regex:^(?<compatibility>.+?)(-v(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))?)?$",
+      "matchPackageNames": ["ghcr.io/linuxserver/mods"]
     },
     {
-      description: ["Custom versioning for linuxserver.io mods"],
-      matchDatasources: ["docker"],
-      versioning: "regex:^(?<compatibility>.+?)(-v(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))?)?$",
-      matchPackageNames: ["ghcr.io/linuxserver/mods"],
+      "description": ["Use custom versioning for k0s/k3s"],
+      "matchDatasources": ["github-releases"],
+      "versioning": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?<compatibility>\\+k.s)\\.?(?<build>\\d+)$",
+      "matchPackagePatterns": ["k0s", "k3s"]
     },
     {
-      description: ["Use custom versioning for k0s/k3s"],
-      matchDatasources: ["github-releases"],
-      versioning: "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?<compatibility>\\+k.s)\\.?(?<build>\\d+)$",
-      matchPackageNames: ["/k0s/", "/k3s/"],
+      "description": ["Use custom versioning for minio"],
+      "matchDatasources": ["docker"],
+      "versioning": "regex:^RELEASE\\.(?<major>\\d+)-(?<minor>\\d+)-(?<patch>\\d+)T.*Z$",
+      "matchPackagePatterns": ["minio"]
+    },
+    // commit message topics
+    {
+      "matchDatasources": ["helm"],
+      "commitMessageTopic": "chart {{depName}}"
     },
     {
-      description: ["Use custom versioning for minio"],
-      matchDatasources: ["docker"],
-      versioning: "regex:^RELEASE\\.(?<major>\\d+)-(?<minor>\\d+)-(?<patch>\\d+)T.*Z$",
-      matchPackageNames: ["/minio/"],
+      "matchDatasources": ["docker"],
+      "commitMessageTopic": "image {{depName}}"
+    },
+    // commit messages
+    {
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["major"],
+      "commitMessagePrefix": "feat(container)!: "
     },
     {
-      matchDatasources: ["helm"],
-      commitMessageTopic: "chart {{depName}}",
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["minor"],
+      "semanticCommitType": "feat",
+      "semanticCommitScope": "container"
     },
     {
-      matchDatasources: ["docker"],
-      commitMessageTopic: "image {{depName}}",
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["patch"],
+      "semanticCommitType": "fix",
+      "semanticCommitScope": "container"
     },
     {
-      matchDatasources: ["docker"],
-      matchUpdateTypes: ["major"],
-      commitMessagePrefix: "feat(container)!: ",
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["digest"],
+      "semanticCommitType": "chore",
+      "semanticCommitScope": "container"
     },
     {
-      matchDatasources: ["docker"],
-      matchUpdateTypes: ["minor"],
-      semanticCommitType: "feat",
-      semanticCommitScope: "container",
+      "matchDatasources": ["helm"],
+      "matchUpdateTypes": ["major"],
+      "commitMessagePrefix": "feat(helm)!: "
     },
     {
-      matchDatasources: ["docker"],
-      matchUpdateTypes: ["patch"],
-      semanticCommitType: "fix",
-      semanticCommitScope: "container",
+      "matchDatasources": ["helm"],
+      "matchUpdateTypes": ["minor"],
+      "semanticCommitType": "feat",
+      "semanticCommitScope": "helm"
     },
     {
-      matchDatasources: ["docker"],
-      matchUpdateTypes: ["digest"],
-      semanticCommitType: "chore",
-      semanticCommitScope: "container",
+      "matchDatasources": ["helm"],
+      "matchUpdateTypes": ["patch"],
+      "semanticCommitType": "fix",
+      "semanticCommitScope": "helm"
     },
     {
-      matchDatasources: ["helm"],
-      matchUpdateTypes: ["major"],
-      commitMessagePrefix: "feat(helm)!: ",
+      "matchDatasources": ["galaxy", "galaxy-collection"],
+      "matchUpdateTypes": ["major"],
+      "commitMessagePrefix": "feat(ansible)!: "
     },
     {
-      matchDatasources: ["helm"],
-      matchUpdateTypes: ["minor"],
-      semanticCommitType: "feat",
-      semanticCommitScope: "helm",
+      "matchDatasources": ["galaxy", "galaxy-collection"],
+      "matchUpdateTypes": ["minor"],
+      "semanticCommitType": "feat",
+      "semanticCommitScope": "ansible"
     },
     {
-      matchDatasources: ["helm"],
-      matchUpdateTypes: ["patch"],
-      semanticCommitType: "fix",
-      semanticCommitScope: "helm",
+      "matchDatasources": ["galaxy", "galaxy-collection"],
+      "matchUpdateTypes": ["patch"],
+      "semanticCommitType": "fix",
+      "semanticCommitScope": "ansible"
     },
     {
-      matchDatasources: ["galaxy", "galaxy-collection"],
-      matchUpdateTypes: ["major"],
-      commitMessagePrefix: "feat(ansible)!: ",
+      "matchDatasources": ["github-releases", "github-tags"],
+      "matchUpdateTypes": ["major"],
+      "commitMessagePrefix": "feat(github-release)!: "
     },
     {
-      matchDatasources: ["galaxy", "galaxy-collection"],
-      matchUpdateTypes: ["minor"],
-      semanticCommitType: "feat",
-      semanticCommitScope: "ansible",
+      "matchDatasources": ["github-releases", "github-tags"],
+      "matchUpdateTypes": ["minor"],
+      "semanticCommitType": "feat",
+      "semanticCommitScope": "github-release"
     },
     {
-      matchDatasources: ["galaxy", "galaxy-collection"],
-      matchUpdateTypes: ["patch"],
-      semanticCommitType: "fix",
-      semanticCommitScope: "ansible",
+      "matchDatasources": ["github-releases", "github-tags"],
+      "matchUpdateTypes": ["patch"],
+      "semanticCommitType": "fix",
+      "semanticCommitScope": "github-release"
     },
     {
-      matchDatasources: ["github-releases", "github-tags"],
-      matchUpdateTypes: ["major"],
-      commitMessagePrefix: "feat(github-release)!: ",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["major"],
+      "commitMessagePrefix": "feat(github-action)!: "
     },
     {
-      matchDatasources: ["github-releases", "github-tags"],
-      matchUpdateTypes: ["minor"],
-      semanticCommitType: "feat",
-      semanticCommitScope: "github-release",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor"],
+      "semanticCommitType": "feat",
+      "semanticCommitScope": "github-action"
     },
     {
-      matchDatasources: ["github-releases", "github-tags"],
-      matchUpdateTypes: ["patch"],
-      semanticCommitType: "fix",
-      semanticCommitScope: "github-release",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["patch"],
+      "semanticCommitType": "fix",
+      "semanticCommitScope": "github-action"
+    },
+    // labels
+    {
+      "matchUpdateTypes": ["major"],
+      "labels": ["type/major"]
     },
     {
-      matchManagers: ["github-actions"],
-      matchUpdateTypes: ["major"],
-      commitMessagePrefix: "feat(github-action)!: ",
+      "matchUpdateTypes": ["minor"],
+      "labels": ["type/minor"]
     },
     {
-      matchManagers: ["github-actions"],
-      matchUpdateTypes: ["minor"],
-      semanticCommitType: "feat",
-      semanticCommitScope: "github-action",
+      "matchUpdateTypes": ["patch"],
+      "labels": ["type/patch"]
     },
     {
-      matchManagers: ["github-actions"],
-      matchUpdateTypes: ["patch"],
-      semanticCommitType: "fix",
-      semanticCommitScope: "github-action",
+      "matchDatasources": ["docker"],
+      "addLabels": ["renovate/container"]
     },
     {
-      matchUpdateTypes: ["major"],
-      labels: ["type/major"],
+      "matchDatasources": ["helm"],
+      "addLabels": ["renovate/helm"]
     },
     {
-      matchUpdateTypes: ["minor"],
-      labels: ["type/minor"],
+      "matchDatasources": ["galaxy", "galaxy-collection"],
+      "addLabels": ["renovate/ansible"]
     },
     {
-      matchUpdateTypes: ["patch"],
-      labels: ["type/patch"],
+      "matchDatasources": ["github-releases", "github-tags"],
+      "addLabels": ["renovate/github-release"]
     },
     {
-      matchDatasources: ["docker"],
-      addLabels: ["renovate/container"],
-    },
-    {
-      matchDatasources: ["helm"],
-      addLabels: ["renovate/helm"],
-    },
-    {
-      matchDatasources: ["galaxy", "galaxy-collection"],
-      addLabels: ["renovate/ansible"],
-    },
-    {
-      matchDatasources: ["github-releases", "github-tags"],
-      addLabels: ["renovate/github-release"],
-    },
-    {
-      matchManagers: ["github-actions"],
-      addLabels: ["renovate/github-action"],
-    },
+      "matchManagers": ["github-actions"],
+      "addLabels": ["renovate/github-action"]
+    }
   ],
-  customManagers: [
+  // custom managers
+  "customManagers": [
     {
-      customType: "regex",
-      description: ["Process various other dependencies"],
-      fileMatch: [
+      "customType": "regex",
+      "description": ["Process various other dependencies"],
+      "fileMatch": [
         "(^|/).taskfiles/.+\\.ya?ml$",
         "(^|/)ansible/.+\\.ya?ml(\\.j2)?$",
-        "(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$",
+        "(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$"
       ],
-      matchStrings: [
-        'datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( repository=(?<registryUrl>\\S+))?( extractVersion=(?<extractVersion>\\S+))?\n.*?"(?<currentValue>.*)"\n',
-        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\n.*?-\\s(.*?)/(?<currentValue>[^/]+)/[^/]+\n",
+      "matchStrings": [
+        // Example:
+        //   k3s_release_version: "v1.27.3+k3s1"
+        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( repository=(?<registryUrl>\\S+))?( extractVersion=(?<extractVersion>\\S+))?\n.*?\"(?<currentValue>.*)\"\n",
+        // Example:
+        //   - https://github.com/rancher/system-upgrade-controller/releases/download/v0.11.0/crd.yaml
+        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\n.*?-\\s(.*?)/(?<currentValue>[^/]+)/[^/]+\n"
       ],
-      datasourceTemplate: "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}",
+      "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}"
     },
     {
-      customType: "regex",
-      description: "Process docker mods for linuxserver images",
-      fileMatch: ["(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$"],
-      matchStrings: [
-        'renovate: lsio-docker-mod.*\\n\\s*"(?<depName>.+?):(?<currentValue>.+?)(@(?<currentDigest>sha256:.+?))?"',
+      "customType": "regex",
+      "description": "Process docker mods for linuxserver images",
+      "fileMatch": ["(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$"],
+      "matchStrings": [
+        // Example:
+        //   "// renovate: lsio-docker-mod"
+        //   "ghcr.io/linuxserver/mods:universal-calibre-v7.8.0@sha256:eee6b6428104692d9b24590b82a654d46b230385a5979a11f2dd373a80353d3c"
+        //   "ghcr.io/linuxserver/mods:lazylibrarian-ffmpeg@sha256:5083d9f2bdfcb27edf65a55e7c05d0ae8ce309d02d5f0cdc83bfe8e95c942dd4"
+        "renovate: lsio-docker-mod.*\\n\\s*\"(?<depName>.+?):(?<currentValue>.+?)(@(?<currentDigest>sha256:.+?))?\""
       ],
-      datasourceTemplate: "docker",
-    },
-  ],
+      "datasourceTemplate": "docker"
+    }
+  ]
 }
