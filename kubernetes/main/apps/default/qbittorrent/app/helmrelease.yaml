@@ -36,7 +36,7 @@ spec:
           reloader.stakater.com/auto: "true"
 
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/qbittorrent
               tag: 5.0.1@sha256:7fc5af4f7f9c8e4998aaa18b5e2e634757c55f70c23b9bd46b40e09a4c7acda5
@@ -114,7 +114,7 @@ spec:
         supplementalGroups: [10000]
 
     service:
-      main:
+      app:
         primary: true
         controller: qbittorrent
         ports:
@@ -123,7 +123,7 @@ spec:
             port: *port
 
     ingress:
-      main:
+      app:
         className: internal
         annotations:
           auth.home.arpa/enabled: "true"
@@ -141,7 +141,7 @@ spec:
               - path: "/"
                 pathType: Prefix
                 service:
-                  identifier: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -154,7 +154,7 @@ spec:
         existingClaim: qbittorrent-conf
         advancedMounts:
           qbittorrent:
-            main:
+            app:
               - path: /config
       downloads:
         type: nfs
@@ -162,13 +162,13 @@ spec:
         path: /mnt/main/media/downloads/qbittorrent
         advancedMounts:
           qbittorrent:
-            main:
+            app:
               - path: /media/downloads/qbittorrent
       incomplete:
         type: emptyDir
         advancedMounts:
           qbittorrent:
-            main:
+            app:
               - path: /incomplete
       scripts:
         type: configMap
@@ -176,7 +176,7 @@ spec:
         defaultMode: 0775
         advancedMounts:
           qbittorrent:
-            main:
+            app:
               - path: /scripts
                 readOnly: true
       dnsdist-config:
