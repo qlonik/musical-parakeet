@@ -6,7 +6,7 @@ metadata:
   name: pg-16
 spec:
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:16.3@sha256:5eb3af4a1c7fde601b5464f0f2c05e84f59f6cd80f5fcb2eb8baadb0b0587131
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.6@sha256:c368110f3fdfb5cadc0b15eb6f43f9899fb72db3d104bd68ecd9ed927dea0a06
   primaryUpdateStrategy: unsupervised
   storage:
     size: 10Gi
