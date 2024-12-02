@@ -12,6 +12,7 @@ module.exports = {
     /* uhdb */ prowlarrUrl("21"),
     /* blu  */ prowlarrUrl("22"),
     /* ant  */ prowlarrUrl("23"),
+    /* mam  */ prowlarrUrl("92"),
   ],
   port: process.env.CROSSSEED_PORT || 80,
   apiAuth: false,
