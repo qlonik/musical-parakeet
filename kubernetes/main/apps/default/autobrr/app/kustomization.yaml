@@ -4,3 +4,10 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
+
+configMapGenerator:
+  - name: autobrr-custom-definitions
+    files:
+      - ./resources/myanonamouse.yaml
+    options:
+      disableNameSuffixHash: true

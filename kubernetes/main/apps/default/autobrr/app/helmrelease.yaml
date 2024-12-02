@@ -38,6 +38,7 @@ spec:
               AUTOBRR__PORT: &port 80
               AUTOBRR__CHECK_FOR_UPDATES: "false"
               AUTOBRR__LOG_LEVEL: DEBUG
+              AUTOBRR__CUSTOM_DEFINITIONS: /config/definitions
             envFrom: &envFrom
               - secretRef:
                   name: autobrr-secret
@@ -112,5 +113,11 @@ spec:
           - hosts:
               - *host
     persistence:
+      custom-definitions:
+        type: configMap
+        name: autobrr-custom-definitions
+        globalMounts:
+          - path: /config/definitions
+            readOnly: true
       tmp:
         type: emptyDir
