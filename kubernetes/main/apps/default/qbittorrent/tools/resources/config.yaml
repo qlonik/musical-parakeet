@@ -32,6 +32,10 @@ trackers:
     urls: ["blutopia.cc", "blutopia.xyz"]
     required_seed_ratio: 0
     required_seed_days: 7.5
+  - name: booktracker
+    urls: ["booktracker.org", "booktracker.work"]
+    required_seed_ratio: 2.05
+    required_seed_days: 0
   - name: broadcasthenet
     urls: ["landof.tv"]
     required_seed_ratio: 1.05
@@ -128,6 +132,10 @@ trackers:
     urls: ["revolutiontt.me"]
     required_seed_ratio: 1.05
     required_seed_days: 0
+  - name: rutracker
+    urls: ["rutracker.org", "t-ru.org"]
+    required_seed_ratio: 2.05
+    required_seed_days: 0
   - name: scenetime
     urls: ["scenetime.com"]
     required_seed_ratio: 0
@@ -144,6 +152,10 @@ trackers:
     urls: ["sptracker.cc", "superbits.org"]
     required_seed_ratio: 1.15
     required_seed_days: 2.5
+  - name: tapochek
+    urls: ["tapochek.net"]
+    required_seed_ratio: 0
+    required_seed_days: 0
   - name: torrentday
     urls: ["jumbohostpro.eu", "td-peers.com"]
     required_seed_ratio: 1.05
