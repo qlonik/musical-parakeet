@@ -90,7 +90,6 @@ spec:
               - "unregistered"
               - "--exclude-tag"
               - "!perma-seed"
-              - "--dry-run"
               - "--server"
               - "qbittorrent.default.svc.cluster.local"
               - "--port"
@@ -131,7 +130,6 @@ spec:
               - "expired" # defined in config.yaml
               - "--exclude-tag"
               - "!perma-seed"
-              - "--dry-run"
               - "--server"
               - "qbittorrent.default.svc.cluster.local"
               - "--port"
