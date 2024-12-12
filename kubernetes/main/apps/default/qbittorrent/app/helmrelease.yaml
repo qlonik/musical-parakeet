@@ -107,6 +107,24 @@ spec:
               QBITTORRENT_PORT: *port
               PORT_FORWARDED: /tmp/gluetun/forwarded_port
 
+          vuetorrent:
+            image:
+              repository: registry.k8s.io/git-sync/git-sync
+              tag: v4.3.0@sha256:5813a7da0ccd58f6dfb9d5e48480e2877355e6bb3d7d81c8908eb1adc3a23b6e
+            args:
+              - --repo=https://github.com/VueTorrent/VueTorrent.git
+              - --ref=latest-release
+              - --period=6h
+              - --root=/add-ons
+              - --link=vuetorrent
+            probes: *probes
+            resources:
+              requests:
+                cpu: 10m
+                memory: 100Mi
+              limits:
+                memory: 500Mi
+
     defaultPodOptions:
       securityContext:
         fsGroup: 568
@@ -197,3 +215,11 @@ spec:
             port-forward:
               - path: /tmp/gluetun
                 readOnly: true
+      add-ons:
+        type: emptyDir
+        advancedMounts:
+          qbittorrent:
+            app:
+              - path: /add-ons
+            vuetorrent:
+              - path: /add-ons
