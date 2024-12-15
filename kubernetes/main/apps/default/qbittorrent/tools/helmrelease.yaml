@@ -160,18 +160,18 @@ spec:
         pod:
           restartPolicy: OnFailure
 
-      reannounce:
-        containers:
-          main:
-            image: *image
-            args:
-              - "reannounce"
-              - "--process-seeding"
-              - "--server"
-              - "qbittorrent.default.svc.cluster.local"
-              - "--port"
-              - "8080"
-            resources: *resources
+      # reannounce:
+      #   containers:
+      #     main:
+      #       image: *image
+      #       args:
+      #         - "reannounce"
+      #         - "--process-seeding"
+      #         - "--server"
+      #         - "qbittorrent.default.svc.cluster.local"
+      #         - "--port"
+      #         - "8080"
+      #       resources: *resources
 
     defaultPodOptions:
       securityContext:
