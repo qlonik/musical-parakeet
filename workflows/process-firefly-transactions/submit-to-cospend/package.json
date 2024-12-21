@@ -10,7 +10,7 @@
     "@actions/core": "^1.10.1",
     "@effect/platform-node": "^0.64.22",
     "axios": "^1.6.7",
-    "common-tags": "1.8.1",
+    "common-tags": "1.8.2",
     "effect": "^3.10.13"
   },
   "devDependencies": {
