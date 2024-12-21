@@ -18,8 +18,8 @@ importers:
         specifier: ^1.6.7
         version: 1.7.7
       common-tags:
-        specifier: 1.8.1
-        version: 1.8.1
+        specifier: 1.8.2
+        version: 1.8.2
       effect:
         specifier: ^3.10.13
         version: 3.10.13
@@ -330,8 +330,8 @@ packages:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
     engines: {node: '>= 0.8'}
 
-  common-tags@1.8.1:
-    resolution: {integrity: sha512-uOZd85rJqrdEIE/JjhW5YAeatX8iqjjvVzIyfx7JL7G5r9Tep6YpYT9gEJWhWpVyDQEyzukWd6p2qULpJ8tmBw==}
+  common-tags@1.8.2:
+    resolution: {integrity: sha512-gk/Z852D2Wtb//0I+kRFNKKE9dIIVirjoqPoA1wJU+XePVXZfGeBpk45+A1rKO4Q43prqWBNY/MiIeRLbPWUaA==}
     engines: {node: '>=4.0.0'}
 
   delayed-stream@1.0.0:
@@ -677,7 +677,7 @@ snapshots:
     dependencies:
       delayed-stream: 1.0.0
 
-  common-tags@1.8.1: {}
+  common-tags@1.8.2: {}
 
   delayed-stream@1.0.0: {}
 
