@@ -6,3 +6,10 @@ resources:
   - ./helmrelease.yaml
 components:
   - ../../../../templates/volsync
+
+configMapGenerator:
+  - name: sabnzbd-scripts
+    files:
+      - ./scripts/xseed.sh
+generatorOptions:
+  disableNameSuffixHash: true

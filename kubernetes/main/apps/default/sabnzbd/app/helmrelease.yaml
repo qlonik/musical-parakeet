@@ -43,6 +43,8 @@ spec:
                 {{ .Release.Name }}.{{ .Release.Namespace }}.svc,
                 {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster,
                 {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
+              XSEED_HOST: cross-seed.default.svc.cluster.local
+              XSEED_PORT: 80
             envFrom:
               - secretRef:
                   name: sabnzbd-secret
@@ -128,3 +130,12 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /tmp
+      scripts:
+        type: configMap
+        name: sabnzbd-scripts
+        defaultMode: 0775
+        advancedMounts:
+          sabnzbd:
+            main:
+              - path: /config/scripts
+                readOnly: true
