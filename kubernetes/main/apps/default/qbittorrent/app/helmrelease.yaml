@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -10,6 +10,7 @@ spec:
     spec:
       chart: app-template
       version: 3.5.1
+      interval: 30m
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,17 +24,51 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
-  dependsOn:
-    - name: volsync
-      namespace: storage
 
   values:
     controllers:
       qbittorrent:
-        type: statefulset
-
         annotations:
           reloader.stakater.com/auto: "true"
+
+        initContainers:
+          dnsdist:
+            image:
+              repository: docker.io/powerdns/dnsdist-18
+              tag: 1.8.4@sha256:28217d070c861a9c0b394346cd644df077d1ee1fb019a7d69d6683ea1258d4c0
+            restartPolicy: Always
+
+          gluetun:
+            dependsOn:
+              - dnsdist
+            image:
+              repository: ghcr.io/qdm12/gluetun
+              tag: v3.40.0@sha256:2b42bfa046757145a5155acece417b65b4443c8033fb88661a8e9dcf7fda5a00
+            env:
+              TZ: ${TIMEZONE}
+              DOT: off
+              DNS_ADDRESS: 127.0.0.2
+              VPN_SERVICE_PROVIDER: custom
+              VPN_TYPE: wireguard
+              VPN_INTERFACE: wg0
+              WIREGUARD_ENDPOINT_PORT: 51820
+              VPN_PORT_FORWARDING: on
+              VPN_PORT_FORWARDING_PROVIDER: protonvpn
+              FIREWALL_INPUT_PORTS: &port 8080
+              # Allow access to internal k8s subnets and nodes subnet
+              FIREWALL_OUTBOUND_SUBNETS: "${CLUSTER_CIDR},${SERVICE_CIDR},${NODE_CIDR}"
+            envFrom:
+              - secretRef:
+                  name: qbittorrent-secret
+            restartPolicy: Always
+            securityContext:
+              capabilities:
+                add:
+                  - NET_ADMIN
+              allowPrivilegeEscalation: false
+            resources:
+              limits:
+                squat.ai/tun: "1"
 
         containers:
           app:
@@ -43,10 +78,15 @@ spec:
             env:
               TZ: ${TIMEZONE}
               UMASK: "022"
-              QBITTORRENT__PORT: &port "8080"
-              QBT_BitTorrent__Session__Interface: &iface wg0
-              QBT_BitTorrent__Session__InterfaceName: *iface
-            probes: &probes
+              QBT_WEBUI_PORT: *port
+              XSEED_HOST: cross-seed.default.svc.cluster.local
+              XSEED_PORT: 80
+              XSEED_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: qbittorrent-secret
+                    key: XSEED_API_KEY
+            probes:
               liveness:
                 enabled: true
               readiness:
@@ -59,6 +99,12 @@ spec:
             securityContext:
               runAsUser: 568
               runAsGroup: 568
+              runAsNonRoot: true
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
             resources:
               requests:
                 cpu: 10m
@@ -66,46 +112,27 @@ spec:
               limits:
                 memory: 2Gi
 
-          gluetun:
-            image:
-              repository: ghcr.io/qdm12/gluetun
-              tag: v3.38.0@sha256:5522794f5cce6d84bc7f06b1e3a3b836ede9100c64aec94543cb503bb2ecb72f
-            env:
-              TZ: ${TIMEZONE}
-              VPN_SERVICE_PROVIDER: custom
-              VPN_TYPE: wireguard
-              VPN_INTERFACE: *iface
-              VPN_ENDPOINT_PORT: "51820"
-              VPN_PORT_FORWARDING: "on"
-              VPN_PORT_FORWARDING_PROVIDER: "protonvpn"
-              FIREWALL_INPUT_PORTS: *port
-              # Allow access to k8s subnets
-              FIREWALL_OUTBOUND_SUBNETS: "${CLUSTER_CIDR},${SERVICE_CIDR},${NODE_CIDR}"
-              SHADOWSOCKS: "on"
-              DOT: "off"
-              DNS_ADDRESS: "127.0.0.2"
-            envFrom:
-              - secretRef:
-                  name: qbittorrent-secret
-            probes: *probes
-            securityContext:
-              capabilities:
-                add:
-                  - NET_ADMIN
-
-          dnsdist:
-            image:
-              repository: docker.io/powerdns/dnsdist-18
-              tag: 1.8.4@sha256:28217d070c861a9c0b394346cd644df077d1ee1fb019a7d69d6683ea1258d4c0
-
           port-forward:
             image:
-              repository: docker.io/snoringdragon/gluetun-qbittorrent-port-manager
-              tag: 1.3@sha256:679b7a92c494f93b78ad37ef24f3a261e73d0a1a52505ad4f1e39580eedfa14f
+              repository: ghcr.io/bjw-s-labs/gluetun-qb-port-sync
+              tag: 0.0.2@sha256:14b9a10cda0a8dff6bd2d131686d3f6b8dd550a4a835674b22aaa711b4c34ecd
             env:
-              QBITTORRENT_SERVER: localhost
-              QBITTORRENT_PORT: *port
-              PORT_FORWARDED: /tmp/gluetun/forwarded_port
+              GLUETUN_CONTROL_SERVER_HOST: localhost
+              GLUETUN_CONTROL_SERVER_PORT: 8000
+              QBITTORRENT_HOST: localhost
+              QBITTORRENT_WEBUI_PORT: *port
+              CRON_ENABLED: true
+              CRON_SCHEDULE: "*/5 * * * *"
+              LOG_TIMESTAMP: false
+            securityContext:
+              runAsUser: 568
+              runAsGroup: 568
+              runAsNonRoot: true
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
 
           vuetorrent:
             image:
@@ -117,7 +144,6 @@ spec:
               - --period=6h
               - --root=/add-ons
               - --link=vuetorrent
-            probes: *probes
             resources:
               requests:
                 cpu: 10m
@@ -129,7 +155,7 @@ spec:
       securityContext:
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
-        supplementalGroups: [10000]
+      terminationGracePeriodSeconds: 120
 
     service:
       app:
@@ -156,7 +182,7 @@ spec:
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
-              - path: "/"
+              - path: /
                 pathType: Prefix
                 service:
                   identifier: app
@@ -182,12 +208,6 @@ spec:
           qbittorrent:
             app:
               - path: /media/downloads/qbittorrent
-      incomplete:
-        type: emptyDir
-        advancedMounts:
-          qbittorrent:
-            app:
-              - path: /incomplete
       scripts:
         type: configMap
         name: qbittorrent-scripts
@@ -195,8 +215,17 @@ spec:
         advancedMounts:
           qbittorrent:
             app:
-              - path: /scripts
+              - path: /config/scripts
                 readOnly: true
+      add-ons:
+        type: emptyDir
+        advancedMounts:
+          qbittorrent:
+            app:
+              - path: /add-ons
+                readOnly: true
+            vuetorrent:
+              - path: /add-ons
       dnsdist-config:
         type: configMap
         name: qbittorrent-dnsdist
@@ -206,20 +235,9 @@ spec:
               - path: /etc/dnsdist/dnsdist.conf
                 subPath: dnsdist.conf
                 readOnly: true
-      gluetun-data:
+      empty-config:
         type: emptyDir
         advancedMounts:
           qbittorrent:
-            gluetun:
-              - path: /tmp/gluetun
             port-forward:
-              - path: /tmp/gluetun
-                readOnly: true
-      add-ons:
-        type: emptyDir
-        advancedMounts:
-          qbittorrent:
-            app:
-              - path: /add-ons
-            vuetorrent:
-              - path: /add-ons
+              - path: /config

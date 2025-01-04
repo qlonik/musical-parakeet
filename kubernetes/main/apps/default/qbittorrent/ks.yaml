@@ -5,8 +5,6 @@ metadata:
   name: &app qbittorrent
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: volsync
   path: ./kubernetes/main/apps/default/qbittorrent/app
   targetNamespace: default
   commonMetadata:
