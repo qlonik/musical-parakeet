@@ -28,19 +28,23 @@ spec:
 
   values:
     controllers:
-      tagging:
+      prune:
         type: cronjob
-        cronjob:
+        cronjob: &cronJobSpec
           schedule: "@hourly"
           timeZone: "${TIMEZONE}"
+          backoffLimit: 0
+          concurrencyPolicy: Forbid
+          failedJobsHistory: 1
+          successfulJobsHistory: 0
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
           restartPolicy: OnFailure
 
         initContainers:
-          tagging:
-            image: &image
+          tagging: &container
+            image:
               repository: ghcr.io/buroa/qbtools
               tag: v0.19.10@sha256:fc9c2fd65a454d39084d3b7ea802c92dba4032fb0b4eaadf6a684fdf740b8c17
             args:
@@ -53,125 +57,119 @@ spec:
               - --unregistered
               - --tracker-down
               - --server
-              - "qbittorrent.default.svc.cluster.local"
+              - &qbittorrent_host "qbittorrent.default.svc.cluster.local"
               - --port
-              - "8080"
+              - &qbittorrent_port "8080"
               - --config
               - /config/config.yaml
-            resources: &resources
+            resources:
               requests:
                 cpu: 25m
                 memory: 128M
               limits:
                 memory: 256M
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
 
         containers:
           unregistered:
-            image: *image
+            <<: *container
             args:
-              - "prune"
-              - "--include-category"
-              - "autobrr"
-              - "--include-category"
-              - "cross-seed-data"
-              - "--include-category"
-              - "lidarr"
-              - "--include-category"
-              - "prowlarr"
-              - "--include-category"
-              - "radarr"
-              - "--include-category"
-              - "readarr/audio"
-              - "--include-category"
-              - "readarr/ebook"
-              - "--include-category"
-              - "sonarr"
-              - "--include-tag"
-              - "unregistered"
-              - "--exclude-tag"
+              - prune
+              - --include-category
+              - autobrr
+              - --include-category
+              - cross-seed-data
+              - --include-category
+              - lidarr
+              - --include-category
+              - prowlarr
+              - --include-category
+              - radarr
+              - --include-category
+              - readarr/audio
+              - --include-category
+              - readarr/ebook
+              - --include-category
+              - sonarr
+              - --exclude-tag
+              - added:24h
+              - --exclude-tag
               - "!perma-seed"
-              - "--server"
-              - "qbittorrent.default.svc.cluster.local"
-              - "--port"
-              - "8080"
-            resources: *resources
-            probes: &probes
-              liveness:
-                enabled: true
-              readiness:
-                enabled: true
-              startup:
-                enabled: true
-                spec:
-                  failureThreshold: 30
-                  periodSeconds: 5
+              - --include-tag
+              - unregistered
+              - --server
+              - *qbittorrent_host
+              - --port
+              - *qbittorrent_port
 
           expired:
-            image: *image
+            <<: *container
             args:
-              - "prune"
-              - "--include-category"
-              - "autobrr"
-              - "--include-category"
-              - "cross-seed-data"
-              - "--include-category"
-              - "lidarr"
-              - "--include-category"
-              - "prowlarr"
-              - "--include-category"
-              - "radarr"
-              - "--include-category"
-              - "readarr/audio"
-              - "--include-category"
-              - "readarr/ebook"
-              - "--include-category"
-              - "sonarr"
-              - "--include-tag"
-              - "expired" # defined in config.yaml
-              - "--exclude-tag"
+              - prune
+              - --include-category
+              - autobrr
+              - --include-category
+              - cross-seed-data
+              - --include-category
+              - lidarr
+              - --include-category
+              - prowlarr
+              - --include-category
+              - radarr
+              - --include-category
+              - readarr/audio
+              - --include-category
+              - readarr/ebook
+              - --include-category
+              - sonarr
+              - --exclude-tag
+              - added:24h
+              - --exclude-tag
               - "!perma-seed"
-              - "--server"
-              - "qbittorrent.default.svc.cluster.local"
-              - "--port"
-              - "8080"
-            resources: *resources
-            probes: *probes
+              - --include-tag
+              - expired
+              - --server
+              - *qbittorrent_host
+              - --port
+              - *qbittorrent_port
 
       orphaned:
         type: cronjob
         cronjob:
+          <<: *cronJobSpec
           schedule: "@daily"
-          timeZone: "${TIMEZONE}"
-        containers:
-          main:
-            image: *image
-            args:
-              - "orphaned"
-              - "--exclude-pattern"
-              - "*_unpackerred*"
-              - "--exclude-pattern"
-              - "*/manual/*"
-              - "--server"
-              - "qbittorrent.default.svc.cluster.local"
-              - "--port"
-              - "8080"
-            resources: *resources
-            probes: *probes
         pod:
           restartPolicy: OnFailure
+        containers:
+          main:
+            <<: *container
+            args:
+              - orphaned
+              - --exclude-pattern
+              - "*_unpackerred*"
+              - --exclude-pattern
+              - "*/manual/*"
+              - --server
+              - *qbittorrent_host
+              - --port
+              - *qbittorrent_port
 
-      # reannounce:
-      #   containers:
-      #     main:
-      #       image: *image
-      #       args:
-      #         - "reannounce"
-      #         - "--process-seeding"
-      #         - "--server"
-      #         - "qbittorrent.default.svc.cluster.local"
-      #         - "--port"
-      #         - "8080"
-      #       resources: *resources
+      reannounce:
+        containers:
+          main:
+            <<: *container
+            args:
+              - reannounce
+              - --process-seeding
+              - --server
+              - *qbittorrent_host
+              - --port
+              - *qbittorrent_port
 
     defaultPodOptions:
       securityContext:
@@ -179,7 +177,9 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [10000]
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
 
     persistence:
       config-file:
