@@ -39,6 +39,9 @@ spec:
               AUTOBRR__CHECK_FOR_UPDATES: "false"
               AUTOBRR__LOG_LEVEL: DEBUG
               AUTOBRR__CUSTOM_DEFINITIONS: /config/definitions
+              AUTOBRR__OIDC_ENABLED: "true"
+              AUTOBRR__OIDC_ISSUER: "https://auth.${SECRET_DOMAIN}"
+              AUTOBRR__OIDC_REDIRECT_URL: "https://autobrr.${SECRET_DOMAIN}/api/auth/oidc/callback"
             envFrom: &envFrom
               - secretRef:
                   name: autobrr-secret
