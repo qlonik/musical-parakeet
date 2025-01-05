@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cluster-apps-cross-seed
+  name: &app cross-seed
   namespace: flux-system
 spec:
   dependsOn:
@@ -13,6 +13,10 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  postBuild:
+    substitute:
+      APP: *app
+      PVC_CAPACITY: 1Gi
   prune: true
   sourceRef:
     kind: GitRepository

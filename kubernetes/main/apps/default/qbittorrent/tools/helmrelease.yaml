@@ -83,7 +83,7 @@ spec:
               - --include-category
               - autobrr
               - --include-category
-              - cross-seed-data
+              - cross-seed
               - --include-category
               - lidarr
               - --include-category
@@ -114,7 +114,7 @@ spec:
               - --include-category
               - autobrr
               - --include-category
-              - cross-seed-data
+              - cross-seed
               - --include-category
               - lidarr
               - --include-category

@@ -30,23 +30,20 @@ spec:
 
   values:
     controllers:
-      main:
+      cross-seed:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/cross-seed/cross-seed
-              tag: 5.9.2@sha256:6abdca45f0ecfd8d23a3035beefa716a14b66f23c14854631fe369d1ad346f1e
-            args: ["daemon"]
+              tag: 6.8.4@sha256:996896878ab462ded031552824c4fd773a2cf484582829029eda323b3c01e1b4
+            args: ["daemon", "-v"]
             env:
               TZ: ${TIMEZONE}
-              CROSSSEED_PORT: &port 80
-              PROWLARR_API_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: prowlarr-secret
-                    key: PROWLARR__AUTH__APIKEY
+            envFrom:
+              - secretRef:
+                  name: cross-seed-secret
             probes:
               liveness:
                 enabled: true
@@ -75,20 +72,18 @@ spec:
         runAsNonRoot: true
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [10000]
 
     service:
-      main:
-        primary: true
-        controller: main
+      app:
+        controller: cross-seed
         ports:
           http:
-            primary: true
-            port: *port
+            port: 2468
 
     persistence:
       config:
-        existingClaim: qbittorrent-conf
+        type: persistentVolumeClaim
+        existingClaim: cross-seed
         globalMounts:
           - path: /config
       config-file:
@@ -98,6 +93,10 @@ spec:
           - path: /config/config.js
             subPath: config.js
             readOnly: true
+      qbittorrent:
+        existingClaim: qbittorrent-conf
+        globalMounts:
+          - path: /qbittorrent
       media:
         type: nfs
         server: nova.home.arpa
