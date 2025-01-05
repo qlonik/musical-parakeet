@@ -186,7 +186,7 @@ spec:
         type: configMap
         name: qbtools-configmap
         advancedMounts:
-          tagging:
+          prune:
             tagging:
               - path: /config/config.yaml
                 subPath: config.yaml
