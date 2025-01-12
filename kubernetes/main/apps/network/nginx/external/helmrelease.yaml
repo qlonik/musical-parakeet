@@ -36,7 +36,6 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/hostname: "external.${SECRET_DOMAIN}"
           io.cilium/lb-ipam-ips: "192.168.0.82"
-        externalTrafficPolicy: Cluster
       ingressClassResource:
         name: external
         default: false
@@ -48,12 +47,26 @@ spec:
               operator: In
               values: ["external"]
       config:
+        allow-snippet-annotations: "true"
         annotations-risk-level: "Critical"
+        # taken from https://github.com/ai-robots-txt/ai.robots.txt
+        block-user-agents: "\
+          Ai2Bot-Dolma,AI2Bot,Amazonbot,anthropic-ai,Applebot-Extended,Applebot,Bytespider,CCBot,\
+          ChatGPT-User,Claude-Web,ClaudeBot,cohere-ai,cohere-training-data-crawler,Diffbot,\
+          DuckAssistBot,FacebookBot,FriendlyCrawler,Google-Extended,GoogleOther-Image,\
+          GoogleOther-Video,GoogleOther,GPTBot,iaskspider/2.0,ICC-Crawler,ImagesiftBot,img2dataset,\
+          ISSCyberRiskCrawler,\"Kangaroo Bot\",Meta-ExternalAgent,Meta-ExternalFetcher,\
+          OAI-SearchBot,omgili,omgilibot,PanguBot,PerplexityBot,PetalBot,Scrapy,SemrushBot,\
+          \"Sidetrade indexer bot\",Timpibot,VelenPublicWebCrawler,Webzio-Extended,YouBot,\
+          "
         client-body-buffer-size: 100M
         client-body-timeout: 120
         client-header-timeout: 120
         enable-brotli: "true"
+        enable-ocsp: "true"
         enable-real-ip: "true"
+        force-ssl-redirect: "true"
+        hide-headers: Server,X-Powered-By
         hsts-max-age: 31449600
         keep-alive-requests: 10000
         keep-alive: 120
@@ -67,6 +80,8 @@ spec:
         proxy-body-size: 0
         proxy-buffer-size: 16k
         ssl-protocols: TLSv1.3 TLSv1.2
+        # public and front-facing nginx instance not behind any proxy
+        use-forwarded-headers: "false"
       metrics:
         enabled: true
         serviceMonitor:
