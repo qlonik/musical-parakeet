@@ -97,7 +97,7 @@ spec:
                 spec:
                   failureThreshold: 30
                   periodSeconds: 5
-            securityContext:
+            securityContext: &security
               runAsUser: 568
               runAsGroup: 568
               runAsNonRoot: true
@@ -125,15 +125,7 @@ spec:
               CRON_ENABLED: true
               CRON_SCHEDULE: "*/5 * * * *"
               LOG_TIMESTAMP: false
-            securityContext:
-              runAsUser: 568
-              runAsGroup: 568
-              runAsNonRoot: true
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities:
-                drop:
-                  - ALL
+            securityContext: *security
 
           vuetorrent:
             image:
@@ -151,6 +143,24 @@ spec:
                 memory: 100Mi
               limits:
                 memory: 500Mi
+
+          mam-seedbox-api:
+            image:
+              repository: docker.io/myanonamouse/seedboxapi
+              tag: 20240908-2038@sha256:f9adb5ff3bf381dbb47b5226888abd7daa53333fa97cb41c43ada9f1c1da4953
+            env:
+              DEBUG: "1"
+              interval: "60" # minutes
+            envFrom:
+              - secretRef:
+                  name: qbittorrent-secret
+            securityContext: *security
+            resources:
+              requests:
+                cpu: 10m
+                memory: 10Mi
+              limits:
+                memory: 128Mi
 
     defaultPodOptions:
       securityContext:
@@ -201,6 +211,9 @@ spec:
           qbittorrent:
             app:
               - path: /config
+            mam-seedbox-api:
+              - path: /config
+                subPath: mam-cookies
       downloads:
         type: nfs
         server: nova.home.arpa
@@ -242,3 +255,9 @@ spec:
           qbittorrent:
             port-forward:
               - path: /config
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          qbittorrent:
+            mam-seedbox-api:
+              - path: /tmp
