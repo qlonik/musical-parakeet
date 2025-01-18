@@ -147,7 +147,7 @@ spec:
           mam-seedbox-api:
             image:
               repository: docker.io/myanonamouse/seedboxapi
-              tag: 20240908-2038@sha256:3e1b2e82cf2744b7f2ffcd79a548682df3a5aa9e5205aff7a4e34a728ea02c4f
+              tag: 20240908-2038@sha256:f9adb5ff3bf381dbb47b5226888abd7daa53333fa97cb41c43ada9f1c1da4953
             env:
               DEBUG: "1"
               interval: "300" # every 5 minutes
