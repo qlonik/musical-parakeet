@@ -97,7 +97,7 @@ spec:
                 spec:
                   failureThreshold: 30
                   periodSeconds: 5
-            securityContext:
+            securityContext: &security
               runAsUser: 568
               runAsGroup: 568
               runAsNonRoot: true
@@ -125,15 +125,7 @@ spec:
               CRON_ENABLED: true
               CRON_SCHEDULE: "*/5 * * * *"
               LOG_TIMESTAMP: false
-            securityContext:
-              runAsUser: 568
-              runAsGroup: 568
-              runAsNonRoot: true
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities:
-                drop:
-                  - ALL
+            securityContext: *security
 
           vuetorrent:
             image:
@@ -151,6 +143,24 @@ spec:
                 memory: 100Mi
               limits:
                 memory: 500Mi
+
+          mam-seedbox-api:
+            image:
+              repository: docker.io/myanonamouse/seedboxapi
+              tag: 20240908-2038@sha256:3e1b2e82cf2744b7f2ffcd79a548682df3a5aa9e5205aff7a4e34a728ea02c4f
+            env:
+              DEBUG: "1"
+              interval: "300" # every 5 minutes
+            envFrom:
+              - secretRef:
+                  name: qbittorrent-secret
+            securityContext: *security
+            resources:
+              requests:
+                cpu: 10m
+                memory: 10Mi
+              limits:
+                memory: 128Mi
 
     defaultPodOptions:
       securityContext:
@@ -201,6 +211,9 @@ spec:
           qbittorrent:
             app:
               - path: /config
+            mam-seedbox-api:
+              - path: /config
+                subPath: mam-cookies
       downloads:
         type: nfs
         server: nova.home.arpa
