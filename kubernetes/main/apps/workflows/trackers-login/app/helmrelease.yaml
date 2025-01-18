@@ -35,7 +35,7 @@ spec:
           main:
             image:
               repository: ghcr.io/puppeteer/puppeteer
-              tag: 22.12.1@sha256:34ee19dfd97aafb01e9f353c0d5538dce092a25e3e8763634f6a566e93013901
+              tag: 22.15.0@sha256:62af46dd09ea2dc6a79ec22e697a504dbf13ca8605006e7f7ca1cbd0cdea6a2f
             args:
               - node
               - /app/script.js
