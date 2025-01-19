@@ -160,6 +160,23 @@ spec:
               limits:
                 memory: 128Mi
 
+          mam-points-spend:
+            image:
+              repository: docker.io/myanonamouse/pointspend
+              tag: 20240818-2145@sha256:8131f3e96cbfea69cc4f0d7c0d3ed99b04b1c08817906ed8bf251508551c46ac
+            env:
+              DEBUG: "1"
+              BUFFER: "25000"
+              VIP: "1"
+            envFrom: *qbSecret
+            securityContext: *security
+            resources:
+              requests:
+                cpu: 10m
+                memory: 10Mi
+              limits:
+                memory: 128Mi
+
     defaultPodOptions:
       securityContext:
         fsGroup: 568
@@ -210,6 +227,9 @@ spec:
             app:
               - path: /config
             mam-seedbox-api:
+              - path: /config
+                subPath: mam-cookies
+            mam-points-spend:
               - path: /config
                 subPath: mam-cookies
       downloads:
