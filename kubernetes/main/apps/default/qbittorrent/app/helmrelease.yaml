@@ -58,8 +58,8 @@ spec:
               # Allow access to internal k8s subnets and nodes subnet
               FIREWALL_OUTBOUND_SUBNETS: "${CLUSTER_CIDR},${SERVICE_CIDR},${NODE_CIDR}"
               UPDATER_PERIOD: 24h
-            envFrom:
-              - secretRef:
+            envFrom: &qbSecret
+              - secretRef: &qbSecretName
                   name: qbittorrent-secret
             restartPolicy: Always
             securityContext:
@@ -85,7 +85,7 @@ spec:
               XSEED_API_KEY:
                 valueFrom:
                   secretKeyRef:
-                    name: qbittorrent-secret
+                    <<: *qbSecretName
                     key: XSEED_API_KEY
             probes:
               liveness:
@@ -151,9 +151,7 @@ spec:
             env:
               DEBUG: "1"
               interval: "60" # minutes
-            envFrom:
-              - secretRef:
-                  name: qbittorrent-secret
+            envFrom: *qbSecret
             securityContext: *security
             resources:
               requests:
