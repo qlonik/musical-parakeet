@@ -35,7 +35,7 @@ importers:
         version: 1.8.4
       '@types/node':
         specifier: ^22.9.0
-        version: 22.10.5
+        version: 22.13.0
       tsx:
         specifier: ^4.7.1
         version: 4.19.2
@@ -313,8 +313,8 @@ packages:
   '@types/common-tags@1.8.4':
     resolution: {integrity: sha512-S+1hLDJPjWNDhcGxsxEbepzaxWqURP/o+3cP4aa2w7yBXgdcmKGQtZzP8JbyfOd0m+33nh+8+kvxYE2UJtBDkg==}
 
-  '@types/node@22.10.5':
-    resolution: {integrity: sha512-F8Q+SeGimwOo86fiovQh8qiXfFEh2/ocYv7tU5pJ3EXMSSxk1Joj5wefpFK2fHTf/N6HKGSxIDBT9f3gCxXPkQ==}
+  '@types/node@22.13.0':
+    resolution: {integrity: sha512-ClIbNe36lawluuvq3+YYhnIN2CELi+6q8NpnM7PYp4hBn/TatfboPgVSm2rwKRfnV2M+Ty9GWDFI64KEe+kysA==}
 
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
@@ -655,7 +655,7 @@ snapshots:
 
   '@types/common-tags@1.8.4': {}
 
-  '@types/node@22.10.5':
+  '@types/node@22.13.0':
     dependencies:
       undici-types: 6.20.0
 
