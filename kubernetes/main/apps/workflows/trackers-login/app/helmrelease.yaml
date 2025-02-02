@@ -56,7 +56,6 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities:
-                drop: ["ALL"]
                 add: ["SYS_ADMIN"]
               seccompProfile: { type: RuntimeDefault }
     defaultPodOptions:
