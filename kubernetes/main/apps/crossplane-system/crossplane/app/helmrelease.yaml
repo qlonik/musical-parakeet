@@ -27,4 +27,4 @@ spec:
   values:
     provider:
       packages:
-        - ghcr.io/vshn/provider-minio/provider:v0.1.0
+        - ghcr.io/vshn/provider-minio/provider:v0.4.3
