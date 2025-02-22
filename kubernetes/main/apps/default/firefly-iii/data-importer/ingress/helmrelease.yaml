@@ -36,7 +36,7 @@ spec:
           main:
             image:
               repository: ghcr.io/nginxinc/nginx-unprivileged
-              tag: stable-alpine@sha256:4b0c9c26609a7c904402b02ca1ef2dc94964f0d633feb28894814b30aaa7b66c
+              tag: stable-alpine@sha256:c4a0dde87c75cd95de5653b1ec116d2c10bb057c0a5d558d572d1ee9d61266e1
             probes:
               liveness: &probes
                 enabled: true
