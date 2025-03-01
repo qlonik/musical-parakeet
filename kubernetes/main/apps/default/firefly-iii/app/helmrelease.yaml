@@ -29,7 +29,7 @@ spec:
           main:
             image:
               repository: fireflyiii/core
-              tag: version-6.2.2@sha256:c2ae034241787e39041151bc60f4175427294e3dd96d8eeab61bfe90e820f74a
+              tag: version-6.2.9@sha256:b368f3ba77a34314da1e4925a1450f2f9cfaa5a173ef12683af2940223d7a428
             env:
               TZ: ${TIMEZONE}
               DEFAULT_LANGUAGE: en_CA
