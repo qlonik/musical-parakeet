@@ -12,8 +12,8 @@ importers:
         specifier: ^1.10.1
         version: 1.11.1
       '@effect/platform-node':
-        specifier: ^0.71.0
-        version: 0.71.1(@effect/platform@0.69.20(effect@3.12.7))(effect@3.12.7)
+        specifier: ^0.73.0
+        version: 0.73.6(@effect/platform@0.69.20(effect@3.13.6))(effect@3.13.6)
       axios:
         specifier: ^1.6.7
         version: 1.7.9
@@ -22,7 +22,7 @@ importers:
         version: 1.8.1
       effect:
         specifier: ^3.10.13
-        version: 3.12.7
+        version: 3.13.6
     devDependencies:
       '@tsconfig/node22':
         specifier: ^22.0.0
@@ -57,17 +57,17 @@ packages:
   '@actions/io@1.1.3':
     resolution: {integrity: sha512-wi9JjgKLYS7U/z8PPbco+PvTb/nRWjeoFlJ1Qer83k/3C5PHQi28hiVdeE2kHXmIL99mQFawx8qt/JPjZilJ8Q==}
 
-  '@effect/platform-node-shared@0.25.1':
-    resolution: {integrity: sha512-GK52lS+PR1gewDtj1uqiSpzd358WHk9oBfjq+1YxWtcLbz6PLkEo05JfRipAejiQec8c61/jwSAG3eP81AtIDA==}
+  '@effect/platform-node-shared@0.27.6':
+    resolution: {integrity: sha512-OqWm0OQFeIQ+49oel3rX+tKOhrA7uKZPrRgyD5fupNfXtXRRu15Q/Jnaeq+5H3PUOIi03DR+CqD+JZnq52/NjA==}
     peerDependencies:
-      '@effect/platform': ^0.75.1
-      effect: ^3.12.7
+      '@effect/platform': ^0.77.6
+      effect: ^3.13.6
 
-  '@effect/platform-node@0.71.1':
-    resolution: {integrity: sha512-O2HFAuU31lzKfWllIfCH7Kb+vbJjtQYskzHVUA8K2BovAAN/L1WwGVRCQQS0Ys+nqTk2BD9x6w7xrtxg9+PEhA==}
+  '@effect/platform-node@0.73.6':
+    resolution: {integrity: sha512-/j30syUUOnFzydA5Nb2Whdo4ZkotzlsEmM0ZbpBp0jQSYoQy3tdWRHtdJZYaFq8VVhWT5KIINu5jJbsGR0mjsg==}
     peerDependencies:
-      '@effect/platform': ^0.75.1
-      effect: ^3.12.7
+      '@effect/platform': ^0.77.6
+      effect: ^3.13.6
 
   '@effect/platform@0.69.20':
     resolution: {integrity: sha512-xO96rj+719UBNYzuC+KKDyzDNXZM6VnaNfSEPWWgmFI74ytiWa/VyeJFHwOVMdUvgAnvmPk4P7LO5YHMvNv46A==}
@@ -304,6 +304,9 @@ packages:
     resolution: {integrity: sha512-i0GV1yJnm2n3Yq1qw6QrUrd/LI9bE8WEBOTtOkpCXHHdyN3TAGgqAK/DAT05z4fq2x04cARXt2pDmjWjL92iTQ==}
     engines: {node: '>= 10.0.0'}
 
+  '@standard-schema/spec@1.0.0':
+    resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
+
   '@tsconfig/node22@22.0.0':
     resolution: {integrity: sha512-twLQ77zevtxobBOD4ToAtVmuYrpeYUh3qh+TEp+08IWhpsrIflVHqQ1F1CiPxQGL7doCdBIOOCF+1Tm833faNg==}
 
@@ -343,8 +346,8 @@ packages:
     engines: {node: '>=0.10'}
     hasBin: true
 
-  effect@3.12.7:
-    resolution: {integrity: sha512-BsDTgSjLbL12g0+vGn5xkOgOVhRSaR3VeHmjcUb0gLvpXACJ9OgmlfeH+/FaAZwM5+omIF3I/j1gC5KJrbK1Aw==}
+  effect@3.13.6:
+    resolution: {integrity: sha512-NKmzyIuOb2UuHFPRz9EYScbhMBxXkzjPRuu+4axE+hMk1f0U7TZxzi2CP3TVVxA2kzvh00aBQEbyH7Opq4PnWg==}
 
   esbuild@0.23.1:
     resolution: {integrity: sha512-VVNz/9Sa0bs5SELtn3f7qhJCDPCF5oMEl5cO9/SSinpE9hbPVvxbd572HH5AKiP7WD8INO53GgfDDhRjkylHEg==}
@@ -490,18 +493,18 @@ snapshots:
 
   '@actions/io@1.1.3': {}
 
-  '@effect/platform-node-shared@0.25.1(@effect/platform@0.69.20(effect@3.12.7))(effect@3.12.7)':
+  '@effect/platform-node-shared@0.27.6(@effect/platform@0.69.20(effect@3.13.6))(effect@3.13.6)':
     dependencies:
-      '@effect/platform': 0.69.20(effect@3.12.7)
+      '@effect/platform': 0.69.20(effect@3.13.6)
       '@parcel/watcher': 2.5.0
-      effect: 3.12.7
+      effect: 3.13.6
       multipasta: 0.2.5
 
-  '@effect/platform-node@0.71.1(@effect/platform@0.69.20(effect@3.12.7))(effect@3.12.7)':
+  '@effect/platform-node@0.73.6(@effect/platform@0.69.20(effect@3.13.6))(effect@3.13.6)':
     dependencies:
-      '@effect/platform': 0.69.20(effect@3.12.7)
-      '@effect/platform-node-shared': 0.25.1(@effect/platform@0.69.20(effect@3.12.7))(effect@3.12.7)
-      effect: 3.12.7
+      '@effect/platform': 0.69.20(effect@3.13.6)
+      '@effect/platform-node-shared': 0.27.6(@effect/platform@0.69.20(effect@3.13.6))(effect@3.13.6)
+      effect: 3.13.6
       mime: 3.0.0
       undici: 7.2.0
       ws: 8.18.0
@@ -509,9 +512,9 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform@0.69.20(effect@3.12.7)':
+  '@effect/platform@0.69.20(effect@3.13.6)':
     dependencies:
-      effect: 3.12.7
+      effect: 3.13.6
       find-my-way-ts: 0.1.5
       multipasta: 0.2.5
 
@@ -649,6 +652,8 @@ snapshots:
       '@parcel/watcher-win32-ia32': 2.5.0
       '@parcel/watcher-win32-x64': 2.5.0
 
+  '@standard-schema/spec@1.0.0': {}
+
   '@tsconfig/node22@22.0.0': {}
 
   '@tsconfig/strictest@2.0.5': {}
@@ -683,8 +688,9 @@ snapshots:
 
   detect-libc@1.0.3: {}
 
-  effect@3.12.7:
+  effect@3.13.6:
     dependencies:
+      '@standard-schema/spec': 1.0.0
       fast-check: 3.23.2
 
   esbuild@0.23.1:
