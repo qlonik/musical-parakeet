@@ -13,7 +13,7 @@ spec:
       containers:
         - name: wipe
           image: public.ecr.aws/docker/library/alpine:3.20.3@sha256:beefdbd8a1da6d2915566fde36db9db0b524eb737fc57cd1367effd16dc0d06d
-          command: ["/bin/bash", "-c", "cd /config; find . -delete"]
+          command: ["/bin/sh", "-c", "cd /config; find . -delete"]
           volumeMounts:
             - name: config
               mountPath: /config
