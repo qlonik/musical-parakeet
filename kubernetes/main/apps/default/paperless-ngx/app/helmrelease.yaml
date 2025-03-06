@@ -64,7 +64,7 @@ spec:
             dependsOn: main
             image:
               repository: docker.io/gotenberg/gotenberg
-              tag: 8.16.0@sha256:deac6b4a34d8c2e09f2fe15aff501dc4d6375bf0d4174c142cd01ee42ffe2e73
+              tag: 8.17.3@sha256:779d4cf9bb36cb645e26e03fdb1b929b5d0fd01bfa58c336da5e224dd154626e
             # The gotenberg chromium route is used to convert .eml files. We do not
             # want to allow external content like tracking pixels or even javascript.
             args:
