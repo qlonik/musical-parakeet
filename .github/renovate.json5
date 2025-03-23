@@ -3,6 +3,7 @@
   "extends": [
     "config:recommended",
     "docker:enableMajor",
+    "helpers:pinGitHubActionDigests",
     ":disableRateLimiting",
     ":dependencyDashboard",
     ":semanticCommits",
@@ -14,6 +15,7 @@
   "suppressNotifications": ["prEditedNotification", "prIgnoreNotification"],
   "rebaseWhen": "conflicted",
   "schedule": ["on saturday"],
+  "internalChecksFilter": "strict",
   "pre-commit": {
     "enabled": true
   },
@@ -76,7 +78,8 @@
       "automerge": true,
       "automergeType": "branch",
       "ignoreTests": true,
-      "matchUpdateTypes": ["minor", "patch"]
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "minimumReleaseAge": "7 days"
     },
     {
       "description": [
