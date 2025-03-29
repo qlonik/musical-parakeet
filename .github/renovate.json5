@@ -92,7 +92,7 @@
       "matchUpdateTypes": ["digest"],
       "matchPackageNames": [
         "/ghcr.io/nginxinc/",
-        "/ghcr.io/onedr0p/",
+        "/ghcr.io/home-operations/",
         "/public.ecr.aws/docker/library/"
       ]
     },
