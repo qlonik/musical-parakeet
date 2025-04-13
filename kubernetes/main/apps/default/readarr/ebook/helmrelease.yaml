@@ -34,7 +34,7 @@ spec:
           main:
             image:
               repository: ghcr.io/home-operations/readarr
-              tag: 0.4.12.2753@sha256:126f98cd6b459d48ac0286249a4f7e499697a7bdfddfae8784afb11aa83e6b93
+              tag: 0.4.14.2782@sha256:a3078952ed42f18f0af62610406133fba94ee01804793cf97dea2a7fc72f6b7a
             env:
               TZ: ${TIMEZONE}
               READARR__SERVER__URLBASE: /ebook
