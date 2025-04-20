@@ -5,3 +5,4 @@ resources:
   - ./namespace.yaml
   - ./cloudnative-pg/ks.yaml
   - ./emqx/ks.yaml
+  - ./typesense/ks.yaml
