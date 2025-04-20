@@ -1,0 +1,287 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: neodb
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.2
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  dependsOn:
+    - name: neodb-redis
+      namespace: social
+  values:
+    controllers:
+      web:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app: &neodbService
+            image: &neodbImage
+              repository: neodb/neodb
+              tag: 0.11.5.6@sha256:3d0daf51fc04a9409d4d152b23e88bffe649f265f5f7233da4e455e9eb8fbebd
+            args:
+              - bash
+              - -c
+              - >-
+                "$${NEODB_VENV:-/neodb-venv}/bin/gunicorn"
+                boofilsic.wsgi
+                -w "$${NEODB_WEB_WORKER_NUM:-8}"
+                --preload
+                --max-requests 2000
+                --timeout 60
+                -b 0.0.0.0:8000
+            envFrom: &envFrom
+              - configMapRef:
+                  name: neodb-config
+              - secretRef:
+                  name: neodb-secret
+            probes:
+              liveness: &neodbProbe
+                enabled: true
+                type: HTTP
+                path: /nodeinfo/2.0/
+              readiness: *neodbProbe
+              startup:
+                <<: *neodbProbe
+                spec:
+                  periodSeconds: 5
+                  failureThreshold: 30
+            securityContext: &containerSecurityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources: {}
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16.8@sha256:217c47c886965474f5c234b5a35ed008f53b39ea90a3088b31c0da98e1f9284d
+            envFrom:
+              - secretRef:
+                  name: neodb-init-db-secret
+          migrations:
+            dependsOn: init-db
+            image: *neodbImage
+            args: ["neodb-manage", "migrate"]
+            envFrom: *envFrom
+      api:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            <<: *neodbService
+            args:
+              - bash
+              - -c
+              - >-
+                "$${NEODB_VENV:-/neodb-venv}/bin/gunicorn"
+                boofilsic.wsgi
+                -w "$${NEODB_API_WORKER_NUM:-4}"
+                --preload
+                --max-requests 2000
+                --timeout 30
+                -b 0.0.0.0:8000
+      worker:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            <<: *neodbService
+            args:
+              - bash
+              - -c
+              - >-
+                neodb-manage
+                rqworker
+                --with-scheduler
+                import export mastodon fetch crawl ap cron
+            probes: &disabledProbes
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+      worker-extra:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            <<: *neodbService
+            args:
+              - bash
+              - -c
+              - >-
+                neodb-manage
+                rqworker-pool
+                --num-workers "$${NEODB_RQ_WORKER_NUM:-4}"
+                mastodon fetch crawl ap
+            probes: *disabledProbes
+      takahe:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app: &takaheService
+            image: *neodbImage
+            args:
+              - bash
+              - -c
+              - >-
+                "$${TAKAHE_VENV:-/takahe-venv}/bin/gunicorn"
+                --chdir /takahe
+                takahe.wsgi
+                -w "$${TAKAHE_WEB_WORKER_NUM:-8}"
+                --max-requests 2000
+                --timeout 60
+                --preload
+                -b 0.0.0.0:8000
+            envFrom: *envFrom
+            probes:
+              liveness: &takaheProbe
+                enabled: true
+                type: HTTP
+                path: /api/v1/instance
+              readiness: *takaheProbe
+              startup:
+                <<: *takaheProbe
+                spec:
+                  periodSeconds: 5
+                  failureThreshold: 30
+            securityContext: *containerSecurityContext
+            resources: {}
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16.8@sha256:217c47c886965474f5c234b5a35ed008f53b39ea90a3088b31c0da98e1f9284d
+            envFrom:
+              - secretRef:
+                  name: takahe-init-db-secret
+          migrations:
+            dependsOn: init-db
+            image: *neodbImage
+            args: ["takahe-manage", "migrate"]
+            envFrom: *envFrom
+      takahe-stator:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            <<: *takaheService
+            args: ["takahe-manage", "runstator"]
+            probes: *disabledProbes
+      nginx:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image: *neodbImage
+            args: "nginx-start"
+            env:
+              NEODB_WEB_SERVER: neodb-web.social.svc.cluster.local:8000
+              NEODB_API_SERVER: neodb-api.social.svc.cluster.local:8000
+              TAKAHE_WEB_SERVER: neodb-takahe.social.svc.cluster.local:8000
+              NGINX_CONF: /neodb/misc/nginx.conf.d/neodb.conf
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            securityContext: *containerSecurityContext
+            resources: {}
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+    service:
+      main:
+        primary: true
+        controller: nginx
+        ports:
+          http:
+            primary: true
+            port: 8000
+      web:
+        controller: web
+        ports:
+          http:
+            port: 8000
+      api:
+        controller: api
+        ports:
+          http:
+            port: 8000
+      takahe:
+        controller: takahe
+        ports:
+          http:
+            port: 8000
+    ingress:
+      main:
+        className: internal
+        hosts:
+          - host: &host "neodb.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      neodb:
+        type: persistentVolumeClaim
+        existingClaim: neodb
+        globalMounts:
+          - path: /www/m
+            subPath: neodb-media
+          - path: /www/media
+            subPath: takahe-media
+          - path: /www/cache
+            subPath: takahe-cache
+          - path: /www/root
+            subPath: www-root
+      nginx:
+        type: emptyDir
+        advancedMounts:
+          nginx:
+            app:
+              - path: /etc/nginx/conf.d
+                subPath: conf
+              - path: /var/lib/nginx
+                subPath: data
+              - path: /var/log/nginx
+                subPath: log
+              - path: /run
+                subPath: run
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          web:
+            app:
+              - path: /tmp
+          api:
+            app:
+              - path: /tmp
+          takahe:
+            app:
+              - path: /tmp

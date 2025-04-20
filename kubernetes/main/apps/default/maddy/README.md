@@ -8,6 +8,7 @@ search.
 
 - `authelia`
 - `mealie`
+- `neodb`
 - `nextcloud`
 - `vikunja`
 
