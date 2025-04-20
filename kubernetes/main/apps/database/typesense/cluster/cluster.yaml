@@ -1,0 +1,17 @@
+---
+apiVersion: ts.opentelekomcloud.com/v1alpha1
+kind: TypesenseCluster
+metadata:
+  name: ty-neodb
+  labels:
+    app.kubernetes.io/name: typesense-operator
+    app.kubernetes.io/managed-by: kustomize
+spec:
+  image: typesense/typesense:28.0@sha256:6955c02616216b3464880b5324e4ca4f0a43ac228d1494ba33e8b79cc6d79ad3
+  replicas: 1
+  adminApiKey:
+    name: typesense-neodb-secret
+    namespace: database
+  storage:
+    size: 1Gi
+    storageClassName: openebs-hostpath
