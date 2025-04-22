@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: democratic-csi
-      version: 0.14.7
+      version: 0.15.0
       sourceRef:
         name: democratic-csi
         kind: HelmRepository
@@ -52,21 +52,35 @@ spec:
       annotations:
         reloader.stakater.com/auto: "true"
       externalAttacher:
-        image: registry.k8s.io/sig-storage/csi-attacher:v4.8.1
+        image:
+          registry: registry.k8s.io/sig-storage/csi-attacher
+          tag: v4.8.1
       externalProvisioner:
-        image: registry.k8s.io/sig-storage/csi-provisioner:v5.2.0
+        image:
+          registry: registry.k8s.io/sig-storage/csi-provisioner
+          tag: v5.2.0
       externalResizer:
-        image: registry.k8s.io/sig-storage/csi-resizer:v1.13.2
+        image:
+          registry: registry.k8s.io/sig-storage/csi-resizer
+          tag: v1.13.2
       externalSnapshotter:
-        image: registry.k8s.io/sig-storage/csi-snapshotter:v8.2.1
+        image:
+          registry: registry.k8s.io/sig-storage/csi-snapshotter
+          tag: v8.2.1
       driver:
-        image: ghcr.io/democratic-csi/democratic-csi:v1.9.3
+        image:
+          registry: ghcr.io/democratic-csi/democratic-csi
+          tag: v1.9.3
         logLevel: debug
     node:
       annotations:
         reloader.stakater.com/auto: "true"
       driver:
-        image: ghcr.io/democratic-csi/democratic-csi:v1.9.3
+        image:
+          registry: ghcr.io/democratic-csi/democratic-csi
+          tag: v1.9.3
         logLevel: debug
       driverRegistrar:
-        image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.13.0
+        image:
+          registry: registry.k8s.io/sig-storage/csi-node-driver-registrar
+          tag: v2.13.0
