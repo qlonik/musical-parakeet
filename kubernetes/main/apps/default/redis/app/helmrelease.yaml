@@ -24,7 +24,7 @@ spec:
     keepHistory: false
   values:
     global:
-      storageClass: local-path
+      defaultStorageClass: local-path
     auth:
       existingSecret: redis-credentials
       existingSecretPasswordKey: redis-password
