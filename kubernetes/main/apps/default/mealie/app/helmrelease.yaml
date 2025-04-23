@@ -143,3 +143,6 @@ spec:
           main:
             main:
               - path: /app/data
+      # todo: remove once https://github.com/mealie-recipes/mealie/pull/5290 ships
+      nltk_data:
+        type: emptyDir
