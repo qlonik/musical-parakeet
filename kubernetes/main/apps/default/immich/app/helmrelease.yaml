@@ -140,6 +140,7 @@ spec:
           gethomepage.dev/widget.type: immich
           gethomepage.dev/widget.url: *internalUrl
           gethomepage.dev/widget.key: "{{ `{{HOMEPAGE_VAR_IMMICH_API_KEY}}` }}"
+          gethomepage.dev/widget.version: "2"
         hosts:
           - host: &host "immich.${SECRET_DOMAIN}"
             paths:

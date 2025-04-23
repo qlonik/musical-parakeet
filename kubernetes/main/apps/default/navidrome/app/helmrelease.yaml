@@ -98,7 +98,7 @@ spec:
           gethomepage.dev/siteMonitor: &internalUrl "http://{{ .Release.Name }}.default.svc.cluster.local:4533"
           gethomepage.dev/widget.type: navidrome
           gethomepage.dev/widget.url: *internalUrl
-          gethomepage.dev/widget.admin: "{{ `{{HOMEPAGE_VAR_NAVIDROME_ADMIN_USER}}` }}"
+          gethomepage.dev/widget.user: "{{ `{{HOMEPAGE_VAR_NAVIDROME_ADMIN_USER}}` }}"
           gethomepage.dev/widget.salt: "{{ `{{HOMEPAGE_VAR_NAVIDROME_ADMIN_SALT}}` }}"
           gethomepage.dev/widget.token: "{{ `{{HOMEPAGE_VAR_NAVIDROME_ADMIN_TOKEN}}` }}"
         hosts:

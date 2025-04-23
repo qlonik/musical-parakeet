@@ -123,6 +123,7 @@ spec:
           gethomepage.dev/widget.type: mealie
           gethomepage.dev/widget.url: *internalUrl
           gethomepage.dev/widget.key: "{{ `{{HOMEPAGE_VAR_MEALIE_API_TOKEN}}` }}"
+          gethomepage.dev/widget.version: "2"
         hosts:
           - host: &host "recipes.${SECRET_DOMAIN}"
             paths:

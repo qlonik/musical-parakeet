@@ -55,6 +55,7 @@ spec:
         gethomepage.dev/icon: longhorn.png
         gethomepage.dev/name: Longhorn
         gethomepage.dev/group: Storage
+        gethomepage.dev/app: longhorn-ui
     metrics:
       serviceMonitor:
         enabled: true
