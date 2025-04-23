@@ -52,7 +52,9 @@ spec:
                   periodSeconds: 5
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
+              # cannot make readonly, since default workingDir `/app` needs
+              # to be writable
+              readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"] }
             resources:
               requests:
@@ -115,10 +117,8 @@ spec:
         # stateful data
         type: persistentVolumeClaim
         existingClaim: navidrome
-        advancedMounts:
-          navidrome:
-            main:
-              - path: /data
+        globalMounts:
+          - path: /data
       music:
         type: nfs
         server: nova.home.arpa
