@@ -50,7 +50,7 @@ spec:
               SMTP_HOST: maddy.default.svc.cluster.local
               SMTP_PORT: 2525
               SMTP_FROM_NAME: Mealie
-              SMTP_FROM_EMAIL: "mealie@${SECRET_DOMAIN}"
+              SMTP_FROM_EMAIL: "no-reply+mealie@${SECRET_DOMAIN}"
               SMTP_AUTH_STRATEGY: NONE
 
               LDAP_AUTH_ENABLED: "true"

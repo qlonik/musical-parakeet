@@ -56,7 +56,7 @@ notifier:
   disable_startup_check: true
   smtp:
     address: maddy.default.svc.cluster.local:2525
-    sender: Authelia <authelia@${SECRET_DOMAIN}>
+    sender: Authelia <no-reply+authelia@${SECRET_DOMAIN}>
     disable_require_tls: true
 
 totp:

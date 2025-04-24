@@ -34,7 +34,7 @@ data:
   # TAKAHE_SENTRY_DSN: ""
   # NEODB_SENTRY_SAMPLE_RATE: ""
   NEODB_EMAIL_URL: "smtp://maddy.default.svc.cluster.local:2525"
-  NEODB_EMAIL_FROM: &emailFrom "neodb@${SECRET_DOMAIN}"
+  NEODB_EMAIL_FROM: &emailFrom "NeoDB <no-reply+neodb@${SECRET_DOMAIN}>"
   # NEODB_ENABLE_LOCAL_ONLY: ""
   # NEODB_ENABLE_LOGIN_BLUESKY: ""
   # NEODB_ENABLE_LOGIN_THREADS: ""

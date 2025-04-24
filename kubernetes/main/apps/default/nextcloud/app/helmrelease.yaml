@@ -39,7 +39,7 @@ spec:
         secretName: nextcloud-secret
       mail:
         enabled: true
-        fromAddress: nextcloud
+        fromAddress: no-reply+nextcloud
         domain: "${SECRET_DOMAIN}"
         smtp:
           port: 2525
