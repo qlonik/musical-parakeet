@@ -24,7 +24,7 @@ spec:
     keepHistory: false
   values:
     global:
-      defaultStorageClass: local-path
+      defaultStorageClass: openebs-hostpath
     auth:
       existingSecret: redis-credentials
       existingSecretPasswordKey: redis-password
