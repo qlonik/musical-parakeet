@@ -33,7 +33,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v1.131.3@sha256:7e5b6729b12b5e5cc5d98bcc6f7c27f723fabae4ee77696855808ebd5200bbf8
+              tag: v1.133.1@sha256:1daaf09ba61066184aad6e4f524b13e20f8884cb2030c314438e34cce9358b2c
             env:
               TZ: "${TIMEZONE}"
               IMMICH_LOG_LEVEL: verbose
