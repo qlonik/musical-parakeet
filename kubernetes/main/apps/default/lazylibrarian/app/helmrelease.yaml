@@ -30,7 +30,7 @@ spec:
           main:
             image:
               repository: ghcr.io/linuxserver/lazylibrarian
-              tag: latest@sha256:ee2b4f96ac23797fdc2223ec340787bc4dfa96633ad698e056213cc26f21f81e
+              tag: latest@sha256:aab02b66716c5bdd26ae1b717193175e522d78472b5783d83d12c6177faa3eb9
             env:
               TZ: ${TIMEZONE}
               PUID: 568
