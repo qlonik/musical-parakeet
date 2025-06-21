@@ -85,7 +85,7 @@ spec:
           main:
             image:
               repository: quay.io/curl/curl
-              tag: 8.13.0@sha256:2430f5b829c10466b2c19a689f61d16a516233759d15d2840d3e3ba7c332cce5
+              tag: 8.14.1@sha256:f95026f35f8e40ca1c11738a1c5710baadf4b8cafabab9738dadbf9fb99084a9
             args:
               - curl
               - "firefly-iii.default.svc.cluster.local:8080/api/v1/cron/$$(STATIC_CRON_TOKEN)"
