@@ -33,7 +33,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v1.131.3@sha256:7e5b6729b12b5e5cc5d98bcc6f7c27f723fabae4ee77696855808ebd5200bbf8
+              tag: v1.141.1@sha256:6d48910532cb8e2bc85737e52a633c2e65eeb499f6307e106cd131c5778ec634
             env:
               TZ: "${TIMEZONE}"
               IMMICH_LOG_LEVEL: verbose
@@ -77,7 +77,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-machine-learning
-              tag: v1.131.2@sha256:29836cf73146057ac388546021fff3e00c923e22a28587cceb5108a5e537987d
+              tag: v1.141.1@sha256:a315e714c8af88894c2b711127af9c383bdaa6d213eae87273967251dff8e488
             env:
               TZ: "${TIMEZONE}"
             probes:
