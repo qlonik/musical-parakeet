@@ -63,16 +63,12 @@ spec:
         name: pg-16-immich-secret
       dataChecksums: true
       postInitApplicationSQL:
-        - ALTER SYSTEM SET search_path TO "$user", public, vectors;
-        - SET search_path TO "$user", public, vectors;
         - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
         - CREATE EXTENSION IF NOT EXISTS earthdistance WITH SCHEMA pg_catalog CASCADE;
         - CREATE EXTENSION IF NOT EXISTS pg_trgm;
         - CREATE EXTENSION IF NOT EXISTS unaccent;
-        - ALTER SCHEMA vectors OWNER TO immich;
         - GRANT ALL PRIVILEGES ON DATABASE immich TO immich;
         - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO immich;
-        - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA vectors TO immich;
     ## for recovering the same version (e.g. cluster rebuild)
     # recovery:
     #   source: *active-cluster
