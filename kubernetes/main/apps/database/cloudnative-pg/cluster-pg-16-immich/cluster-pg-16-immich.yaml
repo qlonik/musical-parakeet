@@ -6,10 +6,10 @@ metadata:
   name: pg-16-immich
 spec:
   instances: 2
-  imageName: ghcr.io/tensorchord/cloudnative-pgvecto.rs:16.3@sha256:f1a19d4fc4073b0671a72ad34ef012aa20d21b3ddf5b4b0c9077d54450db679a
+  imageName: ghcr.io/tensorchord/cloudnative-vectorchord:16-0.3.0@sha256:69c827b85380454b46260219a93c9fd13942453200d1d07f856a17d7af0df8b2
   postgresql:
     shared_preload_libraries:
-      - "vectors.so"
+      - "vchord.so"
     enableAlterSystem: true
   primaryUpdateStrategy: unsupervised
   storage:
@@ -48,7 +48,9 @@ spec:
       # for some pointers.
       #
       # dump with:
-      # `pg_dump -U postgres -b --clean --if-exists -f immich_dump.sql immich`
+      # `pg_dump -U postgres -b --clean --if-exists -f immich_dump.sql immich` or
+      # `kubectl -n database exec -ti <primary-pod-name> -- pg_dumpall --clean --if-exists --username=postgres | gzip > ./immich_dump.sql.gz`
+      # (replace <primary-pod-name> with actual value, e.g. "pg-16-immich-1")
       # then edit the dumped file with:
       # `sed "s/SELECT pg_catalog.set_config('search_path', '', false);/SELECT pg_catalog.set_config('search_path', 'public, pg_catalog', true);/g"`
       # load with:
@@ -63,7 +65,7 @@ spec:
       postInitApplicationSQL:
         - ALTER SYSTEM SET search_path TO "$user", public, vectors;
         - SET search_path TO "$user", public, vectors;
-        - CREATE EXTENSION IF NOT EXISTS vectors;
+        - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
         - CREATE EXTENSION IF NOT EXISTS earthdistance WITH SCHEMA pg_catalog CASCADE;
         - CREATE EXTENSION IF NOT EXISTS pg_trgm;
         - CREATE EXTENSION IF NOT EXISTS unaccent;
