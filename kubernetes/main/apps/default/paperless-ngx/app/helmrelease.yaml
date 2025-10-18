@@ -86,7 +86,7 @@ spec:
             dependsOn: main
             image:
               repository: docker.io/apache/tika
-              tag: 3.2.0.0@sha256:c01b700def0f3020265ec4072ed37e98b5f1f3aa7ee5f9a27e2eb3e88a3561d8
+              tag: 3.2.3.0@sha256:c0154cb95587cde64be74f35ada1a2bd7892219f3f0ac3c9dc6cab34046b3573
             resources:
               requests:
                 cpu: 200m
