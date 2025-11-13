@@ -16,8 +16,4 @@ repos:
     rev: fb9c7108c6c62aaf05441daa97ace3f40e840ac3
     hooks:
       - id: sops-encryption
-        files: |
-          (
-            (kubernetes|ansible|workflows)/.*\.sops\.ya?ml|
-            .*\.sops\.md
-          )$
+        files: "(.*\\.sops\\.md)$"
