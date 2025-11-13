@@ -110,6 +110,7 @@ access_control:
       policy: two_factor
 
     - domain:
+        - "bookshelf.${SECRET_DOMAIN}"
         - "lazylibrarian.${SECRET_DOMAIN}"
         - "lidarr.${SECRET_DOMAIN}"
         - "prowlarr.${SECRET_DOMAIN}"

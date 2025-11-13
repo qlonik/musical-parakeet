@@ -8,6 +8,7 @@ resources:
   - ./authelia/ks.yaml
   - ./autobrr/ks.yaml
   - ./bazarr/ks.yaml
+  - ./bookshelf/ks.yaml
   - ./calibre/ks.yaml
   - ./calibre-web/ks.yaml
   - ./cross-seed/ks.yaml

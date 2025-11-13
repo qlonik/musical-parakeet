@@ -83,6 +83,10 @@ spec:
               - --include-category
               - autobrr
               - --include-category
+              - bookshelf/audio
+              - --include-category
+              - bookshelf/ebook
+              - --include-category
               - cross-seed
               - --include-category
               - lidarr
@@ -113,6 +117,10 @@ spec:
               - prune
               - --include-category
               - autobrr
+              - --include-category
+              - bookshelf/audio
+              - --include-category
+              - bookshelf/ebook
               - --include-category
               - cross-seed
               - --include-category
