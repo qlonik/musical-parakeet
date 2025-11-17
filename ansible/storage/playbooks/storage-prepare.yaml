@@ -44,7 +44,7 @@
     - name: Setup users
       vars:
         homes_name: "{{ tn_main_pool }}/homes"
-        homes_mountpoint: "{{ main_pool.info.mountpoint }}/homes"
+        homes_mountpoint: "{{ main_pool.filesystem.mountpoint }}/homes"
       block:
         - name: Create homes dataset
           arensb.truenas.filesystem:
@@ -74,7 +74,7 @@
           name: Share users home folders via SMB
           arensb.truenas.sharing_smb:
             name: "home"
-            path: "{{ main_pool.info.mountpoint }}/homes"
+            path: "{{ main_pool.filesystem.mountpoint }}/homes"
             purpose: MULTI_PROTOCOL_NFS
             home: true
             browsable: false
@@ -84,7 +84,7 @@
       vars:
         appdata: appdata
         appdata_name: "{{ tn_main_pool }}/{{ appdata }}"
-        appdata_mountpoint: "{{ main_pool.info.mountpoint }}/{{ appdata }}"
+        appdata_mountpoint: "{{ main_pool.filesystem.mountpoint }}/{{ appdata }}"
       block:
         - name: Create appdata dataset
           arensb.truenas.filesystem:
@@ -132,7 +132,7 @@
       vars:
         media: "media"
         media_name: "{{ tn_main_pool }}/{{ media }}"
-        media_mountpoint: "{{ main_pool.info.mountpoint }}/{{ media }}"
+        media_mountpoint: "{{ main_pool.filesystem.mountpoint }}/{{ media }}"
       block:
         - name: Create media dataset
           arensb.truenas.filesystem:
@@ -146,10 +146,11 @@
                 storage dataset update
                 id="{{ media_name }}"
                 acltype="NFSV4"
+                aclmode="PASSTHROUGH"
               '
-          # `.filesystem` is defined when fs was created
-          # `.info` is defined when fs was updated
-          when: media_dataset.filesystem is defined
+          # `.msg` starts with `Created` when fs was created and starts with
+          # `Updated` when fs was updated
+          when: media_dataset.msg is match('created', ignorecase=true)
 
         - name: Set permissions on "media" filesystem
           ansible.builtin.command:
