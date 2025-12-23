@@ -41,6 +41,7 @@ users and do not use `HTTP_REMOTE_USER` header value.
 1. Configured via config files:
 
    - autobrr
+   - manyfold
    - mealie
    - nextcloud
 
