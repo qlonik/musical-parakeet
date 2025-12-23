@@ -227,3 +227,13 @@ identity_providers:
         authorization_policy: one_factor
         pre_configured_consent_duration: 1y
         userinfo_signed_response_alg: none
+      - client_name: Manyfold
+        client_id: '{{ secret "/var/run/secrets/authelia-secret/oidc-manyfold-client-id" }}'
+        client_secret: '{{ secret "/var/run/secrets/authelia-secret/oidc-manyfold-secret-hash" }}'
+        public: false
+        redirect_uris:
+          - "https://manyfold.${SECRET_DOMAIN}/users/auth/openid_connect/callback"
+        scopes: ["openid", "profile", "email"]
+        authorization_policy: one_factor
+        pre_configured_consent_duration: 1y
+        userinfo_signed_response_alg: none

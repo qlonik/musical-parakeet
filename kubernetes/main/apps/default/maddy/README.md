@@ -7,6 +7,7 @@ search.
 1. Configured via config files:
 
 - `authelia`
+- `manyfold`
 - `mealie`
 - `neodb`
 - `nextcloud`
