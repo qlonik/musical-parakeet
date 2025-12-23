@@ -18,8 +18,8 @@ spec:
     substitute:
       APP: *app
       PVC_NAME_SUFFIX: "-conf"
-      PVC_CAPACITY: 15Gi
-      VOLSYNC_CACHE_CAPACITY: 20Gi
+      PVC_CAPACITY: 20Gi
+      VOLSYNC_CACHE_CAPACITY: 25Gi
   prune: true
   sourceRef:
     kind: GitRepository

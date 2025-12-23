@@ -15,7 +15,7 @@ spec:
     substitute:
       APP: *app
       PVC_NAME_SUFFIX: "-conf"
-      PVC_CAPACITY: 1Gi
+      PVC_CAPACITY: 3Gi
   prune: true
   sourceRef:
     kind: GitRepository
