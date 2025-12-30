@@ -181,6 +181,10 @@ spec:
               DEBUG: "1"
               BUFFER: "25000"
               VIP: "1"
+            command: ["/bin/sh"]
+            args:
+              - "-c"
+              - "sed 's/for i in 100 20 5 1/for i in 100 50/g' /Spend.sh > /config/Spend.sh && chmod +x /config/Spend.sh && /config/Spend.sh"
             envFrom: *qbSecret
             securityContext: *security
             resources:
