@@ -35,7 +35,7 @@ spec:
           main:
             image:
               repository: ghcr.io/paperless-ngx/paperless-ngx
-              tag: 2.19.2@sha256:e1e0026cdacda4bb157c024a8a1a343bd16b34d8900e7f3958598b9afebd0d38
+              tag: 2.20.3@sha256:57ad9565bff3bdf2378ab1dcc21ea649dfd68ee58e0eeca2bfba0120a26563e8
             env:
               # PAPERLESS_CONSUMER_DELETE_DUPLICATES: true
               # PAPERLESS_CONSUMER_POLLING: 60
