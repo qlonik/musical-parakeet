@@ -11,4 +11,4 @@ parameters:
   staleReplicaTimeout: "30"
 allowVolumeExpansion: true
 reclaimPolicy: Delete
-volumeBindingMode: WaitForFirstConsumer
+volumeBindingMode: Immediate
