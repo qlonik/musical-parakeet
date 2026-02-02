@@ -12,6 +12,3 @@ kubernetes:
         "k3s-fedora-node-0":
           ansible_user: "default"
           ansible_host: "192.168.0.48"
-        "k3s-fedora-node-1":
-          ansible_user: "default"
-          ansible_host: "192.168.0.49"
