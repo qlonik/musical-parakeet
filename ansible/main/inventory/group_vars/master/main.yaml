@@ -19,6 +19,8 @@ k3s_server:
   cluster-cidr: "10.42.0.0/16"
   service-cidr: "10.43.0.0/16"
   etcd-expose-metrics: true # Required to monitor etcd with kube-prometheus-stack
+  etcd-arg:
+    - "quota-backend-bytes=8589934592" # 8 GiB
   kube-controller-manager-arg:
     - "bind-address=0.0.0.0" # Required to monitor kube-controller-manager with kube-prometheus-stack
     # https://github.com/k3s-io/k3s/issues/1264#issuecomment-1037316446
