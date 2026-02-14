@@ -35,7 +35,7 @@ spec:
           main:
             image:
               repository: ghcr.io/mealie-recipes/mealie
-              tag: v3.3.2@sha256:d51ae3b5051439844c1bbe437fb7edffa0826cb9988b366e17ffc7170a8d5ed2
+              tag: v3.10.2@sha256:58b54bca4c729fcc7f272cfac5086623866430956838de3f5d763fcaf9e64115
             env:
               TZ: "${TIMEZONE}"
               PUID: 568
