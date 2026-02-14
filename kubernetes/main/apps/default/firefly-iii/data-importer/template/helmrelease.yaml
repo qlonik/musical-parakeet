@@ -35,7 +35,7 @@ spec:
           main:
             image:
               repository: fireflyiii/data-importer
-              tag: version-1.9.0@sha256:6c714c6170b593e00b5eb918e45b36d56032d473a5aa2f8dfc9fa36d0ef29fed
+              tag: version-2.1.0@sha256:38e4b4c6da8617e9cdca5fec43fc292915894a8b1621b97cab64cda14d8a037e
             env:
               TZ: ${TIMEZONE}
               FIREFLY_III_URL: http://firefly-iii.default.svc.cluster.local:8080
