@@ -162,6 +162,8 @@
               fs.inotify.max_queued_events: 65536
               fs.inotify.max_user_watches: 524288
               fs.inotify.max_user_instances: 8192
+              net.ipv6.conf.all.accept_ra: 2
+              net.ipv6.conf.all.accept_ra_rt_info_max_plen: 64
 
   handlers:
     - name: Reboot
