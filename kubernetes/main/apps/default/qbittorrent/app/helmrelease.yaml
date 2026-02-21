@@ -143,7 +143,7 @@ spec:
           vuetorrent:
             image:
               repository: registry.k8s.io/git-sync/git-sync
-              tag: v4.5.0@sha256:0e64aedb0d0ae0a3bab880349a5109b2a31891d646dd61e433ca36ed220dff1f
+              tag: v4.6.0@sha256:228a26d5f55ac5ae9c51635812570ba0073e0b1e0bd8fc3a653a0523b918c092
             args:
               - --repo=https://github.com/VueTorrent/VueTorrent.git
               - --ref=latest-release
