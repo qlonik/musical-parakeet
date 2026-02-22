@@ -29,6 +29,7 @@ resources:
   - ./minio/ks.yaml
   - ./navidrome/ks.yaml
   - ./nextcloud/ks.yaml
+  - ./otbr/ks.yaml
   - ./paperless-ngx/ks.yaml
   - ./prowlarr/ks.yaml
   - ./qbittorrent/ks.yaml

@@ -1,0 +1,115 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: otbr
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.3
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      otbr:
+        containers:
+          app:
+            image:
+              repository: ghcr.io/ownbee/hass-otbr-docker
+              tag: v0.3.0@sha256:5ca7008462e94d4c937aca8c1c9a60e709d6d300625363c161b946683032d5b1
+            env:
+              TZ: ${TIMEZONE}
+              # specific to host
+              BACKBONE_IF: ens3
+              DEVICE: "/tmp/ttyOTBR"
+              NETWORK_DEVICE: slzb-mrw10.home.arpa:7638
+              BAUDRATE: "460800"
+              FLOW_CONTROL: "0"
+              FIREWALL: "1"
+              NAT64: "1"
+              # THREAD_1_4: "1"
+              AUTOFLASH_FIRMWARE: "0"
+              OTBR_WEB: "1"
+              OTBR_WEB_PORT: "37586"
+              OTBR_REST_PORT: "38081"
+              OTBR_LOG_LEVEL: debug
+            ports:
+              - name: api
+                containerPort: 38081
+              - name: http
+                containerPort: 37586
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                memory: 1Gi
+                squat.ai/tun: "1"
+            securityContext:
+              privileged: true
+              capabilities:
+                drop: ["ALL"]
+                add: ["SYS_ADMIN", "NET_ADMIN"]
+    defaultPodOptions:
+      hostNetwork: true
+      nodeSelector:
+        kubernetes.io/hostname: k3s-fedora-node-0
+      annotations:
+        reloader.stakater.com/auto: "true"
+      securityContext:
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile: { type: RuntimeDefault }
+    service:
+      main:
+        controller: otbr
+        ports:
+          http:
+            port: 7586
+            targetPort: http
+          api:
+            port: 8081
+            targetPort: api
+    ingress:
+      main:
+        className: internal
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: otbr
+          gethomepage.dev/icon: sh-matter.svg
+          gethomepage.dev/description: OpenThread Border Router
+          gethomepage.dev/group: Various
+          gethomepage.dev/siteMonitor: "http://{{ .Release.Name }}.default.svc.cluster.local:7586"
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      data:
+        type: persistentVolumeClaim
+        existingClaim: otbr-conf
+        globalMounts:
+          - path: /data/thread
+      dev-net-tun:
+        type: hostPath
+        hostPath: /dev/net/tun
