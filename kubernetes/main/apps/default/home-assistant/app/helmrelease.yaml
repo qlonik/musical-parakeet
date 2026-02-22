@@ -44,11 +44,15 @@ spec:
             env:
               TZ: ${TIMEZONE}
               HOME_ASSISTANT__HACS_INSTALL: "true"
+              HASS_HTTP_PORT: &hassPort 38123
               HASS_HTTP_TRUSTED_PROXY_1: 10.42.0.0/16
               HASS_HTTP_TRUSTED_PROXY_2: 10.43.0.0/16
             envFrom: &envFrom
               - secretRef:
                   name: home-assistant-secret
+            ports:
+              - name: hass
+                containerPort: *hassPort
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -68,9 +72,12 @@ spec:
               "--auth", "none",
               "--user-data-dir", "/config/.vscode/user-data",
               "--extensions-dir", "/config/.vscode/extensions",
-              "--port", "12321",
+              "--port", "32321",
               "/config"
             ]
+            ports:
+              - name: code-server
+                containerPort: 32321
             resources:
               requests:
                 cpu: 10m
@@ -83,6 +90,7 @@ spec:
               tag: 16.8@sha256:217c47c886965474f5c234b5a35ed008f53b39ea90a3088b31c0da98e1f9284d
             envFrom: *envFrom
     defaultPodOptions:
+      hostNetwork: true
       securityContext:
         runAsUser: 568
         runAsGroup: 568
@@ -96,8 +104,10 @@ spec:
         ports:
           http:
             port: 8123
+            targetPort: hass
           code-server:
             port: 12321
+            targetPort: code-server
     ingress:
       main:
         className: external
@@ -143,6 +153,7 @@ spec:
         existingClaim: home-assistant
         globalMounts:
           - path: /config
+
       logs:
         type: emptyDir
         globalMounts:
