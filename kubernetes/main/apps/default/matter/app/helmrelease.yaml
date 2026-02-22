@@ -1,0 +1,118 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: matter
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.3
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      matter:
+        containers:
+          app:
+            image:
+              repository: ghcr.io/home-assistant-libs/python-matter-server
+              tag: 8.1.0@sha256:170aa093ce91c76cde4cc390918307590f0f5558fcec93f913af3cb019e6562a
+            # prettier-ignore
+            args: [
+              "--storage-path", "/data",
+              "--paa-root-cert-dir", "/data/credentials",
+              "--bluetooth-adapter", "0",
+              "--port", "35580",
+              "--log-level-sdk", "progress",
+              # specific to host
+              "--primary-interface", "ens3"
+            ]
+            env:
+              TZ: ${TIMEZONE}
+            ports:
+              - name: http
+                containerPort: 35580
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+              # Needed for Bluetooth via dbus
+              appArmorProfile: { type: Unconfined }
+    defaultPodOptions:
+      hostNetwork: true
+      nodeSelector:
+        kubernetes.io/hostname: k3s-fedora-node-0
+      annotations:
+        reloader.stakater.com/auto: "true"
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        runAsNonRoot: true
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile: { type: RuntimeDefault }
+    service:
+      main:
+        controller: matter
+        ports:
+          http:
+            port: 5580
+            targetPort: http
+    ingress:
+      main:
+        className: internal
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: matterr
+          gethomepage.dev/icon: sh-matter.svg
+          gethomepage.dev/description: Matter server
+          gethomepage.dev/group: Various
+          gethomepage.dev/siteMonitor: "http://{{ .Release.Name }}.default.svc.cluster.local:5580"
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      data:
+        type: persistentVolumeClaim
+        existingClaim: matter-conf
+        globalMounts:
+          - path: /data
+      run-dbus: # Needed for Bluetooth via dbus
+        type: hostPath
+        hostPath: /run/dbus
+        globalMounts:
+          - readOnly: true
+      etc-localtime:
+        type: hostPath
+        hostPath: /etc/localtime
+        globalMounts:
+          - readOnly: true
+      tmp:
+        type: emptyDir

@@ -25,6 +25,7 @@ resources:
   - ./linkding/ks.yaml
   - ./maddy/ks.yaml
   - ./manyfold/ks.yaml
+  - ./matter/ks.yaml
   - ./mealie/ks.yaml
   - ./minio/ks.yaml
   - ./navidrome/ks.yaml
