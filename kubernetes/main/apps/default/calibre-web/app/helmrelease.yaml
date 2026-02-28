@@ -40,7 +40,7 @@ spec:
               DOCKER_MODS: >-
                 {{- $items := list
                   "// renovate: lsio-docker-mod"
-                  "ghcr.io/linuxserver/mods:universal-calibre-v8.13.0"
+                  "ghcr.io/linuxserver/mods:universal-calibre-v9.4.0"
                 -}}
                 {{- $filtered := list -}}
                 {{- range $item := $items -}}
