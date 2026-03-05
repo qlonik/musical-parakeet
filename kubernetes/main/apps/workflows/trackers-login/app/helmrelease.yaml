@@ -36,7 +36,7 @@ spec:
           app:
             image:
               repository: ghcr.io/puppeteer/puppeteer
-              tag: 24.26.1@sha256:f61e044d6cb79f49104c59f8e34423b07e4c78d7350e08bbd5d51bc63dfc2a4d
+              tag: 24.38.0@sha256:bcb4fd4543ceee3a6b8b9a81403ed4c09ae316dca8b857773cf67328c0c2ee3c
             args:
               - node
               - /home/pptruser/app/script.mjs
