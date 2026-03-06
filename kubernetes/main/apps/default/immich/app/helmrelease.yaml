@@ -33,7 +33,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v2.1.0@sha256:72a9b9de6c6abfa7a9c9cdc244ae4d2bd9fea2ae00997f194cbd10aca72ea210
+              tag: v2.5.6@sha256:aa163d2e1cc2b16a9515dd1fef901e6f5231befad7024f093d7be1f2da14341a
             env:
               TZ: "${TIMEZONE}"
               IMMICH_LOG_LEVEL: verbose
@@ -77,7 +77,7 @@ spec:
           main:
             image:
               repository: ghcr.io/immich-app/immich-machine-learning
-              tag: v2.1.0@sha256:24bfef29bc5c0923c64c98810931eda1449a4b237e6704a715605761bc107ae4
+              tag: v2.5.6@sha256:b213fa3c82d27a21a299c46ffbb38a091f18384db1ad67d409a3b34fe0fce556
             env:
               TZ: "${TIMEZONE}"
               MPLCONFIGDIR: "/cache/matplotlib"
