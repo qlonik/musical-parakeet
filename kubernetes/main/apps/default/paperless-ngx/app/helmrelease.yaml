@@ -43,7 +43,7 @@ spec:
               PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS: true
               PAPERLESS_ENABLE_HTTP_REMOTE_USER: true
               PAPERLESS_FILENAME_FORMAT_REMOVE_NONE: true
-              PAPERLESS_FILENAME_FORMAT: "{created_year}/{correspondent}/{title}"
+              PAPERLESS_FILENAME_FORMAT: '{{ printf "{{ created_year }}/{{ correspondent }}/{{ title }}" }}'
               PAPERLESS_TASK_WORKERS: 2
               PAPERLESS_TIKA_ENABLED: true
               PAPERLESS_TIME_ZONE: "${TIMEZONE}"
