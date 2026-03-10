@@ -116,3 +116,7 @@ spec:
           - readOnly: true
       tmp:
         type: emptyDir
+      app-updates:
+        type: emptyDir
+        globalMounts:
+          - path: /app/updates
