@@ -33,7 +33,7 @@ spec:
           main:
             image:
               repository: ghcr.io/advplyr/audiobookshelf
-              tag: 2.30.0@sha256:6fbd7dc95d53c6e168ce69e760b87c334e3b9ba88bf7b8531ed5a116d5d6da03
+              tag: 2.33.0@sha256:41047b9985f9c38c92ae8b4b34ffd1d77fca36efdfe49c6b962ff2fc8ccae1e9
             env:
               TZ: "${TIMEZONE}"
               AUDIOBOOKSHELF_UID: 568
