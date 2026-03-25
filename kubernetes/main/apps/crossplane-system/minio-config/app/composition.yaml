@@ -23,7 +23,7 @@ spec:
               kind: Bucket
               spec:
                 forProvider:
-                  bucketDeletionPolicy: DeleteIfEmpty
+                  bucketDeletionPolicy: Orphan
                 providerConfigRef:
                   name: ""
             connectionDetails:
