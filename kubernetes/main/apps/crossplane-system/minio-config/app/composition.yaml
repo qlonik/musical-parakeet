@@ -11,7 +11,7 @@ spec:
   mode: Pipeline
   pipeline:
     - functionRef:
-        name: function-patch-and-transform
+        name: crossplane-contrib-function-patch-and-transform
       step: patch-and-transform
       input:
         apiVersion: pt.fn.crossplane.io/v1beta1
