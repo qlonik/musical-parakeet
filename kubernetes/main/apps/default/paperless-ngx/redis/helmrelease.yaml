@@ -2,31 +2,32 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: snapshot-controller
+  name: paperless-ngx-redis
 spec:
   interval: 30m
   chart:
     spec:
-      chart: snapshot-controller
-      version: 4.2.0
+      chart: redis
+      version: 23.2.1
       sourceRef:
         kind: HelmRepository
-        name: piraeus
+        name: bitnami
         namespace: flux-system
   install:
-    crds: CreateReplace
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
-    crds: CreateReplace
     remediation:
       retries: 3
   uninstall:
     keepHistory: false
   values:
-    controller:
-      serviceMonitor:
-        create: true
-    webhook:
+    global:
+      defaultStorageClass: openebs-hostpath
+    auth:
       enabled: false
+    replica:
+      replicaCount: 0
+    metrics:
+      enabled: true
