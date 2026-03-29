@@ -37,7 +37,7 @@ spec:
           app:
             image:
               repository: ghcr.io/home-operations/home-assistant
-              tag: 2026.2.2@sha256:57d87be8a6065c994d75dd6c3e842ccfa669ea537518dbbe2e2fc692d3d00d97
+              tag: 2026.3.4@sha256:45d37a8be32fc1b2ebc64acc9ab219ca6226dcf04b4de0046d6c4e650b7a3022
             args:
               - "--log-file"
               - "/config/logs/home-assistant.log"
