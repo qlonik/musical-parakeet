@@ -37,6 +37,7 @@ spec:
     persistence:
       defaultClass: false
       defaultClassReplicaCount: 1
+      defaultDataLocality: "best-effort"
     csi:
       attacherReplicaCount: &replicas 1
       provisionerReplicaCount: *replicas
