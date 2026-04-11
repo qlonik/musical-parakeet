@@ -44,7 +44,7 @@ spec:
             name: emqx-secret
       extraContainers:
         - name: init-mqtt
-          image: public.ecr.aws/docker/library/python:3.14-alpine@sha256:6f873e340e6786787a632c919ecfb1d2301eb33ccfbe9f0d0add16cbc0892116
+          image: public.ecr.aws/docker/library/python:3.14-alpine@sha256:01f125438100bb6b5770c0b1349e5200b23ca0ae20a976b5bd8628457af607ae
           env:
             - name: X_EMQX_ADDRESS
               value: emqx-dashboard.database.svc.cluster.local:18083
