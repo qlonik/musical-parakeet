@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: typesense-operator
     app.kubernetes.io/managed-by: kustomize
 spec:
-  image: typesense/typesense:29.0@sha256:316b7e71c21f7e5e5caa8daa150e1b3f2be8c876081ee1f77bc2d92cd7f137d0
+  image: typesense/typesense:30.2@sha256:610f2d34b1f93d00762869da2c67736775e5798d19a2c8b91b014b8a0cc1e110
   replicas: 1
   adminApiKey:
     name: typesense-neodb-secret
