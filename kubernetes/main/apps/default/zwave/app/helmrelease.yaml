@@ -29,7 +29,7 @@ spec:
           app:
             image:
               repository: ghcr.io/zwave-js/zwave-js-ui
-              tag: 11.12.0@sha256:ca599b5d7afd4832848c8fb7a7eded38ea3494bce560a14c1b8304f6497fe17a
+              tag: 11.16.2@sha256:c43f88e2e395bb4b37c9e87e64998b751b1e1908318177623cebe08867e1eb42
             env:
               TZ: ${TIMEZONE}
               PORT: &port 80
