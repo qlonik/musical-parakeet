@@ -58,6 +58,8 @@ spec:
               limits:
                 memory: 4Gi
     defaultPodOptions:
+      nodeSelector:
+        kubernetes.io/hostname: andromeda
       securityContext:
         runAsUser: 568
         runAsGroup: 568
