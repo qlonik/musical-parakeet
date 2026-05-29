@@ -37,7 +37,10 @@ spec:
               repository: ghcr.io/paperless-ngx/paperless-ngx
               tag: 2.20.15@sha256:6c86cad803970ea782683a8e80e7403444c5bf3cf70de63b4d3c8e87500db92f
             env:
-              TZ: "${TIMEZONE}"
+              # TODO: both TZ and PAPERLESS_TIME_ZONE should be set to "${TIMEZONE}",
+              #  but for some reason django doesn't like "Canada/Mountain"
+              TZ: "America/Edmonton"
+              PAPERLESS_TIME_ZONE: "America/Edmonton"
               # PAPERLESS_CONSUMER_DELETE_DUPLICATES: true
               # PAPERLESS_CONSUMER_POLLING: 60
               PAPERLESS_CONSUMER_RECURSIVE: true
@@ -47,8 +50,6 @@ spec:
               PAPERLESS_FILENAME_FORMAT: '{{ printf "{{ created_year }}/{{ correspondent }}/{{ title }}" }}'
               PAPERLESS_TASK_WORKERS: 2
               PAPERLESS_TIKA_ENABLED: true
-              # TODO: should be set to "${TIMEZONE}", but for some reason django doesn't like "Canada/Mountain"
-              PAPERLESS_TIME_ZONE: "America/Edmonton"
               PAPERLESS_URL: "http{{if ne ( len .Values.ingress.main.tls ) 0 }}s{{end}}://{{ (first .Values.ingress.main.hosts).host }}"
               PAPERLESS_OCR_USER_ARGS: '{"continue_on_soft_render_error": true}'
               USERMAP_GID: 568
