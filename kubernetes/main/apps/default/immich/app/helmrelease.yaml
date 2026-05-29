@@ -38,6 +38,7 @@ spec:
               TZ: "${TIMEZONE}"
               IMMICH_LOG_LEVEL: verbose
               IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning.default.svc.cluster.local:3003
+              IMMICH_HELMET_FILE: "true"
             envFrom: &envFrom
               - secretRef:
                   name: immich-secret
