@@ -1,18 +1,12 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app zigbee2mqtt
+  name: &app mosquitto
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: external-secrets-stores
-    - name: longhorn
-    - name: mosquitto
-    - name: volsync
-  path: ./kubernetes/main/apps/default/zigbee2mqtt/app
-  targetNamespace: default
+  path: ./kubernetes/main/apps/database/mosquitto/app
+  targetNamespace: database
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
@@ -24,7 +18,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
-  wait: false
+  wait: true
   interval: 30m
   retryInterval: 1m
   timeout: 5m

@@ -15,7 +15,6 @@ resources:
   - ./csi-driver-smb.yaml
   - ./democratic-csi.yaml
   - ./descheduler.yaml
-  - ./emqx.yaml
   - ./external-dns.yaml
   - ./external-secrets.yaml
   - ./grafana.yaml
