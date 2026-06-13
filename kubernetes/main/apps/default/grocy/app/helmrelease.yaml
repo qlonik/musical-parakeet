@@ -30,7 +30,7 @@ spec:
           main:
             image:
               repository: ghcr.io/linuxserver/grocy
-              tag: v4.6.0-ls327@sha256:fa8194701ba63426e07e269446657bfc8898b8e1e94b677bec6970ef5adcfb32
+              tag: v4.6.0-ls329@sha256:a0890ba405a7f7b6eedf9eea756ab0bdb1fb38a06ab77d4c9ccd9418f468bbf5
             env:
               # env vars don't work with linuxserver container
               # GROCY_CALENDAR_FIRST_DAY_OF_WEEK: 1
