@@ -32,7 +32,7 @@ spec:
           main:
             image:
               repository: ghcr.io/manyfold3d/manyfold
-              tag: v0.142.0@sha256:5a45d2fce51c96bf02603f0f6b52dd31cbe3855946c4dacc82331195f830d025
+              tag: 0.143.2@sha256:587bfdda569184a3c87106c48b9ce6322f9a78e863663cac70bb38baeea61aae
             env:
               TZ: ${TIMEZONE}
               DATABASE_ADAPTER: postgresql
