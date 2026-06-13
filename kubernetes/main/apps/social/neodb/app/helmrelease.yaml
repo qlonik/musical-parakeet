@@ -34,7 +34,7 @@ spec:
           app: &neodbService
             image: &neodbImage
               repository: neodb/neodb
-              tag: 0.14.3.2@sha256:24bae05df719f9c0c6d9b7eb3c65ba184e3f0d71091a85c0d6aa41ee6d76f0db
+              tag: 0.15.2.1@sha256:10cccc6a07e210ed2d494450be9936bb34b52fc5e557fb7256915f1923e5351f
             args:
               - bash
               - -c
