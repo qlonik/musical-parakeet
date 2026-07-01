@@ -20,7 +20,9 @@ module.exports = {
   ],
 
   apiKey: process.env.XSEED_API_KEY,
-  qbittorrentUrl: "http://qbittorrent.default.svc.cluster.local:8080",
+  torrentClients: [
+    "qbittorrent:http://admin@qbittorrent.default.svc.cluster.local:8080",
+  ],
   delay: 30,
 
   dataDirs: [
@@ -33,11 +35,11 @@ module.exports = {
     "sonarr",
   ].map((_) => qbCompleteDir(_)),
   linkCategory: "cross-seed",
-  linkDir: qbCompleteDir("cross-seed"),
+  linkDirs: [qbCompleteDir("cross-seed")],
   linkType: "hardlink",
 
   torrentDir: "/qbittorrent/qBittorrent/BT_backup",
-  outputDir: "/qbittorrent/xseeds",
+  outputDir: null,
 
   action: "inject",
   duplicateCategories: true,
