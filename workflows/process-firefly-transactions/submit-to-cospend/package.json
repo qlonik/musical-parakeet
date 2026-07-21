@@ -14,7 +14,7 @@
     "effect": "^3.10.13"
   },
   "devDependencies": {
-    "@tsconfig/node22": "^22.0.0",
+    "@tsconfig/node24": "^24.0.0",
     "@tsconfig/strictest": "^2.0.3",
     "@types/common-tags": "^1.8.4",
     "@types/node": "^22.9.0",
