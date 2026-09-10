@@ -28,10 +28,12 @@
           ansible.builtin.apt:
             name:
               - apt-transport-https
+              - bluez
               - ca-certificates
               - conntrack
               - cryptsetup
               - curl
+              - dbus-broker
               - dirmngr
               - gdisk
               - gnupg

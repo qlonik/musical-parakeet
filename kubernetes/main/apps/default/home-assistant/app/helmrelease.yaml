@@ -56,7 +56,10 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              runAsUser: 0
+              runAsNonRoot: false
+              capabilities: { add: ["NET_ADMIN", "NET_RAW"] }
+              appArmorProfile: { type: Unconfined }
             resources:
               requests:
                 cpu: 10m
@@ -91,6 +94,8 @@ spec:
             envFrom: *envFrom
     defaultPodOptions:
       hostNetwork: true
+      nodeSelector:
+        kubernetes.io/hostname: andromeda
       securityContext:
         runAsUser: 568
         runAsGroup: 568
@@ -154,6 +159,11 @@ spec:
         globalMounts:
           - path: /config
 
+      run-dbus:
+        type: hostPath
+        hostPath: /run/dbus
+        globalMounts:
+          - readOnly: true
       logs:
         type: emptyDir
         globalMounts:
@@ -162,6 +172,10 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /config/tts
+      venv:
+        type: emptyDir
+        globalMounts:
+          - path: /config/.venv
       tmp:
         type: emptyDir
         globalMounts:
