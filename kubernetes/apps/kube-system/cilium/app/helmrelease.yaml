@@ -4,115 +4,84 @@ kind: HelmRelease
 metadata:
   name: cilium
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: cilium
-      version: 1.19.4
-      sourceRef:
-        kind: HelmRepository
-        name: cilium
-        namespace: flux-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-  uninstall:
-    keepHistory: false
+  chartRef:
+    kind: OCIRepository
+    name: cilium
+  interval: 1h
   values:
     autoDirectNodeRoutes: true
     bpf:
       masquerade: true
-    bgp:
-      enabled: false
-    cluster:
-      name: home-kubernetes
-      id: 1
-    containerRuntime:
-      integration: containerd
-      socketPath: /var/run/k3s/containerd/containerd.sock
+      # Ref: https://github.com/siderolabs/talos/issues/10002
+      hostLegacyRouting: true
+    cni:
+      # Required for pairing with Multus CNI
+      exclusive: false
+    cgroup:
+      automount:
+        enabled: false
+      hostRoot: /sys/fs/cgroup
+    # The stable bond name is defined in talos/all/20-network-links.yaml.tpl
+    devices: bond0+
+    dashboards:
+      enabled: true
     endpointRoutes:
       enabled: true
+    envoy:
+      enabled: false
+    gatewayAPI:
+      enabled: false
     hubble:
-      enabled: true
-      metrics:
-        enabled:
-          - dns:query
-          - drop
-          - tcp
-          - flow
-          - port-distribution
-          - icmp
-          - http
-        serviceMonitor:
-          enabled: true
-        dashboards:
-          enabled: true
-          annotations:
-            grafana_folder: Cilium
-      relay:
-        enabled: true
-        rollOutPods: true
-        prometheus:
-          serviceMonitor:
-            enabled: true
-      ui:
-        enabled: true
-        rollOutPods: true
-        ingress:
-          enabled: true
-          className: internal
-          annotations:
-            gethomepage.dev/enabled: "true"
-            gethomepage.dev/group: Network
-            gethomepage.dev/name: Cilium
-            gethomepage.dev/icon: cilium.png
-          hosts:
-            - "hubble.${SECRET_DOMAIN}"
-          tls:
-            - hosts:
-                - "hubble.${SECRET_DOMAIN}"
+      enabled: false
     ipam:
       mode: kubernetes
-    ipv4NativeRoutingCIDR: "${CLUSTER_CIDR}"
+    ipv4NativeRoutingCIDR: "10.42.0.0/16"
     k8sServiceHost: 127.0.0.1
-    k8sServicePort: 6444
+    k8sServicePort: 7445
     kubeProxyReplacement: true
     kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
     l2announcements:
       enabled: true
-      # https://github.com/cilium/cilium/issues/26586
-      leaseDuration: 120s
-      leaseRenewDeadline: 60s
-      leaseRetryPeriod: 1s
     loadBalancer:
       algorithm: maglev
       mode: "dsr"
-    localRedirectPolicy: true
+    localRedirectPolicies:
+      enabled: true
     operator:
-      replicas: 1
-      rollOutPods: true
+      dashboards:
+        enabled: true
       prometheus:
         enabled: true
         serviceMonitor:
           enabled: true
-      dashboards:
-        enabled: true
-        annotations:
-          grafana_folder: Cilium
+      replicas: 1
+      rollOutPods: true
     prometheus:
       enabled: true
       serviceMonitor:
         enabled: true
         trustCRDsExist: true
-    dashboards:
-      enabled: true
-      annotations:
-        grafana_folder: Cilium
     rollOutCiliumPods: true
     routingMode: native
     securityContext:
-      privileged: true
+      capabilities:
+        ciliumAgent:
+          - CHOWN
+          - KILL
+          - NET_ADMIN
+          - NET_RAW
+          - IPC_LOCK
+          - SYS_ADMIN
+          - SYS_RESOURCE
+          - PERFMON
+          - BPF
+          - DAC_OVERRIDE
+          - FOWNER
+          - SETGID
+          - SETUID
+        cleanCiliumState:
+          - NET_ADMIN
+          - SYS_ADMIN
+          - SYS_RESOURCE
+    socketLB:
+      enabled: true

@@ -23,7 +23,7 @@ spec:
   uninstall:
     keepHistory: false
   dependsOn:
-    - name: cloudflared
+    - name: cloudflare-tunnel
       namespace: network
   values:
     fullnameOverride: nginx-external
@@ -35,7 +35,7 @@ spec:
       service:
         annotations:
           external-dns.alpha.kubernetes.io/hostname: "external.${SECRET_DOMAIN}"
-          io.cilium/lb-ipam-ips: "192.168.0.82"
+          lbipam.cilium.io/ips: "192.168.0.82"
       ingressClassResource:
         name: external
         default: false

@@ -71,7 +71,7 @@ spec:
         controller: main
         type: LoadBalancer
         annotations:
-          io.cilium/lb-ipam-ips: "${LB_CALIBRE_SERVER_ADDR}"
+          lbipam.cilium.io/ips: "${LB_CALIBRE_SERVER_ADDR}"
         externalTrafficPolicy: Local
         ports:
           content-server:

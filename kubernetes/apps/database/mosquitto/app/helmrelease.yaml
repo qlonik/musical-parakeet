@@ -67,7 +67,7 @@ spec:
         type: LoadBalancer
         externalTrafficPolicy: Local
         annotations:
-          io.cilium/lb-ipam-ips: "${LB_MQTT_ADDR}"
+          lbipam.cilium.io/ips: "${LB_MQTT_ADDR}"
         ports:
           http:
             primary: true
