@@ -1,4 +1,6 @@
+---
 changelog:
   exclude:
     authors:
+      - github-actions
       - renovate
