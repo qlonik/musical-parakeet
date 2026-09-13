@@ -1,26 +1,34 @@
-# Trash
-.DS_Store
-Thumbs.db
-# k8s
-kubeconfig
-# vscode-sops
-.decrypted~*.yaml
-.config.env
-*.agekey
+# Secrets
 *.pub
 *.key
-# Private
-.private
-# Ansible
-.venv*
+*.decrypted~*.yaml
+/age.key
+/cloudflare-tunnel.json
+/deploy.key
+/deploy.key.pub
+/flux-webhook-token.txt
+# Template config files
+/cluster.toml
+/.config.env
+/.config.yaml
+# Kubernetes
+kubeconfig
+talosconfig
+# Python
+__pycache__/
+*.py[cod]
+# Misc.
+.claude/
+.private/
+.venv/
+.DS_Store
+Thumbs.db
+/talos/output/
+/talos/rendered/
 # Taskfile
 .task
-# Brew
-Brewfile.lock.json
 # intellij
 .idea
-# wiki
-wiki
 # Nix
 /.direnv/
 /result

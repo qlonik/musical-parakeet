@@ -10,9 +10,3 @@ collections:
     version: 11.3.0
   - name: community.sops
     version: 2.2.3
-  - name: kubernetes.core
-    version: 6.1.0
-roles:
-  - name: xanmanning.k3s
-    src: https://github.com/PyratLabs/ansible-role-k3s
-    version: v3.6.1

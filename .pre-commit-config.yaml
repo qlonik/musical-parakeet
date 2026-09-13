@@ -1,17 +1,6 @@
 ---
 fail_fast: false
 repos:
-  - repo: https://github.com/adrienverge/yamllint
-    rev: v1.37.1
-    hooks:
-      - args:
-          - --config-file
-          - .yamllint.yaml
-        id: yamllint
-  - repo: https://github.com/nix-community/nixpkgs-fmt
-    rev: v1.3.0
-    hooks:
-      - id: nixpkgs-fmt
   - repo: https://github.com/yuvipanda/pre-commit-hook-ensure-sops
     rev: fb9c7108c6c62aaf05441daa97ace3f40e840ac3
     hooks:

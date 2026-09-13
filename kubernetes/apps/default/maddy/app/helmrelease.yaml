@@ -50,7 +50,7 @@ spec:
         type: LoadBalancer
         externalTrafficPolicy: Local
         annotations:
-          io.cilium/lb-ipam-ips: "${LB_MADDY_ADDR}"
+          lbipam.cilium.io/ips: "${LB_MADDY_ADDR}"
         ports:
           http:
             primary: true

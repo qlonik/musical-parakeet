@@ -60,7 +60,7 @@ spec:
         controller: jellyfin
         type: LoadBalancer
         annotations:
-          io.cilium/lb-ipam-ips: "${LB_JELLYFIN_ADDR}"
+          lbipam.cilium.io/ips: "${LB_JELLYFIN_ADDR}"
         externalTrafficPolicy: Local
         ports:
           http:
