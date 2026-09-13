@@ -16,7 +16,7 @@ The cluster has enough configuration added for the future recovery step. When
 the cluster needs to be rebuilt, it is no longer going to be initialized with
 the empty data. Therefore, it is necessary to comment out `bootstrap.initdb`
 section and uncomment `bootstrap.recovery`. It is also necessary to bump
-versions in both `externalClusters.0.name` and
-`backup.barmanObjectStore.serverName`. This way, the cluster will recover from
-the version that is next from the current version and will start backing up into
-a future version.
+versions in both `externalClusters.1.name` (the one corresponding to active
+cluster) and `backup.barmanObjectStore.serverName`. This way, the cluster will
+recover from the version that is next from the current version and will start
+backing up into a future version.

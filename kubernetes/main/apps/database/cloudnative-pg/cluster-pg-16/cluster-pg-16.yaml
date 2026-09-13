@@ -26,7 +26,7 @@ spec:
       password:
         name: pg-16-superuser-secret
         key: password
-    - name: &active-cluster pg-16-v0
+    - name: &active-cluster pg-16-v1
       barmanObjectStore: &barman-object-store
         data:
           compression: bzip2
@@ -43,23 +43,23 @@ spec:
             name: pg-16-superuser-secret
             key: s3-secret-access-key
   bootstrap:
-    initdb:
-      ## for empty new db
-      # owner: app
-      # database: app
-      ## for migrating between db or major versions
-      import:
-        type: monolith
-        databases: ["*"]
-        roles: ["*"]
-        source:
-          externalCluster: *migration-cluster
+    # initdb:
+    #   ## for empty new db
+    #   owner: app
+    #   database: app
+    #   ## for migrating between db or major versions
+    #   import:
+    #     type: monolith
+    #     databases: ["*"]
+    #     roles: ["*"]
+    #     source:
+    #       externalCluster: *migration-cluster
     ## for recovering the same version (e.g. cluster rebuild)
-    # recovery:
-    #   source: *active-cluster
+    recovery:
+      source: *active-cluster
 
   backup:
     retentionPolicy: 30d
     barmanObjectStore:
       <<: *barman-object-store
-      serverName: pg-16-v1
+      serverName: pg-16-v2

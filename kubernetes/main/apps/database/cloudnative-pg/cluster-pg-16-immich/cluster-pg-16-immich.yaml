@@ -22,7 +22,7 @@ spec:
     enablePodMonitor: true
 
   externalClusters:
-    - name: &active-cluster pg-16-immich-v0
+    - name: &active-cluster pg-16-immich-v1
       barmanObjectStore: &barman-object-store
         data:
           compression: bzip2
@@ -39,42 +39,42 @@ spec:
             name: pg-16-immich-superuser-secret
             key: s3-secret-access-key
   bootstrap:
-    initdb:
-      ## for empty new db
-      # The 'import' method does not work for immich, because of extensions
-      # and custom search_path. Need to manually dump and load the database.
-      # See
-      # https://github.com/immich-app/immich/blob/main/docs/docs/administration/backup-and-restore.md
-      # for some pointers.
-      #
-      # dump with:
-      # `pg_dump -U postgres -b --clean --if-exists -f immich_dump.sql immich` or
-      # `kubectl -n database exec -ti <primary-pod-name> -- pg_dumpall --clean --if-exists --username=postgres | gzip > ./immich_dump.sql.gz`
-      # (replace <primary-pod-name> with actual value, e.g. "pg-16-immich-1")
-      # then edit the dumped file with:
-      # `sed "s/SELECT pg_catalog.set_config('search_path', '', false);/SELECT pg_catalog.set_config('search_path', 'public, pg_catalog', true);/g"`
-      # load with:
-      # `psql -U postgres -d immich < immich_dump.sql`
-      # lastly, needed to run last 3 line inside psql connected to imported
-      # database to grant privileges to immich user.
-      owner: immich
-      database: immich
-      secret:
-        name: pg-16-immich-secret
-      dataChecksums: true
-      postInitApplicationSQL:
-        - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
-        - CREATE EXTENSION IF NOT EXISTS earthdistance WITH SCHEMA pg_catalog CASCADE;
-        - CREATE EXTENSION IF NOT EXISTS pg_trgm;
-        - CREATE EXTENSION IF NOT EXISTS unaccent;
-        - GRANT ALL PRIVILEGES ON DATABASE immich TO immich;
-        - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO immich;
+    # initdb:
+    #   ## for empty new db
+    #   # The 'import' method does not work for immich, because of extensions
+    #   # and custom search_path. Need to manually dump and load the database.
+    #   # See
+    #   # https://github.com/immich-app/immich/blob/main/docs/docs/administration/backup-and-restore.md
+    #   # for some pointers.
+    #   #
+    #   # dump with:
+    #   # `pg_dump -U postgres -b --clean --if-exists -f immich_dump.sql immich` or
+    #   # `kubectl -n database exec -ti <primary-pod-name> -- pg_dumpall --clean --if-exists --username=postgres | gzip > ./immich_dump.sql.gz`
+    #   # (replace <primary-pod-name> with actual value, e.g. "pg-16-immich-1")
+    #   # then edit the dumped file with:
+    #   # `sed "s/SELECT pg_catalog.set_config('search_path', '', false);/SELECT pg_catalog.set_config('search_path', 'public, pg_catalog', true);/g"`
+    #   # load with:
+    #   # `psql -U postgres -d immich < immich_dump.sql`
+    #   # lastly, needed to run last 3 line inside psql connected to imported
+    #   # database to grant privileges to immich user.
+    #   owner: immich
+    #   database: immich
+    #   secret:
+    #     name: pg-16-immich-secret
+    #   dataChecksums: true
+    #   postInitApplicationSQL:
+    #     - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
+    #     - CREATE EXTENSION IF NOT EXISTS earthdistance WITH SCHEMA pg_catalog CASCADE;
+    #     - CREATE EXTENSION IF NOT EXISTS pg_trgm;
+    #     - CREATE EXTENSION IF NOT EXISTS unaccent;
+    #     - GRANT ALL PRIVILEGES ON DATABASE immich TO immich;
+    #     - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO immich;
     ## for recovering the same version (e.g. cluster rebuild)
-    # recovery:
-    #   source: *active-cluster
+    recovery:
+      source: *active-cluster
 
   backup:
     retentionPolicy: 30d
     barmanObjectStore:
       <<: *barman-object-store
-      serverName: pg-16-immich-v1
+      serverName: pg-16-immich-v2
