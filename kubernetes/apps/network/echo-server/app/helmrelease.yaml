@@ -4,84 +4,28 @@ kind: HelmRelease
 metadata:
   name: echo-server
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 3.7.3
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-  uninstall:
-    keepHistory: false
+  chartRef:
+    kind: OCIRepository
+    name: echo
+  interval: 1h
   values:
-    controllers:
-      echo-server:
-        replicas: 2
-        strategy: RollingUpdate
-        containers:
-          main:
-            image:
-              repository: docker.io/jmalloc/echo-server
-              tag: v0.3.7
-            env:
-              PORT: &port 8080
-            probes:
-              liveness: &probes
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /health
-                    port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
-              startup:
-                enabled: false
-            resources:
-              requests:
-                cpu: 5m
-                memory: 10M
-              limits:
-                memory: 64M
-        pod:
-          securityContext:
-            runAsUser: 568
-            runAsGroup: 568
-    service:
-      main:
-        controller: echo-server
-        ports:
-          http:
-            port: *port
-    ingress:
-      main:
+    replicaCount: 2
+    config:
+      kubernetes: true
+      trustedProxies:
+        - "10.42.0.0/16"
+    httpRoute:
+      enabled: true
+      hostnames:
+        - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+      parentRefs:
+        - name: envoy-external
+          namespace: network
+    monitoring:
+      serviceMonitor:
         enabled: true
-        className: external
-        annotations:
-          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/group: Network
-          gethomepage.dev/name: Echo Server
-          gethomepage.dev/icon: mdi-video-input-antenna
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: main
-                  port: http
-        tls:
-          - hosts:
-              - *host
+    resources:
+      requests:
+        cpu: 10m
+      limits:
+        memory: 64Mi

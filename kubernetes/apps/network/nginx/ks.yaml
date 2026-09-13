@@ -2,65 +2,59 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app nginx-certificates
-  namespace: flux-system
+  name: nginx-certificates
 spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: nginx-certificates
   dependsOn:
     - name: cert-manager-issuers
+  interval: 1h
   path: ./kubernetes/apps/network/nginx/certificates
-  targetNamespace: network
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
+  targetNamespace: network
   wait: true
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app nginx-external
-  namespace: flux-system
+  name: nginx-external
 spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: nginx-external
   dependsOn:
     - name: nginx-certificates
+  interval: 1h
   path: ./kubernetes/apps/network/nginx/external
-  targetNamespace: network
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
+  targetNamespace: network
   wait: false
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app nginx-internal
-  namespace: flux-system
+  name: nginx-internal
 spec:
-  dependsOn:
-    - name: nginx-certificates
-  path: ./kubernetes/apps/network/nginx/internal
-  targetNamespace: network
   commonMetadata:
     labels:
-      app.kubernetes.io/name: *app
+      app.kubernetes.io/name: nginx-internal
+  dependsOn:
+    - name: nginx-certificates
+  interval: 1h
+  path: ./kubernetes/apps/network/nginx/internal
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
+  targetNamespace: network
   wait: false
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m

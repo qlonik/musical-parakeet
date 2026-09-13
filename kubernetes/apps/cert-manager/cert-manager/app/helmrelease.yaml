@@ -4,36 +4,17 @@ kind: HelmRelease
 metadata:
   name: cert-manager
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: cert-manager
-      version: v1.20.2
-      sourceRef:
-        kind: HelmRepository
-        name: jetstack
-        namespace: flux-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-  uninstall:
-    keepHistory: false
+  chartRef:
+    kind: OCIRepository
+    name: cert-manager
+  interval: 1h
   values:
-    installCRDs: true
-    extraArgs:
-      - --dns01-recursive-nameservers=1.1.1.1:53,9.9.9.9:53
-      - --dns01-recursive-nameservers-only
-    podDnsPolicy: None
-    podDnsConfig:
-      nameservers:
-        - "1.1.1.1"
-        - "9.9.9.9"
+    crds:
+      enabled: true
+    replicaCount: 2
+    dns01RecursiveNameservers: https://1.1.1.1:443/dns-query,https://1.0.0.1:443/dns-query
+    dns01RecursiveNameserversOnly: true
     prometheus:
       enabled: true
       servicemonitor:
         enabled: true
-        prometheusInstance: observability

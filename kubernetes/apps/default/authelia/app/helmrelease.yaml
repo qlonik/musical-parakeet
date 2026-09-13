@@ -85,7 +85,7 @@ spec:
         type: LoadBalancer
         externalTrafficPolicy: Local
         annotations:
-          io.cilium/lb-ipam-ips: "${LB_AUTHELIA_ADDR}"
+          lbipam.cilium.io/ips: "${LB_AUTHELIA_ADDR}"
         ports:
           http:
             primary: true

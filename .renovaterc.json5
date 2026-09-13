@@ -1,0 +1,273 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [
+    "github>home-operations/renovate-presets#8.1.0",
+    ":semanticCommits",
+    ":enablePreCommit",
+  ],
+  dependencyDashboardTitle: "Renovate Dashboard 🤖",
+  suppressNotifications: ["prEditedNotification", "prIgnoreNotification"],
+  rebaseWhen: "conflicted",
+  schedule: ["on saturday"],
+  internalChecksFilter: "strict",
+  "pre-commit": {
+    enabled: true,
+  },
+  ignorePaths: [
+    // default set
+    "**/node_modules/**",
+    "**/bower_components/**",
+    "**/vendor/**",
+    "**/examples/**",
+    "**/__tests__/**",
+    "**/test/**",
+    "**/tests/**",
+    "**/__fixtures__/**",
+    // custom extra
+    ".archive/**",
+  ],
+  lockFileMaintenance: {
+    enabled: true,
+    schedule: ["before 3am on the first day of the month"],
+    commitMessageExtra: "({{manager}})",
+    additionalBranchPrefix: "{{manager}}-",
+  },
+  mise: {
+    managerFilePatterns: ["/^\\.mise/conf\\.d/[^/]+\\.toml$/"],
+  },
+  packageRules: [
+    // automerge
+    {
+      description: "Auto merge Github Actions",
+      matchManagers: ["github-actions"],
+      automerge: true,
+      automergeType: "branch",
+      ignoreTests: true,
+      matchUpdateTypes: ["minor", "patch", "digest"],
+      minimumReleaseAge: "7 days",
+    },
+    {
+      description: "Auto-merge container digests updates for trusted containers",
+      matchDatasources: ["docker"],
+      automerge: true,
+      automergeType: "branch",
+      ignoreTests: true,
+      matchUpdateTypes: ["digest"],
+      matchPackageNames: [
+        "/ghcr.io/nginxinc/",
+        "/ghcr.io/home-operations/",
+        "/public.ecr.aws/docker/library/",
+      ],
+    },
+    // groups
+    {
+      description: "Mise Tools Group",
+      matchManagers: ["mise"],
+      groupName: "mise tools",
+      minimumReleaseAge: "3 days",
+    },
+    {
+      description: "Talos Group",
+      groupName: "talos",
+      matchPackageNames: ["siderolabs/talos"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      minimumGroupSize: 2,
+    },
+    {
+      description: "Flux Operator Group",
+      groupName: "flux-operator",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/flux-operator/", "/flux-instance/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      minimumGroupSize: 2,
+    },
+    {
+      description: "System Upgrade Controller Group",
+      groupName: "System Upgrade Controller",
+      matchPackageNames: ["/rancher/system-upgrade-controller/"],
+      matchDatasources: ["docker", "github-releases"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      separateMinorPatch: true,
+    },
+    {
+      description: "Actions Runner Controller Group",
+      groupName: "Actions Runner Controller",
+      matchPackageNames: [
+        "/gha-runner-scale-set/",
+        "actions-runner-controller-charts/gha-runner-scale-set-controller",
+        "actions-runner-controller-charts/gha-runner-scale-set",
+      ],
+      matchDatasources: ["helm", "docker"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      separateMinorPatch: true,
+    },
+    {
+      description: "Immich Group",
+      groupName: "Immich",
+      matchPackageNames: ["/immich-app/"],
+      matchDatasources: ["docker"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      separateMinorPatch: true,
+    },
+    {
+      description: "Vikunja Group",
+      groupName: "Vikunja",
+      matchPackageNames: ["/vikunja/"],
+      matchDatasources: ["docker"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      separateMinorPatch: true,
+    },
+    {
+      description: "effect-ts Group",
+      groupName: "effect-ts",
+      matchPackageNames: ["effect", "@effect{/,}**"],
+      matchDatasources: ["npm"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "K8s CSI Group",
+      groupName: "sig-storage",
+      matchPackageNames: ["/registry.k8s.io/sig-storage/csi-/"],
+      matchDatasources: ["docker"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "calibre Group",
+      groupName: "calibre",
+      matchPackageNames: ["/ghcr.io/linuxserver/calibre/", "/ghcr.io/linuxserver/mods/"],
+      matchCurrentValue: "/^(universal-calibre-)?v\\d+/",
+      matchDatasources: ["docker"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      separateMinorPatch: true,
+    },
+    {
+      description: "@tsconfig bases Group",
+      groupName: "tsconfig-bases",
+      matchPackageNames: ["@tsconfig{/,}**"],
+      matchDatasources: ["npm"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "Intel device plugins Group",
+      groupName: "Intel device plugins",
+      matchPackageNames: ["intel-device-plugins-gpu", "intel-device-plugins-operator"],
+      matchDatasources: ["helm"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      separateMinorPatch: true,
+    },
+    {
+      description: "Volsync Group",
+      groupName: "volsync",
+      matchPackageNames: ["/volsync/"],
+      matchDatasources: ["helm", "docker"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      separateMinorPatch: true,
+    },
+    // custom versioning
+    {
+      description: "Use custom versioning for firefly-iii",
+      matchDatasources: ["docker"],
+      versioning: "regex:^version-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
+      matchPackageNames: ["fireflyiii/core", "fireflyiii/data-importer"],
+    },
+    {
+      description: "Use custom versioning for linuxserver.io containers",
+      matchDatasources: ["docker"],
+      versioning: "regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?(?:-ls(?<build>\\d+))?$",
+      matchPackageNames: [
+        "/^ghcr.io/linuxserver//",
+        "!ghcr.io/linuxserver/mods",
+        "!ghcr.io/linuxserver/lazylibrarian",
+      ],
+    },
+    {
+      description: "Custom versioning for linuxserver.io mods",
+      matchDatasources: ["docker"],
+      versioning: "regex:^(?<compatibility>.+?)(-v(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))?)?$",
+      matchPackageNames: ["ghcr.io/linuxserver/mods"],
+    },
+    {
+      description: "Use custom versioning for minio",
+      matchDatasources: ["docker"],
+      versioning: "regex:^RELEASE\\.(?<major>\\d+)-(?<minor>\\d+)-(?<patch>\\d+)T.*Z$",
+      matchPackageNames: ["/minio/"],
+    },
+    // labels
+    {
+      matchUpdateTypes: ["major"],
+      addLabels: ["type/major"],
+    },
+    {
+      matchUpdateTypes: ["minor"],
+      addLabels: ["type/minor"],
+    },
+    {
+      matchUpdateTypes: ["patch"],
+      addLabels: ["type/patch"],
+    },
+    {
+      matchUpdateTypes: ["digest"],
+      addLabels: ["type/digest"],
+    },
+    {
+      matchDatasources: ["docker"],
+      addLabels: ["renovate/container"],
+    },
+    {
+      matchDatasources: ["helm"],
+      addLabels: ["renovate/helm"],
+    },
+    {
+      matchDatasources: ["galaxy", "galaxy-collection"],
+      addLabels: ["renovate/ansible"],
+    },
+    {
+      matchDatasources: ["github-releases", "github-tags"],
+      addLabels: ["renovate/github-release"],
+    },
+    {
+      matchManagers: ["github-actions"],
+      addLabels: ["renovate/github-action"],
+    },
+  ],
+  // custom managers
+  customManagers: [
+    {
+      customType: "regex",
+      description: "Process docker mods for linuxserver images",
+      fileMatch: ["(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$"],
+      matchStrings: [
+        // Example:
+        //   "// renovate: lsio-docker-mod"
+        //   "ghcr.io/linuxserver/mods:universal-calibre-v7.8.0@sha256:eee6b6428104692d9b24590b82a654d46b230385a5979a11f2dd373a80353d3c"
+        //   "ghcr.io/linuxserver/mods:lazylibrarian-ffmpeg@sha256:5083d9f2bdfcb27edf65a55e7c05d0ae8ce309d02d5f0cdc83bfe8e95c942dd4"
+        'renovate: lsio-docker-mod.*\\n\\s*"(?<depName>.+?):(?<currentValue>.+?)(@(?<currentDigest>sha256:.+?))?"',
+      ],
+      datasourceTemplate: "docker",
+    },
+  ],
+}
