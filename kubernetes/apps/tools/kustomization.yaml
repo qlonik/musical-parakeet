@@ -1,12 +1,16 @@
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: tools
+
+components:
+  - ../../components/sops
+
 resources:
   - ./namespace.yaml
-  - ./descheduler/ks.yaml
-  - ./device-plugin-amd-gpu/ks.yaml
-  - ./device-plugin-generic/ks.yaml
-  - ./device-plugin-intel/ks.yaml
-  - ./node-feature-discovery/ks.yaml
-  - ./reloader/ks.yaml
-  - ./system-upgrade-controller/ks.yaml
+  # - ./descheduler/ks.yaml
+  # - ./device-plugin-amd-gpu/ks.yaml
+  # - ./device-plugin-generic/ks.yaml
+  # - ./device-plugin-intel/ks.yaml
+  # - ./node-feature-discovery/ks.yaml
+  # - ./system-upgrade-controller/ks.yaml
