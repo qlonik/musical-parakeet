@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: minio-nfs
+  name: minio
 spec:
-  storageClassName: minio-nfs
+  storageClassName: nfs-minio
   accessModes: ["ReadWriteMany"]
   persistentVolumeReclaimPolicy: Retain
   capacity:
@@ -14,17 +14,17 @@ spec:
     path: /mnt/main/appdata/minio
   mountOptions: ["nfsvers=4.2", "nconnect=8", "hard", "noatime"]
   claimRef:
-    name: minio-nfs
+    name: minio
     namespace: default
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: minio-nfs
+  name: minio
 spec:
-  storageClassName: minio-nfs
+  storageClassName: nfs-minio
   accessModes: ["ReadWriteMany"]
   resources:
     requests:
       storage: 1Mi
-  volumeName: minio-nfs
+  volumeName: minio
