@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/source.toolkit.fluxcd.io/helmrepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: typesense-operator
+spec:
+  interval: 1h
+  url: https://akyriako.github.io/typesense-operator
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/source.toolkit.fluxcd.io/helmchart_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: typesense-operator
+spec:
+  chart: typesense-operator
+  interval: 1h
+  sourceRef:
+    kind: HelmRepository
+    name: typesense-operator
+  version: 0.4.1

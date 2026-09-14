@@ -1,24 +1,23 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app mosquitto
-  namespace: flux-system
 spec:
-  path: ./kubernetes/apps/database/mosquitto/app
-  targetNamespace: database
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  interval: 1h
+  path: ./kubernetes/apps/database/mosquitto/app
   postBuild:
     substitute:
-      APP: *app
+      APP: mosquitto
       PVC_CAPACITY: 1Gi
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
+  targetNamespace: database
   wait: true
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
