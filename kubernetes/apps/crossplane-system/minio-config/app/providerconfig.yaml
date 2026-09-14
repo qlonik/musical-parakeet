@@ -9,4 +9,4 @@ spec:
       name: minio-credentials
       namespace: crossplane-system
     source: InjectedIdentity
-  minioURL: http://minio.default.svc.cluster.local:9000
+  minioURL: http://minio.database.svc.cluster.local:9000
