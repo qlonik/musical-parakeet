@@ -18,7 +18,7 @@ resources:
   # - ./calibre-web/ks.yaml
   # - ./cross-seed/ks.yaml
   # - ./firefly-iii/ks.yaml
-  # - ./glauth/ks.yaml
+  - ./glauth/ks.yaml
   # - ./grocy/ks.yaml
   # - ./home-assistant/ks.yaml
   # - ./homepage/ks.yaml
