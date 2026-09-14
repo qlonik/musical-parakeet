@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: "${PVC_NAME_PREFIX}${APP}${PVC_NAME_SUFFIX}"
+  name: "${PVC_NAME_PREFIX:-}${APP}${PVC_NAME_SUFFIX:-}"
 spec:
   accessModes: ["${PVC_ACCESSMODE:-ReadWriteOnce}"]
   dataSourceRef:

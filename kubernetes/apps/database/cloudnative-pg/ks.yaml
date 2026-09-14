@@ -28,7 +28,8 @@ metadata:
 spec:
   dependsOn:
     - name: cloudnative-pg
-    - name: cluster-apps-minio
+    - name: minio
+      namespace: default
     - name: openebs
   path: ./kubernetes/apps/database/cloudnative-pg/cluster-pg-16
   targetNamespace: database
@@ -53,7 +54,8 @@ metadata:
 spec:
   dependsOn:
     - name: cloudnative-pg
-    - name: cluster-apps-minio
+    - name: minio
+      namespace: default
     - name: openebs
   path: ./kubernetes/apps/database/cloudnative-pg/cluster-pg-16-immich
   targetNamespace: database
