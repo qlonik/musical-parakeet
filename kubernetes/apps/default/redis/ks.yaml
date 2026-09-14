@@ -5,8 +5,6 @@ metadata:
   name: &app redis
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: rancher-local-path-provisioner
   path: ./kubernetes/apps/default/redis/app
   targetNamespace: default
   commonMetadata:

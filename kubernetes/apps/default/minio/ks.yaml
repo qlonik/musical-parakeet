@@ -8,8 +8,6 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: csi-driver-nfs
   interval: 1h
   path: ./kubernetes/apps/default/minio/app
   prune: true
