@@ -14,7 +14,6 @@
     enabled: true,
   },
   ignorePaths: [
-    // default set
     "**/node_modules/**",
     "**/bower_components/**",
     "**/vendor/**",
@@ -23,7 +22,6 @@
     "**/test/**",
     "**/tests/**",
     "**/__fixtures__/**",
-    // custom extra
     ".archive/**",
   ],
   lockFileMaintenance: {
@@ -36,7 +34,6 @@
     managerFilePatterns: ["/^\\.mise/conf\\.d/[^/]+\\.toml$/"],
   },
   packageRules: [
-    // automerge
     {
       description: "Auto merge Github Actions",
       matchManagers: ["github-actions"],
@@ -59,7 +56,6 @@
         "/public.ecr.aws/docker/library/",
       ],
     },
-    // groups
     {
       description: "Mise Tools Group",
       matchManagers: ["mise"],
@@ -150,7 +146,10 @@
     {
       description: "calibre Group",
       groupName: "calibre",
-      matchPackageNames: ["/ghcr.io/linuxserver/calibre/", "/ghcr.io/linuxserver/mods/"],
+      matchPackageNames: [
+        "/ghcr.io/linuxserver/calibre/",
+        "/ghcr.io/linuxserver/mods/",
+      ],
       matchCurrentValue: "/^(universal-calibre-)?v\\d+/",
       matchDatasources: ["docker"],
       group: {
@@ -170,7 +169,10 @@
     {
       description: "Intel device plugins Group",
       groupName: "Intel device plugins",
-      matchPackageNames: ["intel-device-plugins-gpu", "intel-device-plugins-operator"],
+      matchPackageNames: [
+        "intel-device-plugins-gpu",
+        "intel-device-plugins-operator",
+      ],
       matchDatasources: ["helm"],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
@@ -187,7 +189,6 @@
       },
       separateMinorPatch: true,
     },
-    // custom versioning
     {
       description: "Use custom versioning for firefly-iii",
       matchDatasources: ["docker"],
@@ -216,7 +217,6 @@
       versioning: "regex:^RELEASE\\.(?<major>\\d+)-(?<minor>\\d+)-(?<patch>\\d+)T.*Z$",
       matchPackageNames: ["/minio/"],
     },
-    // labels
     {
       matchUpdateTypes: ["major"],
       addLabels: ["type/major"],
@@ -254,17 +254,12 @@
       addLabels: ["renovate/github-action"],
     },
   ],
-  // custom managers
   customManagers: [
     {
       customType: "regex",
       description: "Process docker mods for linuxserver images",
-      fileMatch: ["(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$"],
+      managerFilePatterns: ["/(^|/)kubernetes/.+\\.ya?ml(\\.j2)?$/"],
       matchStrings: [
-        // Example:
-        //   "// renovate: lsio-docker-mod"
-        //   "ghcr.io/linuxserver/mods:universal-calibre-v7.8.0@sha256:eee6b6428104692d9b24590b82a654d46b230385a5979a11f2dd373a80353d3c"
-        //   "ghcr.io/linuxserver/mods:lazylibrarian-ffmpeg@sha256:5083d9f2bdfcb27edf65a55e7c05d0ae8ce309d02d5f0cdc83bfe8e95c942dd4"
         'renovate: lsio-docker-mod.*\\n\\s*"(?<depName>.+?):(?<currentValue>.+?)(@(?<currentDigest>sha256:.+?))?"',
       ],
       datasourceTemplate: "docker",
