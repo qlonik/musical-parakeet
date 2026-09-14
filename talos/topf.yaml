@@ -13,7 +13,7 @@ nodes:
   - host: "andromeda"
     ip: "192.168.0.50"
     role: control-plane
-    schematicId: "4b3cd373a192c8469e859b7a0cfbed3ecc3577c4a2d346a37b0aeff9cd17cdb0"
+    schematicId: "@node/schematic.andromeda.yaml"
     data:
       installDisk: "/dev/nvme0n1"
       installDiskSerial: ""
@@ -21,11 +21,10 @@ nodes:
       mtu: 1500
       encryptDisk: false
       kernelModules: []
-      # kernelModules: [i915, intel-ucode]
   - host: "talos-node-1"
     ip: "192.168.0.49"
     role: worker
-    schematicId: "9c1d1b442d73f96dcd04e81463eb20000ab014062d22e1b083e1773336bc1dd5"
+    schematicId: "@node/schematic.talos-node-1.yaml"
     data:
       installDisk: "/dev/vda"
       installDiskSerial: ""
@@ -33,4 +32,3 @@ nodes:
       mtu: 1500
       encryptDisk: false
       kernelModules: []
-      # kernelModules: [amdgpu, amd-ucode]

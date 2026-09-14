@@ -1,0 +1,10 @@
+---
+customization:
+  extraKernelArgs: []
+  systemExtensions:
+    officialExtensions:
+      - siderolabs/amd-ucode # AMD iGPU
+      - siderolabs/amdgpu # AMD iGPU
+      - siderolabs/iscsi-tools # Longhorn
+      - siderolabs/nfsrahead # NFS Performance
+      - siderolabs/util-linux-tools # Longhorn
