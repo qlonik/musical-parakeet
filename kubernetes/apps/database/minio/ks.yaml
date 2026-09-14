@@ -9,11 +9,11 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   interval: 1h
-  path: ./kubernetes/apps/default/minio/app
+  path: ./kubernetes/apps/database/minio/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
     namespace: flux-system
-  targetNamespace: default
+  targetNamespace: database
   wait: true
