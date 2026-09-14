@@ -8,5 +8,5 @@ components:
 
 resources:
   - ./namespace.yaml
-  # - ./crossplane/ks.yaml
-  # - ./minio-config/ks.yaml
+  - ./crossplane/ks.yaml
+  - ./minio-config/ks.yaml

@@ -10,8 +10,8 @@ resources:
   - ./namespace.yaml
   # - ./csi-driver-nfs/ks.yaml
   # - ./democratic-csi/ks.yaml
-  # - ./longhorn/ks.yaml
-  # - ./openebs/ks.yaml
+  - ./longhorn/ks.yaml
+  - ./openebs/ks.yaml
   # - ./rancher-local-path-provisioner/ks.yaml
-  # - ./snapshot-controller/ks.yaml
-  # - ./volsync/ks.yaml
+  - ./snapshot-controller/ks.yaml
+  - ./volsync/ks.yaml

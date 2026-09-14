@@ -6,7 +6,7 @@ metadata:
 spec:
   dependsOn:
     - name: cloudnative-pg-cluster-16
-    - name: cluster-apps-glauth
+    - name: glauth
     - name: redis
   path: ./kubernetes/apps/default/authelia/app
   targetNamespace: default
