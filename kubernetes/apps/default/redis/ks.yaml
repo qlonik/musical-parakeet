@@ -7,8 +7,6 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: rancher-local-path-provisioner
   interval: 1h
   path: ./kubernetes/apps/default/redis/app
   prune: true
