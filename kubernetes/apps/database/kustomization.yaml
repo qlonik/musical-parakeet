@@ -9,5 +9,6 @@ components:
 resources:
   - ./namespace.yaml
   - ./cloudnative-pg/ks.yaml
+  - ./minio/ks.yaml
   - ./mosquitto/ks.yaml
   - ./typesense/ks.yaml
