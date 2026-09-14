@@ -8,6 +8,6 @@ components:
 
 resources:
   - ./namespace.yaml
-  # - ./cloudnative-pg/ks.yaml
-  # - ./mosquitto/ks.yaml
-  # - ./typesense/ks.yaml
+  - ./cloudnative-pg/ks.yaml
+  - ./mosquitto/ks.yaml
+  - ./typesense/ks.yaml

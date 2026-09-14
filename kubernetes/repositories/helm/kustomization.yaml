@@ -33,6 +33,5 @@ resources:
   - ./postfinance.yaml
   - ./prometheus-community.yaml
   - ./stakater.yaml
-  - ./typesense-operator.yaml
   - ./weave-gitops.yaml
   - ./xenitab.yaml
