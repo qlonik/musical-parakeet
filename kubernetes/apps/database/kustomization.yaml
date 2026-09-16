@@ -11,4 +11,5 @@ resources:
   - ./cloudnative-pg/ks.yaml
   - ./minio/ks.yaml
   - ./mosquitto/ks.yaml
+  - ./redis/ks.yaml
   - ./typesense/ks.yaml
