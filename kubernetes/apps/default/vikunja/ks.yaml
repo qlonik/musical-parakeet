@@ -9,6 +9,7 @@ spec:
     - name: authelia
     - name: cloudnative-pg-cluster-16
     - name: redis-lb
+      namespace: database
   path: ./kubernetes/apps/default/vikunja/app
   targetNamespace: default
   commonMetadata:

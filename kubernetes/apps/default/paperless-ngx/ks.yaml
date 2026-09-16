@@ -8,6 +8,7 @@ spec:
   dependsOn:
     - name: cloudnative-pg-cluster-16
     - name: redis-lb
+      namespace: database
     - name: volsync
   path: ./kubernetes/apps/default/paperless-ngx/app
   targetNamespace: default

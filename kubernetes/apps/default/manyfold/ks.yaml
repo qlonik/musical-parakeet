@@ -5,6 +5,9 @@ metadata:
   name: &app manyfold
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: redis
+      namespace: database
   path: ./kubernetes/apps/default/manyfold/app
   targetNamespace: default
   commonMetadata:

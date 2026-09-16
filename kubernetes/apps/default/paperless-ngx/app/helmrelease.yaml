@@ -24,7 +24,7 @@ spec:
     keepHistory: false
   dependsOn:
     - name: redis-lb
-      namespace: default
+      namespace: database
   values:
     controllers:
       paperless-ngx:

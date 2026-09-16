@@ -47,7 +47,7 @@ spec:
                     key: "${user_id}-pat"
               TRUSTED_PROXIES: "**"
               EXPECT_SECURE_URL: "true"
-              REDIS_HOST: http://redis-lb.default.svc.cluster.local
+              REDIS_HOST: http://redis-lb.database.svc.cluster.local
               REDIS_PORT: 6379
               REDIS_PASSWORD:
                 valueFrom:

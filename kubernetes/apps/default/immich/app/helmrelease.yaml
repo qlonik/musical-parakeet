@@ -12,7 +12,7 @@ spec:
     - name: authelia
       namespace: default
     - name: redis
-      namespace: default
+      namespace: database
   interval: 1h
   values:
     controllers:
