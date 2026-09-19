@@ -1,33 +1,14 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: home-assistant
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 3.7.3
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-  uninstall:
-    keepHistory: false
-  dependsOn:
-    - name: longhorn
-      namespace: storage
-    - name: volsync
-      namespace: storage
+  chartRef:
+    kind: OCIRepository
+    name: home-assistant
+  interval: 1h
   values:
     controllers:
       home-assistant:
@@ -70,14 +51,15 @@ spec:
             image:
               repository: ghcr.io/coder/code-server
               tag: 4.122.0@sha256:dbe5b1cf5c1f0edf47da6363fdadb89c456fb14b3d7e2a1545cabe20f5d7402a
-            # prettier-ignore
-            args: [
-              "--auth", "none",
-              "--user-data-dir", "/config/.vscode/user-data",
-              "--extensions-dir", "/config/.vscode/extensions",
-              "--port", "32321",
-              "/config"
-            ]
+            args:
+              # prettier-ignore
+              [
+                "--auth", "none",
+                "--user-data-dir", "/config/.vscode/user-data",
+                "--extensions-dir", "/config/.vscode/extensions",
+                "--port", "32321",
+                "/config",
+              ]
             ports:
               - name: code-server
                 containerPort: 32321

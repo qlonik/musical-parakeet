@@ -1,30 +1,19 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: zwave
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 3.7.3
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-  uninstall:
-    keepHistory: false
+  chartRef:
+    kind: OCIRepository
+    name: zwave
+  interval: 1h
   values:
     controllers:
       zwave:
+        annotations:
+          reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
@@ -44,8 +33,6 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
     defaultPodOptions:
-      annotations:
-        reloader.stakater.com/auto: "true"
       securityContext:
         runAsUser: 568
         runAsGroup: 568
@@ -85,7 +72,7 @@ spec:
     persistence:
       data:
         type: persistentVolumeClaim
-        existingClaim: zwave-conf
+        existingClaim: zwave
         globalMounts:
           - path: /usr/src/app/store
       tmp:
