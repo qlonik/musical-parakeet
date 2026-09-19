@@ -4,13 +4,10 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app zigbee2mqtt
-  namespace: flux-system
 spec:
   dependsOn:
-    - name: external-secrets-stores
-    - name: longhorn
     - name: mosquitto
-    - name: volsync
+      namespace: database
   path: ./kubernetes/apps/default/zigbee2mqtt/app
   targetNamespace: default
   commonMetadata:
@@ -24,7 +21,6 @@ spec:
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   wait: false
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
+  interval: 1h
