@@ -29,11 +29,11 @@ resources:
   # - ./linkding/ks.yaml
   # - ./maddy/ks.yaml
   # - ./manyfold/ks.yaml
-  # - ./matter/ks.yaml
+  - ./matter/ks.yaml
   # - ./mealie/ks.yaml
   # - ./navidrome/ks.yaml
   # - ./nextcloud/ks.yaml
-  # - ./otbr/ks.yaml
+  - ./otbr/ks.yaml
   # - ./paperless-ngx/ks.yaml
   # - ./prowlarr/ks.yaml
   # - ./qbittorrent/ks.yaml
