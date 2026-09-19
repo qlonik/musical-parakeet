@@ -37,11 +37,11 @@ spec:
         endpointURL: http://minio.database.svc.cluster.local:9000
         s3Credentials:
           accessKeyId:
-            name: pg-16-superuser-secret
-            key: s3-access-key-id
+            name: postgres-backup-minio-secret
+            key: AWS_ACCESS_KEY_ID
           secretAccessKey:
-            name: pg-16-superuser-secret
-            key: s3-secret-access-key
+            name: postgres-backup-minio-secret
+            key: AWS_SECRET_ACCESS_KEY
   bootstrap:
     # initdb:
     #   ## for empty new db

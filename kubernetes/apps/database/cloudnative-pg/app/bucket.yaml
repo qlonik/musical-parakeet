@@ -1,0 +1,11 @@
+---
+apiVersion: minio.home.arpa/v1alpha1
+kind: Bucket
+metadata:
+  name: postgres-backup
+spec:
+  providerConfigRef:
+    name: minio-config
+  writeConnectionSecretToRef:
+    name: postgres-backup-minio-secret
+    namespace: database
