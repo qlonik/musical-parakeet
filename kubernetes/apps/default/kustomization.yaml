@@ -29,11 +29,11 @@ resources:
   # - ./linkding/ks.yaml
   # - ./maddy/ks.yaml
   # - ./manyfold/ks.yaml
-  # - ./matter/ks.yaml
+  - ./matter/ks.yaml
   # - ./mealie/ks.yaml
   # - ./navidrome/ks.yaml
   # - ./nextcloud/ks.yaml
-  # - ./otbr/ks.yaml
+  - ./otbr/ks.yaml
   # - ./paperless-ngx/ks.yaml
   # - ./prowlarr/ks.yaml
   # - ./qbittorrent/ks.yaml
@@ -46,5 +46,5 @@ resources:
   # - ./unpackerr/ks.yaml
   # - ./vikunja/ks.yaml
   # - ./youtube-dl-server/ks.yaml
-  # - ./zigbee2mqtt/ks.yaml
-  # - ./zwave/ks.yaml
+  - ./zigbee2mqtt/ks.yaml
+  - ./zwave/ks.yaml
