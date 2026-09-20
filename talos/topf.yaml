@@ -17,6 +17,7 @@ nodes:
     data:
       installDisk: "/dev/nvme0n1"
       installDiskSerial: ""
+      iface: enp0s31f6
       macAddr: "34:97:f6:a3:41:d0"
       mtu: 1500
       encryptDisk: false
@@ -28,6 +29,7 @@ nodes:
     data:
       installDisk: "/dev/vda"
       installDiskSerial: ""
+      iface: ens3
       macAddr: "00:a0:98:0c:2e:ed"
       mtu: 1500
       encryptDisk: false
