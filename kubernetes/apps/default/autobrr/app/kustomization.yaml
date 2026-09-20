@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
+  - ./ocirepository.yaml
 
 configMapGenerator:
   - name: autobrr-custom-definitions

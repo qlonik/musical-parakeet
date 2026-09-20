@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+  - ./ocirepository.yaml
 components:
   - ../../../../templates/volsync
 
@@ -13,3 +14,5 @@ configMapGenerator:
       - ./scripts/xseed.sh
 generatorOptions:
   disableNameSuffixHash: true
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
