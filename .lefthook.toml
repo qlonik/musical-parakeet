@@ -19,6 +19,7 @@ stage_fixed = true
 
 [pre-commit.commands.format-markdown]
 glob = ["*.md", "*.markdown", "*.mdx"]
+exclude = ["*.sops.md"]
 run = "oxfmt {staged_files}"
 stage_fixed = true
 
