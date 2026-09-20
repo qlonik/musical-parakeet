@@ -1,33 +1,20 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: lazylibrarian
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 3.7.3
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-  uninstall:
-    keepHistory: false
+  chartRef:
+    kind: OCIRepository
+    name: lazylibrarian
+  interval: 1h
   values:
     controllers:
-      main:
+      lazylibrarian:
         type: statefulset
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/linuxserver/lazylibrarian
               tag: latest@sha256:a2774e1e6bfecfb422d75887eebae1719aa3f3a84a8b7afd538849a5642b2918
@@ -61,7 +48,7 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
     service:
       main:
-        controller: main
+        controller: lazylibrarian
         ports:
           http:
             port: 5299
@@ -91,10 +78,10 @@ spec:
       config:
         # stateful data
         type: persistentVolumeClaim
-        existingClaim: lazylibrarian-conf
+        existingClaim: lazylibrarian
         advancedMounts:
-          main:
-            main:
+          lazylibrarian:
+            app:
               - path: /config
       ebooks:
         type: nfs
@@ -126,8 +113,8 @@ spec:
         type: configMap
         name: patch-lazylibrarian-code
         advancedMounts:
-          main:
-            main:
+          lazylibrarian:
+            app:
               - path: /etc/s6-overlay/s6-rc.d/patch-lazylibrarian-code
                 readOnly: true
               - path: /etc/s6-overlay/s6-rc.d/init-lazylibrarian-config/dependencies.d/patch-lazylibrarian-code

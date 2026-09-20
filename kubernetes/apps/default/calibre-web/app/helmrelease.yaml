@@ -1,27 +1,14 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: calibre-web
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 3.7.3
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-  uninstall:
-    keepHistory: false
+  chartRef:
+    kind: OCIRepository
+    name: calibre-web
+  interval: 1h
   values:
     controllers:
       calibre-web:
@@ -29,7 +16,7 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/linuxserver/calibre-web
               tag: 0.6.26-ls384@sha256:4db76b9d9fdf6cf5b899ad77c650f212347030337d890af0e0c56bd0a5463cf8
@@ -131,10 +118,10 @@ spec:
       config:
         # stateful data
         type: persistentVolumeClaim
-        existingClaim: calibre-web-conf
+        existingClaim: calibre-web
         advancedMounts:
           calibre-web:
-            main:
+            app:
               - path: /config
       books:
         type: nfs

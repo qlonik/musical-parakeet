@@ -1,34 +1,21 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: lidarr
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 3.7.3
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-  uninstall:
-    keepHistory: false
+  chartRef:
+    kind: OCIRepository
+    name: lidarr
+  interval: 1h
   values:
     controllers:
       lidarr:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/home-operations/lidarr
               tag: 3.1.2.4938@sha256:9df1e14c8e09745f23a36c0cc6adcf69665b379aae60e5a7cb9bda27961ef4e7
@@ -96,10 +83,10 @@ spec:
     persistence:
       config:
         type: persistentVolumeClaim
-        existingClaim: lidarr-conf
+        existingClaim: lidarr
         advancedMounts:
           lidarr:
-            main:
+            app:
               - path: /config
       music:
         type: nfs

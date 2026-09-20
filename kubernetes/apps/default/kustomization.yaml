@@ -11,12 +11,12 @@ resources:
   # - ./attic/ks.yaml
   - ./audiobookshelf/ks.yaml
   - ./authelia/ks.yaml
-  # - ./autobrr/ks.yaml
-  # - ./bazarr/ks.yaml
-  # - ./bookshelf/ks.yaml
-  # - ./calibre/ks.yaml
-  # - ./calibre-web/ks.yaml
-  # - ./cross-seed/ks.yaml
+  - ./autobrr/ks.yaml
+  - ./bazarr/ks.yaml
+  - ./bookshelf/ks.yaml
+  - ./calibre/ks.yaml
+  - ./calibre-web/ks.yaml
+  - ./cross-seed/ks.yaml
   # - ./firefly-iii/ks.yaml
   - ./glauth/ks.yaml
   # - ./grocy/ks.yaml
@@ -24,26 +24,26 @@ resources:
   # - ./homepage/ks.yaml
   - ./immich/ks.yaml
   - ./jellyfin/ks.yaml
-  # - ./lazylibrarian/ks.yaml
-  # - ./lidarr/ks.yaml
+  - ./lazylibrarian/ks.yaml
+  - ./lidarr/ks.yaml
   # - ./linkding/ks.yaml
   # - ./maddy/ks.yaml
   # - ./manyfold/ks.yaml
   - ./matter/ks.yaml
   # - ./mealie/ks.yaml
-  # - ./navidrome/ks.yaml
+  - ./navidrome/ks.yaml
   # - ./nextcloud/ks.yaml
   - ./otbr/ks.yaml
   # - ./paperless-ngx/ks.yaml
-  # - ./prowlarr/ks.yaml
-  # - ./qbittorrent/ks.yaml
-  # - ./radarr/ks.yaml
-  # - ./readarr/ks.yaml
-  # - ./sabnzbd/ks.yaml
-  # - ./seerr/ks.yaml
-  # - ./sonarr/ks.yaml
+  - ./prowlarr/ks.yaml
+  - ./qbittorrent/ks.yaml
+  - ./radarr/ks.yaml
+  - ./readarr/ks.yaml
+  - ./sabnzbd/ks.yaml
+  - ./seerr/ks.yaml
+  - ./sonarr/ks.yaml
   # - ./thelounge/ks.yaml
-  # - ./unpackerr/ks.yaml
+  - ./unpackerr/ks.yaml
   # - ./vikunja/ks.yaml
   # - ./youtube-dl-server/ks.yaml
   - ./zigbee2mqtt/ks.yaml

@@ -1,27 +1,14 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: sabnzbd
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 3.7.3
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-  uninstall:
-    keepHistory: false
+  chartRef:
+    kind: OCIRepository
+    name: sabnzbd
+  interval: 1h
   values:
     controllers:
       sabnzbd:
@@ -29,7 +16,7 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/home-operations/sabnzbd
               tag: 5.0.3@sha256:53064020792b2e21305c892c11aaa1eb32af2141cbd59119b52df226d664cd05
@@ -111,10 +98,10 @@ spec:
       config:
         # stateful data
         type: persistentVolumeClaim
-        existingClaim: sabnzbd-conf
+        existingClaim: sabnzbd
         advancedMounts:
           sabnzbd:
-            main:
+            app:
               - path: /config
       downloads:
         type: nfs
@@ -136,6 +123,6 @@ spec:
         defaultMode: 0775
         advancedMounts:
           sabnzbd:
-            main:
+            app:
               - path: /config/scripts
                 readOnly: true
