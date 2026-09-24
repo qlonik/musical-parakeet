@@ -1,23 +1,24 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app linkding
-  namespace: flux-system
 spec:
-  dependsOn:
-    - name: authelia
-    - name: cloudnative-pg-cluster-16
-  path: ./kubernetes/apps/default/linkding/app
-  targetNamespace: default
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: authelia
+      namespace: default
+    - name: cloudnative-pg-cluster-16
+      namespace: database
+  interval: 1h
+  path: ./kubernetes/apps/default/linkding/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
+  targetNamespace: default
   wait: true
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m

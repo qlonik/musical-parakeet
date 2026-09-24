@@ -17,24 +17,24 @@ resources:
   - ./calibre/ks.yaml
   - ./calibre-web/ks.yaml
   - ./cross-seed/ks.yaml
-  # - ./firefly-iii/ks.yaml
+  - ./firefly-iii/ks.yaml
   - ./glauth/ks.yaml
   # - ./grocy/ks.yaml
   - ./home-assistant/ks.yaml
-  # - ./homepage/ks.yaml
+  - ./homepage/ks.yaml
   - ./immich/ks.yaml
   - ./jellyfin/ks.yaml
   - ./lazylibrarian/ks.yaml
   - ./lidarr/ks.yaml
-  # - ./linkding/ks.yaml
-  # - ./maddy/ks.yaml
-  # - ./manyfold/ks.yaml
+  - ./linkding/ks.yaml
+  - ./maddy/ks.yaml
+  - ./manyfold/ks.yaml
   - ./matter/ks.yaml
-  # - ./mealie/ks.yaml
+  - ./mealie/ks.yaml
   - ./navidrome/ks.yaml
-  # - ./nextcloud/ks.yaml
+  - ./nextcloud/ks.yaml
   - ./otbr/ks.yaml
-  # - ./paperless-ngx/ks.yaml
+  - ./paperless-ngx/ks.yaml
   - ./prowlarr/ks.yaml
   - ./qbittorrent/ks.yaml
   - ./radarr/ks.yaml
@@ -44,7 +44,7 @@ resources:
   - ./sonarr/ks.yaml
   - ./thelounge/ks.yaml
   - ./unpackerr/ks.yaml
-  # - ./vikunja/ks.yaml
+  - ./vikunja/ks.yaml
   - ./youtube-dl-server/ks.yaml
   - ./zigbee2mqtt/ks.yaml
   - ./zwave/ks.yaml
