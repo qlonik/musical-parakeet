@@ -22,6 +22,18 @@ nodes:
       mtu: 1500
       encryptDisk: false
       kernelModules: []
+  - host: "bruxoo"
+    ip: "192.168.0.51"
+    role: worker
+    schematicId: "@node/schematic.bruxoo.yaml"
+    data:
+      installDisk: "/dev/sda"
+      installDiskSerial: ""
+      iface: enp3s0
+      macAddr: "08:9e:01:14:85:42"
+      mtu: 1500
+      encryptDisk: false
+      kernelModules: []
   - host: "talos-node-1"
     ip: "192.168.0.49"
     role: worker

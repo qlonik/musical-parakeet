@@ -3,7 +3,7 @@ apiVersion: v1alpha1
 kind: VolumeConfig
 name: EPHEMERAL
 provisioning:
-  maxSize: 150GiB # 15%
+  maxSize: 38GiB
 ---
 apiVersion: v1alpha1
 kind: UserVolumeConfig
@@ -12,8 +12,8 @@ provisioning:
   diskSelector:
     match: system_disk
   grow: true
-  minSize: 200GiB # 20%
-  maxSize: 500GiB # 50%
+  minSize: 51GiB
+  maxSize: 128GiB
 filesystem:
   type: xfs
 ---
