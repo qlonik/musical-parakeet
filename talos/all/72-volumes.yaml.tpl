@@ -1,9 +1,10 @@
+{{- if .Node.Data.useForLonghorn }}
 ---
 apiVersion: v1alpha1
 kind: VolumeConfig
 name: EPHEMERAL
 provisioning:
-  maxSize: 15GiB
+  maxSize: {{ mulf 0.15 .Node.Data.systemDiskSizeGiB }}GiB # 15%
 ---
 apiVersion: v1alpha1
 kind: UserVolumeConfig
@@ -12,8 +13,8 @@ provisioning:
   diskSelector:
     match: system_disk
   grow: true
-  minSize: 20GiB
-  maxSize: 50GiB
+  minSize: {{ mulf 0.2 .Node.Data.systemDiskSizeGiB }}GiB # 20%
+  maxSize: {{ mulf 0.5 .Node.Data.systemDiskSizeGiB }}GiB # 50%
 filesystem:
   type: xfs
 ---
@@ -21,3 +22,4 @@ apiVersion: v1alpha1
 kind: KubeNodeConfig
 labels:
   node.longhorn.io/create-default-disk: "true"
+{{- end }}
