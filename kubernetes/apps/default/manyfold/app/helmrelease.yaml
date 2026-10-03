@@ -19,7 +19,7 @@ spec:
           app:
             image:
               repository: ghcr.io/manyfold3d/manyfold
-              tag: v0.142.0@sha256:5a45d2fce51c96bf02603f0f6b52dd31cbe3855946c4dacc82331195f830d025
+              tag: 0.150.0@sha256:b6ab9c6008dbb70a6316792585421dd31b688bef4404c41f83fb54f54a99b728
             env:
               TZ: ${TIMEZONE}
               DATABASE_ADAPTER: postgresql
