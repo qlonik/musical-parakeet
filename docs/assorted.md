@@ -48,10 +48,11 @@ See https://linuxconfig.org/how-to-resize-a-qcow2-disk-image-on-linux
 - `modprobe nbd max_part=10`
 - `qemu-nbd -c /dev/nbd0 image.qcow2`
 - `parted -a opt /dev/nbd0`
-  - If it suggests to fix gpt table, enter `Fix`
-  - Enter `print free` to find partition to resize and if the space is available
-  - Enter `resizepart <PARTITION_NUMBER> 100%`
-  - Enter `quit`
+    - If it suggests to fix gpt table, enter `Fix`
+    - Enter `print free` to find partition to resize and if the space is
+      available
+    - Enter `resizepart <PARTITION_NUMBER> 100%`
+    - Enter `quit`
 - `qemu-nbd -d /dev/nbd0`
 - Boot the VM, run the following inside the VM
 - `pvs`/`pvdisplay` to show PVs
@@ -89,47 +90,47 @@ made on flux issue to support this feature natively in flux.
 >
 > 1. Build Flux Kustomization:
 >
->    ```
->    flux build kustomization <kustomization_name> --path dev > out/kustomization_out.yaml
->    ```
+>     ```
+>     flux build kustomization <kustomization_name> --path dev > out/kustomization_out.yaml
+>     ```
 >
->    In my case `kustomization_out.yaml` contains 2 YAML manifests
->    `HelmRepository` and `HelmRelease`.
+>     In my case `kustomization_out.yaml` contains 2 YAML manifests
+>     `HelmRepository` and `HelmRelease`.
 >
 > 2. Take Helm repository URL and name from `HelmRelease` and add the Helm repo:
 >
->    ```
->    helm repo add <helm_repo_name> <helm_repo_url>
->    ```
+>     ```
+>     helm repo add <helm_repo_name> <helm_repo_url>
+>     ```
 >
 > 3. Take the `values` section from `HelmRelease` and add it to `values.yaml`
 >    file. After that you will be able to render the chart locally:
 >
->    ```
->    helm template <name> <helm_repo_name>/<helm_chart_name> -f out/values.yaml > out/helm_out.yaml
->    ```
+>     ```
+>     helm template <name> <helm_repo_name>/<helm_chart_name> -f out/values.yaml > out/helm_out.yaml
+>     ```
 >
 > 4. If you have `postRenderers` section in `HelmRelease`, you can create
 >    `kustomization.yaml` file similar to this one:
 >
->    ```yaml
->    apiVersion: kustomize.config.k8s.io/v1beta1
->    kind: Kustomization
->    resources:
->      - helm_out.yaml
->    patches:
->      - path: patch_1.yaml
->      - path: patch_2.yaml
->      - patch: |-
->          inline-patch
->    ```
+>     ```yaml
+>     apiVersion: kustomize.config.k8s.io/v1beta1
+>     kind: Kustomization
+>     resources:
+>         - helm_out.yaml
+>     patches:
+>         - path: patch_1.yaml
+>         - path: patch_2.yaml
+>         - patch: |-
+>               inline-patch
+>     ```
 >
 > 5. After that move patches from the `postRenderers` section to the patch files
 >    and render the final result:
 >
->    ```
->    kustomize build out
->    ```
+>     ```
+>     kustomize build out
+>     ```
 >
 > ---
 >
@@ -146,10 +147,10 @@ Note, the host, base dn, user, password and query might be different, based on
 the setup.
 
 1. Download and start the container:
-   ```bash
-   kubectl run --rm -ti --image osixia/openldap --restart Never osixia-openldap --command -- bash
-   ```
+    ```bash
+    kubectl run --rm -ti --image osixia/openldap --restart Never osixia-openldap --command -- bash
+    ```
 2. Run search queries:
-   ```bash
-   ldapsearch -x -H ldap://glauth -b dc=home,dc=arpa -D "<user-id>,dc=home,dc=arpa" -w <password> (&(...))
-   ```
+    ```bash
+    ldapsearch -x -H ldap://glauth -b dc=home,dc=arpa -D "<user-id>,dc=home,dc=arpa" -w <password> (&(...))
+    ```

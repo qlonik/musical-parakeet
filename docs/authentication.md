@@ -39,26 +39,24 @@ users and do not use `HTTP_REMOTE_USER` header value.
 #### OAuth by Authelia
 
 1. Configured via config files:
+    - autobrr
+    - manyfold
+    - mealie
+    - nextcloud
 
-   - autobrr
-   - manyfold
-   - mealie
-   - nextcloud
+        Note, with https://github.com/pulsejet/nextcloud-oidc-login, login form
+        is hidden using `'hide_login_form' => true`, which shows an error
+        message. Potentially, if using https://github.com/nextcloud/user_oidc,
+        hiding the login form would be more graceful.
 
-     Note, with https://github.com/pulsejet/nextcloud-oidc-login, login form is
-     hidden using `'hide_login_form' => true`, which shows an error message.
-     Potentially, if using https://github.com/nextcloud/user_oidc, hiding the
-     login form would be more graceful.
-
-   - vikunja
+    - vikunja
 
 2. Configured via web UI:
+    - audiobookshelf
+    - immich
+    - jellyfin
 
-   - audiobookshelf
-   - immich
-   - jellyfin
-
-     Note, jellyfin still shows regular login form, which is linked to LDAP.
+        Note, jellyfin still shows regular login form, which is linked to LDAP.
 
 #### LDAP server by GLAuth
 
@@ -66,12 +64,11 @@ Some services configure LDAP as runtime configuration via UI, rather than
 through config files. So those might not be found via config file search.
 
 1. Configured via config files:
-
-   - authelia
-   - mealie
-   - thelounge
+    - authelia
+    - mealie
+    - thelounge
 
 2. Configured via web UI:
-   - calibre-web
-   - jellyfin
-   - nextcloud
+    - calibre-web
+    - jellyfin
+    - nextcloud
