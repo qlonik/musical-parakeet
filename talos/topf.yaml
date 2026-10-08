@@ -53,9 +53,10 @@ nodes:
       installDiskSerial: ""
       longhorn:
         useNode: true
-        useSystemDisk: true
+        useSystemDisk: false
         systemDiskSizeGiB: 100
-        extraVolumes: []
+        extraVolumes:
+          - path: "/dev/vdb"
       iface: ens3
       macAddr: "00:a0:98:0c:2e:ed"
       mtu: 1500
