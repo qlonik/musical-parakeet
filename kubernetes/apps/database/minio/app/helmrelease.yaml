@@ -46,7 +46,7 @@ spec:
                 memory: 4Gi
     defaultPodOptions:
       nodeSelector:
-        kubernetes.io/hostname: andromeda
+        kubernetes.io/hostname: talos-node-1
       securityContext:
         runAsUser: 568
         runAsGroup: 568
