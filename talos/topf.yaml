@@ -17,8 +17,11 @@ nodes:
     data:
       installDisk: "/dev/nvme0n1"
       installDiskSerial: ""
-      useForLonghorn: true
-      systemDiskSizeGiB: 1024
+      longhorn:
+        useNode: true
+        useSystemDisk: true
+        systemDiskSizeGiB: 1024
+        extraVolumes: []
       iface: enp0s31f6
       macAddr: "34:97:f6:a3:41:d0"
       mtu: 1500
@@ -31,8 +34,11 @@ nodes:
     data:
       installDisk: "/dev/sda"
       installDiskSerial: ""
-      useForLonghorn: true
-      systemDiskSizeGiB: 256
+      longhorn:
+        useNode: true
+        useSystemDisk: true
+        systemDiskSizeGiB: 256
+        extraVolumes: []
       iface: enp3s0
       macAddr: "08:9e:01:14:85:42"
       mtu: 1500
@@ -45,8 +51,11 @@ nodes:
     data:
       installDisk: "/dev/vda"
       installDiskSerial: ""
-      useForLonghorn: true
-      systemDiskSizeGiB: 100
+      longhorn:
+        useNode: true
+        useSystemDisk: true
+        systemDiskSizeGiB: 100
+        extraVolumes: []
       iface: ens3
       macAddr: "00:a0:98:0c:2e:ed"
       mtu: 1500
@@ -59,8 +68,11 @@ nodes:
     data:
       installDisk: "/dev/vda"
       installDiskSerial: ""
-      useForLonghorn: true
-      systemDiskSizeGiB: 500
+      longhorn:
+        useNode: true
+        useSystemDisk: true
+        systemDiskSizeGiB: 500
+        extraVolumes: []
       iface: enp1s0
       macAddr: "52:54:00:4a:62:28"
       mtu: 1500
