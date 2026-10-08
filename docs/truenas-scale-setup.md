@@ -81,3 +81,12 @@
 
 7. To perform the remainder of configurations, run
    `task ansible:run cluster=storage playbook=storage-prepare`
+
+8. Setup sysctl for bridge device. Create the following init/shutdown scripts,
+   all of the type "Command" and in the following order.
+    1. Command: `modprobe br_netfilter`; When: "Pre-Init"
+    2. Command: `sysctl net.bridge.bridge-nf-call-iptables=0`; When: "Post-Init"
+    3. Command: `sysctl net.bridge.bridge-nf-call-ip6tables=0`; When:
+       "Post-Init"
+    4. Command: `sysctl net.bridge.bridge-nf-call-arptables=0`; When:
+       "Post-Init"
