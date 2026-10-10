@@ -16,7 +16,7 @@ spec:
           app:
             image:
               repository: fireflyiii/core
-              tag: version-6.6.3@sha256:4d63328dbc7c60ef5a8269bb2ee89f120b28f88eb0395e4211e23f93fd79337f
+              tag: version-6.7.8@sha256:db249101cac3047b5973946284ad594c698945b8253f0581c5edaccf6b7903d5
             env:
               TZ: ${TIMEZONE}
               DEFAULT_LANGUAGE: en_CA
