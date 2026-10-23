@@ -99,7 +99,7 @@ spec:
       main:
         className: external
         annotations:
-          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+          external-dns.kubernetes.io/target: "external.${SECRET_DOMAIN}"
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: Home assistant
           gethomepage.dev/icon: home-assistant.svg
