@@ -54,13 +54,13 @@ spec:
           - name: log
             configBlock: |-
               class error
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: node-role.kubernetes.io/control-plane
-                  operator: Exists
+    # affinity:
+    #   nodeAffinity:
+    #     requiredDuringSchedulingIgnoredDuringExecution:
+    #       nodeSelectorTerms:
+    #         - matchExpressions:
+    #             - key: node-role.kubernetes.io/control-plane
+    #               operator: Exists
     tolerations:
       - key: CriticalAddonsOnly
         operator: Exists
