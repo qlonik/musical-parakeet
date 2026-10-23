@@ -47,6 +47,10 @@ spec:
     defaultPodOptions:
       nodeSelector:
         kubernetes.io/hostname: talos-node-1
+      tolerations:
+        - key: node.kubernetes.io/unschedulable
+          operator: Exists
+          effect: NoSchedule
       securityContext:
         runAsUser: 568
         runAsGroup: 568
