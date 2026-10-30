@@ -19,7 +19,7 @@ spec:
           app:
             image:
               repository: ghcr.io/thelounge/thelounge
-              tag: 4.5.0@sha256:ee5d2e8b794537d0d99de95a6756d0272b2011821c3575abac21edc0be1bba7e
+              tag: 4.5.2@sha256:00b0f614c4414dbd195ed1ece958095d29c7013ad608c038717076bf8582cb22
             env:
               TZ: ${TIMEZONE}
               # https://github.com/thelounge/thelounge/issues/2656
