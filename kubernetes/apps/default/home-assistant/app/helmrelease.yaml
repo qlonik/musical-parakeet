@@ -50,7 +50,7 @@ spec:
           code-server:
             image:
               repository: ghcr.io/coder/code-server
-              tag: 4.122.0@sha256:dbe5b1cf5c1f0edf47da6363fdadb89c456fb14b3d7e2a1545cabe20f5d7402a
+              tag: 4.145.2@sha256:09565f9e07f5624554e295e8bab0e2fec4a7c533eb3cff459ed6596a4d3d7c1c
             args:
               # prettier-ignore
               [
