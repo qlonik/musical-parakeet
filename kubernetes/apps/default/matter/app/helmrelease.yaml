@@ -24,7 +24,6 @@ spec:
               [
                 "--storage-path", "/data",
                 "--paa-root-cert-dir", "/data/credentials",
-                "--bluetooth-adapter", "0",
                 "--port", "35580",
                 "--log-level-sdk", "progress",
                 "--primary-interface", "bond0",
@@ -44,13 +43,8 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
-              # Needed for Bluetooth via dbus
-              appArmorProfile: { type: Unconfined }
     defaultPodOptions:
       hostNetwork: true
-      nodeSelector:
-        # only this host has bluetooth
-        kubernetes.io/hostname: andromeda
       securityContext:
         runAsUser: 568
         runAsGroup: 568
@@ -92,11 +86,6 @@ spec:
         existingClaim: matter
         globalMounts:
           - path: /data
-      run-dbus: # Needed for Bluetooth via dbus
-        type: hostPath
-        hostPath: /run/dbus
-        globalMounts:
-          - readOnly: true
       etc-localtime:
         type: hostPath
         hostPath: /etc/localtime
