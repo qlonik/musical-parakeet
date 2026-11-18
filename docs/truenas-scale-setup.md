@@ -19,7 +19,7 @@
     3. Click on "add" interface button and set the following:
         - type: bridge
         - name: br0
-        - bridge members: `eno1`
+        - bridge members: `eno1,enp5s0`
         - press add 'Alias' and enter ip address `192.168.0.37/24`.
     4. Go to router, find MAC for the ip address of truenas server and assign it
        in DHCP settings to have IP address `192.168.0.37`.
