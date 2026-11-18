@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: ghcr.io/home-operations/sonarr
-              tag: 4.0.17.2967@sha256:4ff5667a371e08b098858fa2457a99a5fef5f6a32640eb8567efe979d13ac9fc
+              tag: 5.0.0.2997@sha256:05acf764e72fa458b5edf236771d7a08d1f120fce509d4fb8a4e799fae29fda7
             env:
               TZ: ${TIMEZONE}
               SONARR__APP__INSTANCENAME: Sonarr
