@@ -19,4 +19,4 @@ spec:
   sourceRef:
     kind: HelmRepository
     name: typesense-operator
-  version: 0.4.1
+  version: 0.4.2
