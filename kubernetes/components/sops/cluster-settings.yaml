@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: cluster-settings
 data:
-  TIMEZONE: "Canada/Mountain"
+  TIMEZONE: "America/Regina"
   COREDNS_ADDR: "10.43.0.10"
   KUBE_API_ADDR: "192.168.0.79"
   CLUSTER_CIDR: "10.42.0.0/16"
