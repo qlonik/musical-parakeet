@@ -19,7 +19,7 @@ spec:
           main:
             image:
               repository: docker.io/glauth/glauth
-              tag: v2.5.0@sha256:7c67e00d7e491a42b23972c9dc0863e517b3c2401d73ff79a8f15254b77be902
+              tag: v2.5.5@sha256:075172abb6bbb675994c426c9f0eddd010cabb3a93dd44c45956e1bb206c5590
             args: ["/app/glauth", "-c", "/config"]
             probes:
               liveness:
