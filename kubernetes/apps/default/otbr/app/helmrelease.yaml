@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: ghcr.io/ownbee/hass-otbr-docker
-              tag: v0.3.0@sha256:5ca7008462e94d4c937aca8c1c9a60e709d6d300625363c161b946683032d5b1
+              tag: v0.5.0@sha256:2f927f06f803c5dd16f97f8aad752c53d92e2c3b1de90fe4273f278fc6cc8206
             env:
               TZ: ${TIMEZONE}
               BACKBONE_IF: bond0
